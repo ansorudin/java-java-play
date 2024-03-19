@@ -1,4 +1,4 @@
-import { HomeScreen, LoginScreen } from '../pages';
+import { HomeScreen, LoginScreen, ProfileScreen } from '../pages';
 import { MainStackScreenList } from './types';
 
 export const MainScreens: MainStackScreenList[] = [
@@ -10,4 +10,6 @@ export const MainScreens: MainStackScreenList[] = [
     name: 'Login',
     component: LoginScreen,
   },
+
+  { name: 'Profile', component: ProfileScreen },
 ];

@@ -6,6 +6,7 @@ import {
 export type MainStackParamList = {
   Login: undefined;
   Home: undefined;
+  Profile: undefined;
 };
 
 export type MainStackScreenList = {

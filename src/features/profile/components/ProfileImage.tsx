@@ -1,0 +1,54 @@
+import { Box, Image, Text } from '@gluestack-ui/themed';
+import { IProfile } from '../type';
+import { ModalTransfer } from './ModalTransfer';
+
+interface Props {
+  data: IProfile;
+}
+
+export const ProfileImage = (props: Props) => {
+  const { image, title, description } = props.data;
+  return (
+    <Box width="$full" flex={1}>
+      <Image
+        height={400}
+        rounded={10}
+        borderWidth={1}
+        borderColor="$secondary300"
+        size="full"
+        alt="image"
+        position="absolute"
+        source={{
+          uri: image,
+        }}
+      />
+      <Box
+        width="$full"
+        rounded={10}
+        height={400}
+        borderWidth={2}
+        justifyContent="flex-end"
+        alignItems="center"
+        bg="black"
+        opacity="$50"
+      />
+      <Box
+        width="$full"
+        position="absolute"
+        zIndex={1}
+        rounded={10}
+        height={400}
+        borderWidth={2}
+        justifyContent="flex-end"
+        alignItems="center">
+        <Text size="lg" color="white" bold>
+          {title}
+        </Text>
+        <Text paddingBottom="$2" color="white">
+          {description}
+        </Text>
+      </Box>
+      <ModalTransfer />
+    </Box>
+  );
+};
