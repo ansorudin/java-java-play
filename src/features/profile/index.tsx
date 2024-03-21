@@ -2,30 +2,23 @@ import {
   Box,
   Text,
   Button,
-  ArrowLeftIcon,
+  ChevronLeftIcon,
   ButtonIcon,
-  Icon,
   DownloadIcon,
   ExternalLinkIcon,
   StarIcon,
+  Icon,
   ButtonText,
 } from '@gluestack-ui/themed';
 import Swiper from 'react-native-swiper';
-
 import { ProfileImage } from './components/ProfileImage';
+import { navigate } from '../../routes/MainNavigator';
 
 export const Profile = () => {
   return (
     <Box flex={1}>
-      <Button
-        borderRadius="$full"
-        position="absolute"
-        left={1}
-        size="xs"
-        variant="outline"
-        aspectRatio={1}
-        borderColor="$coolGray500">
-        <ButtonIcon size="md" as={ArrowLeftIcon} color="$coolGray500" />
+      <Button position="absolute" left={1} size="xs" variant="link" aspectRatio={1}>
+        <ButtonIcon size="xl" as={ChevronLeftIcon} color="$coolGray500" />
       </Button>
       <Box paddingVertical={5} alignItems="center">
         <Text bold>Hello Siavash!</Text>
@@ -49,17 +42,17 @@ export const Profile = () => {
         marginBottom={25}>
         <Button variant="link" p="$0" size="sm">
           <Icon as={DownloadIcon} m="$2" w="$4" h="$4" />
-          <ButtonText size="xs" color="$coolGray500">
+          <ButtonText onPress={() => navigate('TopUp')} size="xs" color="$coolGray500">
             Top up
           </ButtonText>
         </Button>
         <Button variant="link" p="$0" size="sm">
           <Icon as={ExternalLinkIcon} m="$2" w="$4" h="$4" />
-          <ButtonText size="xs" color="$coolGray500">
+          <ButtonText onPress={() => navigate('Transfer')} size="xs" color="$coolGray500">
             Transfer
           </ButtonText>
         </Button>
-        <Button variant="link" p="$0" size="sm">
+        <Button onPress={() => navigate('History')} variant="link" p="$0" size="sm">
           <Icon as={StarIcon} m="$2" w="$4" h="$4" />
           <ButtonText size="xs" color="$coolGray500">
             History

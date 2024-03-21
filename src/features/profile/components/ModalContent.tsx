@@ -23,7 +23,7 @@ import {
 } from '@gluestack-ui/themed';
 import { TextInput } from 'react-native';
 import { useState } from 'react';
-import { IModalContent } from '../type';
+import { IModalContent } from '../types';
 
 export const ModalContents = (props: IModalContent) => {
   const { handleClose, methode, handleNextBank, handleNextPlayer, handleNextPajak } = props;
@@ -36,17 +36,17 @@ export const ModalContents = (props: IModalContent) => {
     handleClose();
   };
 
-  const isDisables = () => {
-    if ((methode === 'bank' && nominal <= 0) || !description) {
-      return true;
-    } else if ((methode === 'player' && nominal <= 0) || !player) {
-      return true;
-    } else if (methode === 'pajak' && nominal <= 0) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  // const isDisables = () => {
+  //   if ((methode === 'bank' && nominal <= 0) || !description) {
+  //     return true;
+  //   } else if ((methode === 'player' && nominal <= 0) || !player) {
+  //     return true;
+  //   } else if (methode === 'pajak' && nominal <= 0) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // };
 
   console.log(nominal, player);
 

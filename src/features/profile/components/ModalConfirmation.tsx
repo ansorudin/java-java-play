@@ -13,7 +13,7 @@ import {
   Button,
   ButtonText,
 } from '@gluestack-ui/themed';
-import { Iconfirmation } from '../type';
+import { Iconfirmation } from '../types';
 
 interface Props {
   data: Iconfirmation;

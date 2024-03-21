@@ -1,13 +1,16 @@
 import { Box, Text, Button, ButtonText } from '@gluestack-ui/themed';
 import React from 'react';
-import { navigate } from '../../routes/MainNavigator';
 
-export const Home = () => {
+interface HomeProps {
+  handleNextScreen: () => void;
+}
+
+export const Home: React.FC<HomeProps> = ({ handleNextScreen }) => {
   return (
     <Box flex={1}>
       <Text color="$black">Hey, Welcome back!</Text>
       <Button
-        onPress={() => navigate('Profile')}
+        onPress={handleNextScreen}
         size="md"
         variant="solid"
         action="primary"

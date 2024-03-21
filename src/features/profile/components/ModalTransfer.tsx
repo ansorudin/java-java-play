@@ -18,20 +18,24 @@ import {
 import { useState } from 'react';
 import { ModalContents } from './ModalContent';
 import { ModalConfirmation } from './ModalConfirmation';
-import { Iconfirmation } from '../type';
+import { Iconfirmation } from '../types';
 
-export const ModalTransfer = () => {
-  const [methode, setMethode] = useState<string | null>(null);
+interface IModalTransfer {
+  openModal: boolean;
+  handleCloseModal: (modal: string) => void;
+}
+
+export const ModalTransfer = (propsModalTransfer: IModalTransfer) => {
+  const { openModal, handleCloseModal } = propsModalTransfer;
+  const [destination, setDestination] = useState<string | null>(null);
   const [dataTransfer, setDataTransfer] = useState<Iconfirmation>({
     nominal: 0,
     isOpen: false,
     title: '',
   });
 
-  const handleClose = () => setMethode(null);
+  const handleCloseDestination = () => setDestination(null);
   const handleCancel = () => setDataTransfer({ nominal: 0, isOpen: false, title: '' });
-
-  console.log(dataTransfer);
 
   const handleNextPlayer = (player: string, nominal: number) => {
     setDataTransfer({
@@ -60,9 +64,9 @@ export const ModalTransfer = () => {
   };
 
   return (
-    <Modal isOpen={true}>
+    <Modal isOpen={openModal}>
       <ModalBackdrop />
-      <ModalContent display={methode === null ? undefined : 'none'} height={300}>
+      <ModalContent display={destination === null ? undefined : 'none'} height={300}>
         <ModalHeader alignItems="flex-start">
           <Box>
             <Heading>Transfer</Heading>
@@ -70,8 +74,7 @@ export const ModalTransfer = () => {
               Select where you want to transfer
             </Text>
           </Box>
-
-          <ModalCloseButton>
+          <ModalCloseButton onPress={() => handleCloseModal('transfer')}>
             <Icon as={CloseIcon} />
           </ModalCloseButton>
         </ModalHeader>
@@ -79,7 +82,7 @@ export const ModalTransfer = () => {
         <ModalBody>
           <Box gap={10} justifyContent="center" alignItems="center">
             <Button
-              onPress={() => setMethode('player')}
+              onPress={() => setDestination('player')}
               action="secondary"
               variant="outline"
               size="sm"
@@ -88,7 +91,7 @@ export const ModalTransfer = () => {
               <ButtonText>Other Player</ButtonText>
             </Button>
             <Button
-              onPress={() => setMethode('bank')}
+              onPress={() => setDestination('bank')}
               action="secondary"
               variant="outline"
               size="sm"
@@ -96,7 +99,7 @@ export const ModalTransfer = () => {
               <ButtonText>Bank</ButtonText>
             </Button>
             <Button
-              onPress={() => setMethode('pajak')}
+              onPress={() => setDestination('pajak')}
               action="secondary"
               variant="outline"
               size="sm"
@@ -108,8 +111,8 @@ export const ModalTransfer = () => {
         <ModalFooter />
       </ModalContent>
       <ModalContents
-        methode={methode}
-        handleClose={handleClose}
+        methode={destination}
+        handleClose={handleCloseDestination}
         handleNextPlayer={handleNextPlayer}
         handleNextBank={handleNextBank}
         handleNextPajak={handleNextPajak}

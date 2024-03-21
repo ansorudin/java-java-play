@@ -7,6 +7,10 @@ export type MainStackParamList = {
   Login: undefined;
   Home: undefined;
   Profile: undefined;
+  History: undefined;
+  TopUp: undefined;
+  Confirmation: undefined;
+  Transfer: undefined;
 };
 
 export type MainStackScreenList = {
