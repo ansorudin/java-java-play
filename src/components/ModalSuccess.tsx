@@ -11,15 +11,15 @@ import {
   Image,
   Box,
 } from '@gluestack-ui/themed';
-import { navigate } from '../../routes/MainNavigator';
+import { FC } from 'react';
 
-interface PropsModalSuccess {
+interface ModalSuccessProps {
   isOpen: boolean;
   text: string;
+  navigateToProfile: () => void;
 }
 
-export const ModalSuccess = (props: PropsModalSuccess) => {
-  const { isOpen, text } = props;
+export const ModalSuccess: FC<ModalSuccessProps> = ({ isOpen, text, navigateToProfile }) => {
   return (
     <Modal isOpen={isOpen}>
       <ModalBackdrop />
@@ -27,7 +27,7 @@ export const ModalSuccess = (props: PropsModalSuccess) => {
         <ModalHeader />
         <ModalBody>
           <Box alignItems="center" gap={10}>
-            <Image size="xs" source={require('../../../asset/success.png')} alt="card" />
+            <Image size="xs" source={require('../../asset/success.png')} alt="card" />
             <Text color="$success400" bold>
               SUCCESS
             </Text>
@@ -42,7 +42,7 @@ export const ModalSuccess = (props: PropsModalSuccess) => {
             action="positive"
             borderWidth="$0"
             width="$1/2"
-            onPress={() => navigate('Profile')}>
+            onPress={navigateToProfile}>
             <ButtonText>Continue</ButtonText>
           </Button>
         </ModalFooter>

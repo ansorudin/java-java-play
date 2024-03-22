@@ -1,11 +1,23 @@
-import { Text, Box, Button, ButtonIcon, ChevronLeftIcon, ButtonText } from '@gluestack-ui/themed';
+import { Text, Box, Button, ButtonText } from '@gluestack-ui/themed';
 import { navigate } from '../../routes/MainNavigator';
 import { TextInput } from 'react-native';
-import { useState } from 'react';
-import { Image } from 'react-native';
+import { FC, useState } from 'react';
 import { ButtonQuickAction } from './components/ButtonQuickAction';
+import { Header } from '../../components/Header';
+import { BalanceCard } from '../../components/BalanceCard';
+import { ConfirmationProps } from '../../components/Confirmation';
 
-export const Topup = () => {
+interface TopupProps {
+  navigateToConfirmation: (data: ConfirmationProps) => void;
+  handleBack: () => void;
+  navigateToProfile: () => void;
+}
+
+export const Topup: FC<TopupProps> = ({
+  navigateToConfirmation,
+  handleBack,
+  navigateToProfile,
+}) => {
   const [amount, setAmount] = useState<string>('');
   const handleInputNominal = (e: string) => {
     setAmount(e);
@@ -13,55 +25,10 @@ export const Topup = () => {
 
   return (
     <Box flex={1}>
-      <Button
-        onPress={() => navigate('Profile')}
-        position="absolute"
-        size="sm"
-        variant="solid"
-        aspectRatio={1}
-        rounded="$full"
-        backgroundColor="$coolGray300"
-        zIndex={1}>
-        <ButtonIcon size="md" as={ChevronLeftIcon} color="$coolGray500" />
-      </Button>
-      <Box paddingVertical={5} alignItems="center" marginBottom={30}>
-        <Text bold>Money Top Up</Text>
-      </Box>
-
+      <Header title="Money Top Up" buttonHeader={() => navigate('Profile')} />
       <Box position="relative">
-        <Box position="absolute">
-          <Image
-            source={require('../../../asset/Standar.jpg')}
-            alt="card"
-            style={{ height: 165, borderRadius: 10 }}
-          />
-        </Box>
-        <Box
-          height={165}
-          paddingVertical={20}
-          paddingHorizontal={25}
-          justifyContent="space-between"
-          gap={10}>
-          <Box gap={4}>
-            <Text color="white" size="sm">
-              Available Balance
-            </Text>
-            <Text color="white" size="xl" bold>
-              Rp 500,000
-            </Text>
-          </Box>
-
-          <Box>
-            <Text color="white" size="xs">
-              Card Holder
-            </Text>
-            <Text color="white" size="lg">
-              Siavash
-            </Text>
-          </Box>
-        </Box>
-
-        <Box marginTop={30}>
+        <BalanceCard currentSaldo="60,000" cardHolder="Siavash" />
+        <Box marginHorizontal={4} height={280}>
           <Text bold>Enter Amount</Text>
           <Box marginTop={10} marginBottom={20}>
             <Box borderWidth={1} borderColor="$warmGray300" pl={5} paddingVertical={10} rounded={3}>
@@ -92,17 +59,27 @@ export const Topup = () => {
               handleChangeAmount={() => setAmount('300000')}
             />
           </Box>
-          <Button
-            isDisabled={!amount}
-            variant="solid"
-            size="md"
-            marginTop={30}
-            onPress={() => navigate('Confirmation')}>
-            <ButtonText size="sm" color="white">
-              Next
-            </ButtonText>
-          </Button>
         </Box>
+        <Button
+          isDisabled={!amount}
+          variant="solid"
+          size="md"
+          marginTop={30}
+          onPress={() =>
+            navigateToConfirmation({
+              playerName: 'Siavash',
+              playerImage:
+                'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
+              amount,
+              transaction: 'Top Up',
+              handleBack,
+              navigateToProfile,
+            })
+          }>
+          <ButtonText size="sm" color="white">
+            Next
+          </ButtonText>
+        </Button>
       </Box>
     </Box>
   );

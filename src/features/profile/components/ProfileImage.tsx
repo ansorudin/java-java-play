@@ -1,6 +1,5 @@
 import { Box, Image, Text } from '@gluestack-ui/themed';
 import { IProfile } from '../types';
-// import { ModalTransfer } from './ModalTransfer';
 
 interface Props {
   data: IProfile;
@@ -48,7 +47,6 @@ export const ProfileImage = (props: Props) => {
           {description}
         </Text>
       </Box>
-      {/* <ModalTransfer /> */}
     </Box>
   );
 };

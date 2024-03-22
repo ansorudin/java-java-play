@@ -2,6 +2,7 @@ import {
   NativeStackNavigationOptions,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
+import { ConfirmationProps } from '../components/Confirmation';
 
 export type MainStackParamList = {
   Login: undefined;
@@ -9,7 +10,7 @@ export type MainStackParamList = {
   Profile: undefined;
   History: undefined;
   TopUp: undefined;
-  Confirmation: undefined;
+  Confirmation: ConfirmationProps;
   Transfer: undefined;
 };
 

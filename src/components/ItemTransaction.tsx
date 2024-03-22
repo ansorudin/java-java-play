@@ -2,13 +2,15 @@ import { Box, Text } from '@gluestack-ui/themed';
 
 interface PropsItemTransaction {
   title: string;
-  text: string;
+  text?: string;
+  hidden?: boolean;
 }
 
 export const ItemTransaction = (props: PropsItemTransaction) => {
-  const { title, text } = props;
+  const { title, text, hidden } = props;
   return (
     <Box
+      display={hidden ? 'none' : undefined}
       flexDirection="row"
       justifyContent="space-between"
       borderColor="$coolGray300"
