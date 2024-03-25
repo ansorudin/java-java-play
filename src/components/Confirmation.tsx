@@ -10,7 +10,7 @@ interface ConfirmationProps {
   transaction: string;
   amount: string;
   handleBack: () => void;
-  receipents?: string;
+  recipients?: string;
   description?: string;
   navigateToProfile: () => void;
 }
@@ -20,7 +20,7 @@ export const Confirmation: FC<ConfirmationProps> = ({
   playerImage,
   amount,
   transaction,
-  receipents,
+  recipients,
   description,
   handleBack,
   navigateToProfile,
@@ -31,6 +31,7 @@ export const Confirmation: FC<ConfirmationProps> = ({
     setOpenModalSuccess(false);
     navigateToProfile;
   };
+  console.log(recipients);
 
   return (
     <Box flex={1}>
@@ -67,8 +68,8 @@ export const Confirmation: FC<ConfirmationProps> = ({
 
             <ItemTransaction
               title={transaction === 'Top Up' ? 'Funding source' : 'Recipients'}
-              text={transaction === 'Top Up' ? 'Bank' : receipents}
-              hidden={transaction === 'Transfer to bank'}
+              text={transaction === 'Top Up' ? 'Bank' : recipients}
+              hidden={transaction !== 'Transfer to player'}
             />
 
             <ItemTransaction title="Transaction" text={transaction} />

@@ -6,18 +6,28 @@ import { MainStackParamList } from '../routes/types';
 
 export const ConfirmationScreen = () => {
   const route: RouteProp<MainStackParamList, 'Confirmation'> = useRoute();
-  const { playerName, playerImage, amount, transaction, handleBack, navigateToProfile } =
-    route.params;
+  const {
+    playerName,
+    playerImage,
+    amount,
+    transaction,
+    handleBack,
+    navigateToProfile,
+    recipients,
+    description,
+  } = route.params;
 
   return (
     <Container>
       <Confirmation
+        recipients={recipients}
         playerName={playerName}
         playerImage={playerImage}
         amount={amount}
         transaction={transaction}
         handleBack={handleBack}
         navigateToProfile={navigateToProfile}
+        description={description}
       />
     </Container>
   );

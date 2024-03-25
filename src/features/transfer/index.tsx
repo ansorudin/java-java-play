@@ -22,7 +22,6 @@ export const Transfer: FC<TransferProps> = ({
   const [destination, setDestination] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [player, setPlayer] = useState<string>('');
-
   const handleInputNominal = (e: string) => {
     setAmount(e);
   };
@@ -31,16 +30,13 @@ export const Transfer: FC<TransferProps> = ({
     const data: ConfirmationProps = {
       playerName: 'Siavash',
       playerImage: 'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
-      receipents: player,
+      recipients: player,
       description,
       amount,
       transaction: 'Transfer to ' + destination,
       handleBack,
       navigateToProfile,
     };
-
-    console.log(data);
-
     navigateToConfirmation(data);
   };
 
@@ -102,9 +98,9 @@ export const Transfer: FC<TransferProps> = ({
               title="Description"
               handleChangeValue={e => setDescription(e)}
               placeHolder="Select Descriptions">
-              <SelectItem label="Purchase Asset" value="purchaseAsset" />
-              <SelectItem label="Excess Transfer" value="excessTransfer" />
-              <SelectItem label="Other" value="other" />
+              <SelectItem label="Purchase Asset" value="Purchase Asset" />
+              <SelectItem label="Excess Transfer" value="Excess Transfer" />
+              <SelectItem label="Other" value="Other" />
             </InputSelect>
           </Box>
         </Box>

@@ -8,7 +8,7 @@ interface Props {
 export const ProfileImage = (props: Props) => {
   const { image, title, description } = props.data;
   return (
-    <Box width="$full" flex={1}>
+    <Box width="$full" flex={1} rounded={10}>
       <Image
         height={400}
         rounded={10}
@@ -32,15 +32,17 @@ export const ProfileImage = (props: Props) => {
         opacity="$50"
       />
       <Box
+        gap={10}
         width="$full"
         position="absolute"
         zIndex={1}
         rounded={10}
         height={400}
         borderWidth={2}
+        paddingBottom={20}
         justifyContent="flex-end"
         alignItems="center">
-        <Text size="lg" color="white" bold>
+        <Text size="2xl" color="white" bold>
           {title}
         </Text>
         <Text paddingBottom="$2" color="white">

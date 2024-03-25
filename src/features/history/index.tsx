@@ -1,23 +1,15 @@
-import { Box, Text, Button, ButtonIcon, ChevronLeftIcon, Image } from '@gluestack-ui/themed';
-import { navigate } from '../../routes/MainNavigator';
+import { Box, Text, Image } from '@gluestack-ui/themed';
+import { Header } from '../../components/Header';
+import { FC } from 'react';
 
-export const History = () => {
+interface HistoryProps {
+  buttonBack: () => void;
+}
+
+export const History: FC<HistoryProps> = ({ buttonBack }) => {
   return (
     <Box flex={1}>
-      <Button
-        onPress={() => navigate('Profile')}
-        position="absolute"
-        left={1}
-        size="xs"
-        variant="link"
-        zIndex={1}
-        aspectRatio={1}>
-        <ButtonIcon size="xl" as={ChevronLeftIcon} color="$coolGray500" />
-      </Button>
-      <Box paddingVertical={5} alignItems="center" marginBottom={30}>
-        <Text bold>History</Text>
-      </Box>
-
+      <Header title="History" buttonHeader={buttonBack} />
       <Box
         flexDirection="row"
         justifyContent="space-between"

@@ -1,13 +1,15 @@
 import React from 'react';
 import { Container } from '../components/cores/Container';
 import { Home } from '../features/home';
-import { navigate } from '../routes/MainNavigator';
+import { useNavigation } from '@react-navigation/native';
+import { MainStackNavigationProps } from '../routes/types';
 
 export const HomeScreen = () => {
-  const handleNextProfile = () => navigate('Profile');
+  const navigate = useNavigation<MainStackNavigationProps>();
+
   return (
     <Container>
-      <Home handleNextScreen={handleNextProfile} />
+      <Home handleNextScreen={() => navigate.push('Profile')} />
     </Container>
   );
 };
