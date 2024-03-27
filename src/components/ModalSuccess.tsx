@@ -8,10 +8,10 @@ import {
   Text,
   Button,
   ButtonText,
-  Image,
   Box,
 } from '@gluestack-ui/themed';
 import { FC } from 'react';
+import { IconSuccess } from '../../asset/IconSuccess';
 
 interface ModalSuccessProps {
   isOpen: boolean;
@@ -26,8 +26,8 @@ export const ModalSuccess: FC<ModalSuccessProps> = ({ isOpen, text, navigateToPr
       <ModalContent alignItems="center" paddingVertical="$5">
         <ModalHeader />
         <ModalBody>
-          <Box alignItems="center" gap={10}>
-            <Image size="xs" source={require('../../asset/success.png')} alt="card" />
+          <Box alignItems="center" gap={5}>
+            <IconSuccess />
             <Text color="$success400" bold>
               SUCCESS
             </Text>

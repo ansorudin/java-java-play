@@ -1,19 +1,13 @@
-import {
-  Box,
-  ButtonText,
-  Button,
-  Image,
-  Text,
-  Icon,
-  EyeOffIcon,
-  EyeIcon,
-} from '@gluestack-ui/themed';
+import { Box, ButtonText, Button, Text, Icon, EyeOffIcon, EyeIcon } from '@gluestack-ui/themed';
 import Swiper from 'react-native-swiper';
 import { ProfileImage } from './components/ProfileImage';
 import { FC } from 'react';
 import { Header } from '../../components/Header';
 import { MainStackParamList } from '../../routes/types';
 import { useState } from 'react';
+import { IconTopUp } from '../../../asset/IconTopUp';
+import { IconTransfer } from '../../../asset/IconTransfer';
+import { IconHistory } from '../../../asset/IconHistory';
 
 interface ProfileProps {
   handleBackHome: () => void;
@@ -33,6 +27,7 @@ export const Profile: FC<ProfileProps> = ({ handleBackHome, handleNavigate }) =>
   return (
     <Box flex={1}>
       <Header title="Hello Siavash!" buttonHeader={handleBackHome} />
+
       <Box
         backgroundColor="$backgroundDarkInfo"
         flexDirection="column"
@@ -65,25 +60,35 @@ export const Profile: FC<ProfileProps> = ({ handleBackHome, handleNavigate }) =>
           justifyContent="space-evenly"
           borderColor="$coolGray500"
           width="$full">
-          <Button variant="link" p="$0" size="sm" flexDirection="column">
-            <Image source={require('../../../asset/icon_topup.png')} alt="card" size="2xs" />
-            <ButtonText onPress={() => handleNavigate('TopUp')} size="xs" color="$coolGray500">
+          <Button
+            variant="link"
+            size="sm"
+            flexDirection="column"
+            gap={2}
+            onPress={() => handleNavigate('TopUp')}>
+            <IconTopUp />
+            <ButtonText size="xs" color="$coolGray500">
               Top up
             </ButtonText>
           </Button>
-          <Button variant="link" p="$0" size="sm" flexDirection="column">
-            <Image source={require('../../../asset/icon_transfer.png')} alt="card" size="2xs" />
-            <ButtonText onPress={() => handleNavigate('Transfer')} size="xs" color="$coolGray500">
+          <Button
+            variant="link"
+            size="sm"
+            gap={2}
+            flexDirection="column"
+            onPress={() => handleNavigate('Transfer')}>
+            <IconTransfer />
+            <ButtonText size="xs" color="$coolGray500">
               Transfer
             </ButtonText>
           </Button>
           <Button
             onPress={() => handleNavigate('History')}
             variant="link"
-            p="$0"
             size="sm"
+            gap={2}
             flexDirection="column">
-            <Image source={require('../../../asset/History.png')} alt="card" size="2xs" />
+            <IconHistory />
             <ButtonText size="xs" color="$coolGray500">
               History
             </ButtonText>

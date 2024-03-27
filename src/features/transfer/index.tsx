@@ -32,7 +32,7 @@ export const Transfer: FC<TransferProps> = ({
       playerImage: 'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
       recipients: player,
       description,
-      amount,
+      amount: parseInt(amount),
       transaction: 'Transfer to ' + destination,
       handleBack,
       navigateToProfile,
@@ -44,7 +44,7 @@ export const Transfer: FC<TransferProps> = ({
     <Box flex={1}>
       <Header title="Money Transfer" buttonHeader={() => navigate('Profile')} />
       <Box position="relative" height={500}>
-        <BalanceCard currentSaldo="60,000" cardHolder="Siavash" />
+        <BalanceCard currentSaldo={60000} cardHolder="Siavash" />
         <Box marginHorizontal={3}>
           <InputSelect
             underline

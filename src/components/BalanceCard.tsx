@@ -3,7 +3,7 @@ import { FC } from 'react';
 import { Image } from 'react-native';
 
 interface BalanceCardProps {
-  currentSaldo: string;
+  currentSaldo: number;
   cardHolder: string;
 }
 
@@ -29,7 +29,7 @@ export const BalanceCard: FC<BalanceCardProps> = ({ currentSaldo, cardHolder }) 
             Available Balance
           </Text>
           <Text color="white" size="xl" bold>
-            Rp {currentSaldo}
+            Rp {currentSaldo.toLocaleString()}
           </Text>
         </Box>
 

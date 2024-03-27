@@ -27,7 +27,7 @@ export const Topup: FC<TopupProps> = ({
     <Box flex={1}>
       <Header title="Money Top Up" buttonHeader={() => navigate('Profile')} />
       <Box position="relative">
-        <BalanceCard currentSaldo="60,000" cardHolder="Siavash" />
+        <BalanceCard currentSaldo={60000} cardHolder="Siavash" />
         <Box marginHorizontal={4} height={280}>
           <Text bold>Enter Amount</Text>
           <Box marginTop={10} marginBottom={20}>
@@ -70,7 +70,7 @@ export const Topup: FC<TopupProps> = ({
               playerName: 'Siavash',
               playerImage:
                 'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
-              amount,
+              amount: parseInt(amount),
               transaction: 'Top Up',
               handleBack,
               navigateToProfile,

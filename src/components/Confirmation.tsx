@@ -8,11 +8,17 @@ interface ConfirmationProps {
   playerImage: string;
   playerName: string;
   transaction: string;
-  amount: string;
+  amount: number;
   handleBack: () => void;
   recipients?: string;
   description?: string;
   navigateToProfile: () => void;
+}
+
+enum TransactionType {
+  TopUp = 'Top Up',
+  Player = 'Transfer to player',
+  Bank = 'Transfer to bank',
 }
 
 export const Confirmation: FC<ConfirmationProps> = ({
@@ -26,12 +32,11 @@ export const Confirmation: FC<ConfirmationProps> = ({
   navigateToProfile,
 }) => {
   const [openModalSuccess, setOpenModalSuccess] = useState<boolean>(false);
-  const amountStr: number = parseInt(amount);
+
   const handleClose = () => {
     setOpenModalSuccess(false);
     navigateToProfile;
   };
-  console.log(recipients);
 
   return (
     <Box flex={1}>
@@ -67,20 +72,20 @@ export const Confirmation: FC<ConfirmationProps> = ({
             </Text>
 
             <ItemTransaction
-              title={transaction === 'Top Up' ? 'Funding source' : 'Recipients'}
-              text={transaction === 'Top Up' ? 'Bank' : recipients}
-              hidden={transaction !== 'Transfer to player'}
+              title={transaction === TransactionType.TopUp ? 'Funding source' : 'Recipients'}
+              text={transaction === TransactionType.TopUp ? 'Bank' : recipients}
+              hidden={transaction !== TransactionType.Player}
             />
 
             <ItemTransaction title="Transaction" text={transaction} />
             <ItemTransaction
-              title={transaction === 'Top Up' ? 'Top Up Amount' : 'Transfer Amount'}
-              text={`Rp. ${amountStr.toLocaleString()}`}
+              title={transaction === TransactionType.TopUp ? 'Top Up Amount' : 'Transfer Amount'}
+              text={`Rp. ${amount.toLocaleString()}`}
             />
             <ItemTransaction
               title="Description"
               text={description}
-              hidden={transaction !== 'Transfer to bank'}
+              hidden={transaction !== TransactionType.Bank}
             />
           </Box>
         </Box>
@@ -92,7 +97,7 @@ export const Confirmation: FC<ConfirmationProps> = ({
       </Box>
       <ModalSuccess
         isOpen={openModalSuccess}
-        text={transaction === 'Top Up' ? 'Top up money from bank' : 'Transfer money'}
+        text={transaction === TransactionType.TopUp ? 'Top up money from bank' : 'Transfer money'}
         navigateToProfile={handleClose}
       />
     </Box>
