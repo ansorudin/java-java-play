@@ -1,15 +1,18 @@
 import React from 'react';
 import { Container } from '../components/cores/Container';
-import { Home } from '../features/home';
+import { Transfer } from '../features/transfer';
 import { useNavigation } from '@react-navigation/native';
 import { MainStackNavigationProps } from '../routes/types';
 
-export const HomeScreen = () => {
+export const TransferScreen = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
-
   return (
     <Container>
-      <Home handleNextScreen={() => navigate.push('Profile')} />
+      <Transfer
+        navigateToConfirmation={data => navigate.push('Confirmation', data)}
+        handleBack={() => navigate.pop(1)}
+        navigateToProfile={() => navigate.push('Profile')}
+      />
     </Container>
   );
 };

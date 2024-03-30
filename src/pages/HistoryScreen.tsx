@@ -1,15 +1,14 @@
 import React from 'react';
 import { Container } from '../components/cores/Container';
-import { Home } from '../features/home';
+import { History } from '../features/history';
 import { useNavigation } from '@react-navigation/native';
 import { MainStackNavigationProps } from '../routes/types';
 
-export const HomeScreen = () => {
+export const HistoryScreen = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
-
   return (
     <Container>
-      <Home handleNextScreen={() => navigate.push('Profile')} />
+      <History buttonBack={() => navigate.pop(1)} />
     </Container>
   );
 };

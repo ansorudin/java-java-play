@@ -1,15 +1,19 @@
 import React from 'react';
 import { Container } from '../components/cores/Container';
-import { Home } from '../features/home';
+import { Topup } from '../features/topup';
 import { useNavigation } from '@react-navigation/native';
 import { MainStackNavigationProps } from '../routes/types';
 
-export const HomeScreen = () => {
+export const TopUpScreen = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
 
   return (
     <Container>
-      <Home handleNextScreen={() => navigate.push('Profile')} />
+      <Topup
+        navigateToConfirmation={data => navigate.push('Confirmation', data)}
+        handleBack={() => navigate.pop(1)}
+        navigateToProfile={() => navigate.push('Profile')}
+      />
     </Container>
   );
 };

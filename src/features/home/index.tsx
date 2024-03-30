@@ -1,10 +1,23 @@
-import { Box, Text } from '@gluestack-ui/themed';
+import { Box, Text, Button, ButtonText } from '@gluestack-ui/themed';
 import React from 'react';
 
-export const Home = () => {
+interface HomeProps {
+  handleNextScreen: () => void;
+}
+
+export const Home: React.FC<HomeProps> = ({ handleNextScreen }) => {
   return (
-    <Box>
-      <Text>Home</Text>
+    <Box flex={1}>
+      <Text color="$black">Hey, Welcome back!</Text>
+      <Button
+        onPress={handleNextScreen}
+        size="md"
+        variant="solid"
+        action="primary"
+        isDisabled={false}
+        isFocusVisible={false}>
+        <ButtonText>Profile </ButtonText>
+      </Button>
     </Box>
   );
 };
