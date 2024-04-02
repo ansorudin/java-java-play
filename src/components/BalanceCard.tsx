@@ -1,6 +1,5 @@
-import { Box, Text } from '@gluestack-ui/themed';
+import { Box, Text, Image } from '@gluestack-ui/themed';
 import { FC } from 'react';
-import { Image } from 'react-native';
 
 interface BalanceCardProps {
   currentSaldo: number;
@@ -9,17 +8,19 @@ interface BalanceCardProps {
 
 export const BalanceCard: FC<BalanceCardProps> = ({ currentSaldo, cardHolder }) => {
   return (
-    <Box>
-      <Box position="absolute">
+    <Box h="$1/3">
+      <Box position="absolute" width="$full" h="$full">
         <Image
+          w="$full"
+          h="$full"
+          rounded={10}
           source={require('../../asset/Standar.jpg')}
           alt="card"
-          style={{ height: 165, borderRadius: 10 }}
         />
       </Box>
       <Box
+        h="$full"
         marginBottom={20}
-        height={165}
         paddingVertical={20}
         paddingHorizontal={25}
         justifyContent="space-between"

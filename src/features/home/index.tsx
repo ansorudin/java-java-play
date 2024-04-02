@@ -7,7 +7,7 @@ interface HomeProps {
 
 export const Home: React.FC<HomeProps> = ({ handleNextScreen }) => {
   return (
-    <Box flex={1}>
+    <Box flex={1} bg="$red200">
       <Text color="$black">Hey, Welcome back!</Text>
       <Button
         onPress={handleNextScreen}

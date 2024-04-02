@@ -26,9 +26,9 @@ export const Topup: FC<TopupProps> = ({
   return (
     <Box flex={1}>
       <Header title="Money Top Up" buttonHeader={() => navigate('Profile')} />
-      <Box position="relative">
+      <Box flex={1}>
         <BalanceCard currentSaldo={60000} cardHolder="Siavash" />
-        <Box marginHorizontal={4} height={280}>
+        <Box marginHorizontal={4} flex={1} mt={40}>
           <Text bold>Enter Amount</Text>
           <Box marginTop={10} marginBottom={20}>
             <Box borderWidth={1} borderColor="$warmGray300" pl={5} paddingVertical={10} rounded={3}>
@@ -64,7 +64,7 @@ export const Topup: FC<TopupProps> = ({
           isDisabled={!amount}
           variant="solid"
           size="md"
-          marginTop={30}
+          mb={20}
           onPress={() =>
             navigateToConfirmation({
               playerName: 'Siavash',
