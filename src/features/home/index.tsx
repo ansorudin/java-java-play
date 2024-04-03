@@ -2,21 +2,51 @@ import { Box, Text, Button, ButtonText } from '@gluestack-ui/themed';
 import React from 'react';
 
 interface HomeProps {
-  handleNextScreen: () => void;
+  handleProfileScreen: () => void;
+  handleScanScreen: () => void;
+  handleExitScreen: () => void;
 }
 
-export const Home: React.FC<HomeProps> = ({ handleNextScreen }) => {
+export const Home: React.FC<HomeProps> = ({
+  handleProfileScreen,
+  handleScanScreen,
+  handleExitScreen,
+}) => {
   return (
     <Box flex={1} bg="$red200">
-      <Text color="$black">Hey, Welcome back!</Text>
+      <Box flex={1}>
+        <Button
+          onPress={handleExitScreen}
+          size="md"
+          variant="solid"
+          action="primary"
+          isDisabled={false}
+          isFocusVisible={false}>
+          <ButtonText>Exit Games </ButtonText>
+        </Button>
+        <Text>Saldo Uang Pajak</Text>
+        <Text>Dadu Otomatis</Text>
+
+        <Button
+          onPress={handleProfileScreen}
+          size="md"
+          variant="solid"
+          action="primary"
+          isDisabled={false}
+          isFocusVisible={false}>
+          <ButtonText>Nama Player 1</ButtonText>
+        </Button>
+      </Box>
+
       <Button
-        onPress={handleNextScreen}
+        mb={20}
+        onPress={handleScanScreen}
         size="md"
         variant="solid"
         action="primary"
         isDisabled={false}
         isFocusVisible={false}>
-        <ButtonText>Profile </ButtonText>
+        <ButtonText>Scan NFC</ButtonText>
       </Button>
     </Box>
   );

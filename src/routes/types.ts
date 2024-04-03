@@ -12,6 +12,8 @@ export type MainStackParamList = {
   TopUp: undefined;
   Confirmation: ConfirmationProps;
   Transfer: undefined;
+  ScanNfc: undefined;
+  ExitGame: undefined;
 };
 
 export type MainStackScreenList = {

@@ -1,19 +1,14 @@
 import React from 'react';
 import { Container } from '../components/cores/Container';
-import { Home } from '../features/home';
+import { ScanNfc } from '../features/scanNfc';
 import { useNavigation } from '@react-navigation/native';
 import { MainStackNavigationProps } from '../routes/types';
 
-export const HomeScreen = () => {
+export const ScanNfcScreen = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
-
   return (
     <Container>
-      <Home
-        handleProfileScreen={() => navigate.push('Profile')}
-        handleScanScreen={() => navigate.push('ScanNfc')}
-        handleExitScreen={() => navigate.push('ExitGame')}
-      />
+      <ScanNfc buttonBack={() => navigate.pop(1)} />
     </Container>
   );
 };

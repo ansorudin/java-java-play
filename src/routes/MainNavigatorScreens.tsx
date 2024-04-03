@@ -6,6 +6,8 @@ import {
   TopUpScreen,
   ConfirmationScreen,
   TransferScreen,
+  ScanNfcScreen,
+  ExitGameScreen,
 } from '../pages';
 import { MainStackScreenList } from './types';
 
@@ -38,5 +40,13 @@ export const MainScreens: MainStackScreenList[] = [
   {
     name: 'Transfer',
     component: TransferScreen,
+  },
+  {
+    name: 'ScanNfc',
+    component: ScanNfcScreen,
+  },
+  {
+    name: 'ExitGame',
+    component: ExitGameScreen,
   },
 ];
