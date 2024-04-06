@@ -6,12 +6,21 @@ import { MainScreens } from './routes/MainNavigatorScreens';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from './routes/MainNavigator';
 import { ErrorBoundary } from './ErrorBoundary';
-import { GluestackUIProvider } from '@gluestack-ui/themed';
+import { GluestackUIProvider, Text } from '@gluestack-ui/themed';
 import { config } from '@gluestack-ui/config';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { ButtonHeader } from './components/ButtonHeader';
+import { HomeScreen, ScanNfcScreen, TaxBalanceScreen } from './pages';
+import { useNavigation } from '@react-navigation/native';
+import { MainStackNavigationProps } from './routes/types';
+// import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { Navigator, Screen } = createNativeStackNavigator<MainStackParamList>();
+const Tab = createBottomTabNavigator();
 
 const MainApp = () => {
+  const navigate = useNavigation<MainStackNavigationProps>();
   // useEffect(() => {
   //   if (initialRoute && hydrated) {
   //     RNSplashScreen.hide();
@@ -22,21 +31,54 @@ const MainApp = () => {
   //   return <LoadingScreen />;
   // }
 
+  const goBack = () => {
+    return <ButtonHeader isLeft buttonHeader={() => navigate.goBack()} />;
+  };
+
+  const exitGame = () => {
+    return <ButtonHeader buttonHeader={() => navigate.push('ExitGame')} />;
+  };
+
   return (
     <>
-      <Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
-        {MainScreens.map(screen => (
-          <Screen
-            key={screen.name}
-            name={screen.name}
-            component={screen.component}
-            options={screen.options}
-          />
-        ))}
-      </Navigator>
+      <Tab.Navigator>
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={() => ({
+            headerRight: exitGame,
+            tabBarLabel: 'Home',
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="home" color={color} size={26} />
+            ),
+          })}
+        />
+        <Tab.Screen name="NFC" component={ScanNfcScreen} options={() => ({ headerLeft: goBack })} />
+        <Tab.Screen
+          name="Tax"
+          component={TaxBalanceScreen}
+          options={() => ({ headerLeft: goBack })}
+        />
+      </Tab.Navigator>
     </>
   );
 };
+
+function RootStack() {
+  return (
+    <Navigator initialRouteName="Home_Tabs" screenOptions={{ headerShown: false }}>
+      <Screen name="Home_Tabs" component={MainApp} />
+      {MainScreens.map(screen => (
+        <Screen
+          key={screen.name}
+          name={screen.name}
+          component={screen.component}
+          options={screen.options}
+        />
+      ))}
+    </Navigator>
+  );
+}
 
 const App = () => {
   return (
@@ -44,7 +86,7 @@ const App = () => {
       <NavigationContainer ref={navigationRef}>
         <ErrorBoundary>
           <GluestackUIProvider config={config}>
-            <MainApp />
+            <RootStack />
           </GluestackUIProvider>
         </ErrorBoundary>
       </NavigationContainer>

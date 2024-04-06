@@ -1,15 +1,14 @@
 import React from 'react';
 import { Container } from '../components/cores/Container';
-import { Home } from '../features/home';
+import { TaxBalance } from '../features/Tax';
 import { useNavigation } from '@react-navigation/native';
 import { MainStackNavigationProps } from '../routes/types';
 
-export const HomeScreen = () => {
+export const TaxBalanceScreen = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
-
   return (
     <Container>
-      <Home handleProfileScreen={() => navigate.push('Profile')} />
+      <TaxBalance moveNfc={() => navigate.push('ScanNfc')} />
     </Container>
   );
 };

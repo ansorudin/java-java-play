@@ -8,6 +8,7 @@ import {
   TransferScreen,
   ScanNfcScreen,
   ExitGameScreen,
+  TaxBalanceScreen,
 } from '../pages';
 import { MainStackScreenList } from './types';
 
@@ -48,5 +49,9 @@ export const MainScreens: MainStackScreenList[] = [
   {
     name: 'ExitGame',
     component: ExitGameScreen,
+  },
+  {
+    name: 'Tax',
+    component: TaxBalanceScreen,
   },
 ];

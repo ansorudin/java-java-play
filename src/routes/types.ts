@@ -5,6 +5,7 @@ import {
 import { ConfirmationProps } from '../components/Confirmation';
 
 export type MainStackParamList = {
+  Home_Tabs: undefined;
   Login: undefined;
   Home: undefined;
   Profile: undefined;
@@ -14,6 +15,7 @@ export type MainStackParamList = {
   Transfer: undefined;
   ScanNfc: undefined;
   ExitGame: undefined;
+  Tax: undefined;
 };
 
 export type MainStackScreenList = {

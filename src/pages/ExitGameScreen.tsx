@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container } from '../components/cores/Container';
-import { ExitGame } from '../features/home/components/ExitGame';
+import { ExitGame } from '../features/Exit';
 import { useNavigation } from '@react-navigation/native';
 import { MainStackNavigationProps } from '../routes/types';
 

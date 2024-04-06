@@ -1,20 +1,13 @@
 import { Box, Text, Button, ButtonText, Heading } from '@gluestack-ui/themed';
-import { Header } from '../../components/Header';
-import { FC } from 'react';
 
-interface ScanNfcProps {
-  buttonBack: () => void;
-}
-
-export const ScanNfc: FC<ScanNfcProps> = ({ buttonBack }) => {
+export const ScanNfc = () => {
   return (
     <Box flex={1}>
-      <Header title="" buttonHeader={buttonBack} />
-      <Box flex={1} alignItems="center">
+      <Box flex={1} alignItems="center" justifyContent="center">
         <Heading bold size="2xl">
           NFC
         </Heading>
-        <Text size="sm">Scanning</Text>
+        <Text size="sm">Scanning...</Text>
       </Box>
       <Button
         mb={10}
