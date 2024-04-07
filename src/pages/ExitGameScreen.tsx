@@ -1,15 +1,14 @@
 import React from 'react';
 import { Container } from '../components/cores/Container';
-import { Home } from '../features/home';
+import { ExitGame } from '../features/Exit';
 import { useNavigation } from '@react-navigation/native';
 import { MainStackNavigationProps } from '../routes/types';
 
-export const HomeScreen = () => {
+export const ExitGameScreen = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
-
   return (
     <Container>
-      <Home handleProfileScreen={() => navigate.push('Profile')} />
+      <ExitGame buttonBack={() => navigate.pop(1)} />
     </Container>
   );
 };

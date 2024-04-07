@@ -27,7 +27,6 @@ export const Profile: FC<ProfileProps> = ({ handleBackHome, handleNavigate }) =>
   return (
     <Box flex={1}>
       <Header title="Hello Siavash!" buttonHeader={handleBackHome} />
-
       <Box
         backgroundColor="$backgroundDarkInfo"
         flexDirection="column"
@@ -96,30 +95,33 @@ export const Profile: FC<ProfileProps> = ({ handleBackHome, handleNavigate }) =>
         </Box>
       </Box>
 
-      <Swiper showsButtons={true} style={{ marginTop: 20 }}>
-        <ProfileImage
-          data={{
-            image: 'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
-            title: 'Siavash',
-            description: 'Player 1',
+      <Box flex={3} mt={20}>
+        <Swiper
+          dotStyle={{
+            backgroundColor: 'gray',
           }}
-        />
-        <ProfileImage
-          data={{
-            image: 'https://www.mordeo.org/download/6157/',
-            title: 'Siavash',
-            description: 'have strong body, cannot easy to lose',
-          }}
-        />
-        <ProfileImage
-          data={{
-            image:
-              'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbK45YvXlYTC3t0rH6SONYBr-aZiVxi_dsfg&usqp=CAU',
-            title: 'Siavash',
-            description: 'Intelegent cleaver',
-          }}
-        />
-      </Swiper>
+          activeDotStyle={{
+            backgroundColor: 'white',
+            width: 10,
+            height: 10,
+            borderRadius: 5,
+          }}>
+          <ProfileImage
+            data={{
+              image: 'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
+              title: 'Siavash',
+              description: 'Player 1',
+            }}
+          />
+          <ProfileImage
+            data={{
+              image: 'https://www.mordeo.org/download/6157/',
+              title: 'Siavash',
+              description: 'have strong body, cannot easy to lose',
+            }}
+          />
+        </Swiper>
+      </Box>
     </Box>
   );
 };

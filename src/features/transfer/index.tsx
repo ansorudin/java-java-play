@@ -43,9 +43,9 @@ export const Transfer: FC<TransferProps> = ({
   return (
     <Box flex={1}>
       <Header title="Money Transfer" buttonHeader={() => navigate('Profile')} />
-      <Box position="relative" height={500}>
+      <Box flex={1}>
         <BalanceCard currentSaldo={60000} cardHolder="Siavash" />
-        <Box marginHorizontal={3}>
+        <Box marginHorizontal={3} mt={40}>
           <InputSelect
             underline
             title="Transfer Destination"
