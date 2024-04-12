@@ -98,7 +98,7 @@ export const Confirmation: FC<ConfirmationProps> = ({
       <ModalSuccess
         isOpen={openModalSuccess}
         text={transaction === TransactionType.TopUp ? 'Top up money from bank' : 'Transfer money'}
-        navigateToProfile={handleClose}
+        navigateNextScreen={handleClose}
       />
     </Box>
   );

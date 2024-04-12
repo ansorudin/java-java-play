@@ -3,6 +3,7 @@ import {
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
 import { ConfirmationProps } from '../components/Confirmation';
+import { dataConfirmationTaxProps } from '../features/Tax/components/ConfirmationTax';
 
 export type MainStackParamList = {
   Home_Tabs: undefined;
@@ -16,6 +17,8 @@ export type MainStackParamList = {
   ScanNfc: undefined;
   ExitGame: undefined;
   Tax: undefined;
+  ConfirmationTax: dataConfirmationTaxProps;
+  InputRecipients: { amount: number };
 };
 
 export type MainStackScreenList = {
