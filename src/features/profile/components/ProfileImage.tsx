@@ -42,7 +42,7 @@ export const ProfileImage = (props: Props) => {
         <Text size="2xl" color="white" bold>
           {title}
         </Text>
-        <Text paddingBottom="$6" color="white">
+        <Text paddingBottom="$6" color="white" textAlign="center" paddingHorizontal={20}>
           {description}
         </Text>
       </Box>

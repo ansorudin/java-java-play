@@ -1,21 +1,18 @@
 import React from 'react';
 import { Container } from '../components/cores/Container';
-import { Transfer } from '../features/transfer';
+import { InputDataTransfer } from '../features/transfer/components/InputDataTransfer';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { MainStackNavigationProps, MainStackParamList } from '../routes/types';
-import { DataInputTransferProps } from '../features/transfer/components/InputDataTransfer';
 
-export const TransferScreen = () => {
+export const InputDataTransferScreen = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
-  const route: RouteProp<MainStackParamList, 'Transfer'> = useRoute();
+  const route: RouteProp<MainStackParamList, 'InputDataTransfer'> = useRoute();
 
   return (
     <Container>
-      <Transfer
+      <InputDataTransfer
         data={route.params}
-        moveToInputDataTransfer={(data: DataInputTransferProps) =>
-          navigate.push('InputDataTransfer', data)
-        }
+        navigateToConfirmation={data => navigate.push('Confirmation', data)}
         handleBack={() => navigate.pop(1)}
       />
     </Container>

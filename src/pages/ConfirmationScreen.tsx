@@ -1,33 +1,21 @@
 import React from 'react';
 import { Container } from '../components/cores/Container';
 import { Confirmation } from '../components/Confirmation';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { MainStackParamList } from '../routes/types';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { MainStackNavigationProps, MainStackParamList } from '../routes/types';
 
 export const ConfirmationScreen = () => {
   const route: RouteProp<MainStackParamList, 'Confirmation'> = useRoute();
-  const {
-    playerName,
-    playerImage,
-    amount,
-    transaction,
-    handleBack,
-    navigateToProfile,
-    recipients,
-    description,
-  } = route.params;
+  const navigate = useNavigation<MainStackNavigationProps>();
+
+  const { playerName, playerImage, amount, transaction, recipients, description } = route.params;
 
   return (
     <Container>
       <Confirmation
-        recipients={recipients}
-        playerName={playerName}
-        playerImage={playerImage}
-        amount={amount}
-        transaction={transaction}
-        handleBack={handleBack}
-        navigateToProfile={navigateToProfile}
-        description={description}
+        data={{ recipients, playerImage, playerName, amount, transaction, description }}
+        handleBack={() => navigate.pop(1)}
+        navigateToProfile={() => navigate.popToTop()}
       />
     </Container>
   );

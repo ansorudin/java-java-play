@@ -1,123 +1,46 @@
-import { Text, Box, Button, ButtonText, SelectItem } from '@gluestack-ui/themed';
-import { navigate } from '../../routes/MainNavigator';
-import { TextInput } from 'react-native';
-import { FC, useState } from 'react';
-import { InputSelect } from './components/InputSelect';
+import { Box, Button, ButtonText } from '@gluestack-ui/themed';
+import { FC } from 'react';
 import { BalanceCard } from '../../components/BalanceCard';
 import { Header } from '../../components/Header';
-import { ConfirmationProps } from '../../components/Confirmation';
+import { dataProfileProps } from '../profile';
+import { DataInputTransferProps } from './components/InputDataTransfer';
 
 interface TransferProps {
-  navigateToConfirmation: (data: ConfirmationProps) => void;
+  moveToInputDataTransfer: (data: DataInputTransferProps) => void;
   handleBack: () => void;
-  navigateToProfile: () => void;
+  data: dataProfileProps;
 }
 
-export const Transfer: FC<TransferProps> = ({
-  navigateToConfirmation,
-  handleBack,
-  navigateToProfile,
-}) => {
-  const [amount, setAmount] = useState<string>('');
-  const [destination, setDestination] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [player, setPlayer] = useState<string>('');
-  const handleInputNominal = (e: string) => {
-    setAmount(e);
-  };
-
-  const buttonNext = () => {
-    const data: ConfirmationProps = {
-      playerName: 'Siavash',
-      playerImage: 'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
-      recipients: player,
-      description,
-      amount: parseInt(amount),
-      transaction: 'Transfer to ' + destination,
-      handleBack,
-      navigateToProfile,
-    };
-    navigateToConfirmation(data);
+export const Transfer: FC<TransferProps> = ({ moveToInputDataTransfer, handleBack, data }) => {
+  const buttonNext = (e: string) => {
+    const datas: DataInputTransferProps = { ...data, transferDestination: e };
+    moveToInputDataTransfer(datas);
   };
 
   return (
     <Box flex={1}>
-      <Header title="Money Transfer" buttonHeader={() => navigate('Profile')} />
+      <Header title="Money Transfer" buttonHeader={handleBack} />
       <Box flex={1}>
-        <BalanceCard currentSaldo={60000} cardHolder="Siavash" />
-        <Box marginHorizontal={3} mt={40}>
-          <InputSelect
-            underline
-            title="Transfer Destination"
-            handleChangeValue={e => setDestination(e)}
-            placeHolder="Select Destination">
-            <SelectItem label="Transfer Bank" value="bank" />
-            <SelectItem label="Transfer Tax" value="tax" />
-            <SelectItem label="Transfer Other Player" value="player" />
-          </InputSelect>
-        </Box>
+        <BalanceCard currentSaldo={data.totalBalance} cardHolder={data.playerName} />
+        <Box gap={10} flex={1} mt={30} paddingHorizontal={5}>
+          <Button variant="outline" size="sm" action="primary" onPress={() => buttonNext('tax')}>
+            <ButtonText size="sm" color="$primary300">
+              Transfer Tax
+            </ButtonText>
+          </Button>
+          <Button variant="outline" size="sm" onPress={() => buttonNext('bank')} action="primary">
+            <ButtonText size="sm" color="$primary300">
+              Transfer Bank
+            </ButtonText>
+          </Button>
 
-        <Box
-          height={200}
-          gap={10}
-          marginTop={20}
-          display={destination ? 'flex' : 'none'}
-          marginHorizontal={3}>
-          <Box display={destination === 'player' ? undefined : 'none'}>
-            <InputSelect
-              underline
-              title="Recipient"
-              handleChangeValue={e => setPlayer(e)}
-              placeHolder="Select Player">
-              <SelectItem label="Player 1" value="Player 1" />
-              <SelectItem label="Player 2" value="Player 2" />
-              <SelectItem label="Player 3" value="Player 3" />
-            </InputSelect>
-          </Box>
-
-          <Box gap={10}>
-            <Text bold>Amount</Text>
-            <Box
-              borderBottomWidth={1}
-              borderColor="$warmGray300"
-              pl={10}
-              paddingVertical={10}
-              rounded={3}>
-              <TextInput
-                keyboardType="number-pad"
-                value={amount}
-                onChangeText={handleInputNominal}
-                placeholder="Exp. 200.000"
-              />
-            </Box>
-          </Box>
-
-          <Box display={destination === 'bank' ? undefined : 'none'}>
-            <InputSelect
-              underline
-              title="Description"
-              handleChangeValue={e => setDescription(e)}
-              placeHolder="Select Descriptions">
-              <SelectItem label="Purchase Asset" value="Purchase Asset" />
-              <SelectItem label="Excess Transfer" value="Excess Transfer" />
-              <SelectItem label="Other" value="Other" />
-            </InputSelect>
-          </Box>
+          <Button variant="outline" size="sm" onPress={() => buttonNext('player')} action="primary">
+            <ButtonText size="sm" color="$primary300">
+              Transfer Other Player
+            </ButtonText>
+          </Button>
         </Box>
       </Box>
-      <Button
-        isDisabled={
-          !amount ||
-          (destination === 'bank' && !description) ||
-          (destination === 'player' && !player)
-        }
-        variant="solid"
-        size="md"
-        onPress={buttonNext}>
-        <ButtonText size="sm" color="white">
-          Next
-        </ButtonText>
-      </Button>
     </Box>
   );
 };
