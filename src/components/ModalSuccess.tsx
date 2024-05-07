@@ -9,17 +9,18 @@ import {
   Button,
   ButtonText,
   Box,
+  Image,
 } from '@gluestack-ui/themed';
 import { FC } from 'react';
-import { IconSuccess } from '../../asset/IconSuccess';
+// import { IconSuccess } from '../../asset/IconSuccess';
 
 interface ModalSuccessProps {
   isOpen: boolean;
   text: string;
-  navigateToProfile: () => void;
+  navigateNextScreen: () => void;
 }
 
-export const ModalSuccess: FC<ModalSuccessProps> = ({ isOpen, text, navigateToProfile }) => {
+export const ModalSuccess: FC<ModalSuccessProps> = ({ isOpen, text, navigateNextScreen }) => {
   return (
     <Modal isOpen={isOpen}>
       <ModalBackdrop />
@@ -27,8 +28,8 @@ export const ModalSuccess: FC<ModalSuccessProps> = ({ isOpen, text, navigateToPr
         <ModalHeader />
         <ModalBody>
           <Box alignItems="center" gap={5}>
-            <IconSuccess />
-            <Text color="$success400" bold>
+            <Image w={80} h={80} source={require('../../asset/success.png')} alt="icon" />
+            <Text color="$success400" bold marginTop={20}>
               SUCCESS
             </Text>
             <Text size="sm" textAlign="center">
@@ -42,7 +43,7 @@ export const ModalSuccess: FC<ModalSuccessProps> = ({ isOpen, text, navigateToPr
             action="positive"
             borderWidth="$0"
             width="$1/2"
-            onPress={navigateToProfile}>
+            onPress={navigateNextScreen}>
             <ButtonText>Continue</ButtonText>
           </Button>
         </ModalFooter>

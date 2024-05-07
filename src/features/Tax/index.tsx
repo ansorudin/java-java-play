@@ -1,73 +1,187 @@
-import { Box, Text, Button, ButtonText } from '@gluestack-ui/themed';
+import {
+  Box,
+  Text,
+  Button,
+  ButtonText,
+  CheckboxIcon,
+  CheckboxLabel,
+  Image,
+  HStack,
+} from '@gluestack-ui/themed';
 import { FC, useState } from 'react';
-import { TextInput } from 'react-native';
-import { ButtonQuickAction } from '../topup/components/ButtonQuickAction';
+import { ScrollView, Dimensions, TouchableOpacity } from 'react-native';
+import { HistoryTransactionItem } from './components/HistoryTransactionItem';
+import { Checkbox } from '@gluestack-ui/themed';
+import { CheckboxIndicator } from '@gluestack-ui/themed';
+import { CheckIcon } from '@gluestack-ui/themed';
+import { ModalInputAmount } from './components/ModalInputAmount';
+import { dataConfirmationTaxProps } from './components/ConfirmationTax';
 
-import { BalanceCard } from '../../components/BalanceCard';
 interface TaxBalanceProps {
-  moveNfc: () => void;
+  moveConfirmation: (data: dataConfirmationTaxProps) => void;
+  moveInputRecipients: (amount: number) => void;
 }
-export const TaxBalance: FC<TaxBalanceProps> = ({ moveNfc }) => {
+export const TaxBalance: FC<TaxBalanceProps> = ({ moveConfirmation, moveInputRecipients }) => {
+  const [isNfc, setIsNfc] = useState<string>('nfc');
+  const [openModal, setOpenModal] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>('');
+
+  const handleTransferTax = () => {
+    const nominal = Number(amount);
+    if (isNfc === 'nfc') {
+      moveConfirmation({ amount: nominal, methode: isNfc });
+    } else {
+      moveInputRecipients(nominal);
+    }
+    setAmount('');
+  };
+  const handleCheckbox = (value: string) => {
+    if (isNfc === 'nfc') {
+      setIsNfc(value);
+    } else {
+      setIsNfc('nfc');
+    }
+  };
+
   const handleInputNominal = (e: string) => {
     setAmount(e);
+    setOpenModal(false);
   };
+  const handleClose = () => {
+    setAmount('');
+    setOpenModal(false);
+  };
+
+  const widht = Dimensions.get('window').width;
 
   return (
     <Box flex={1}>
-      <Box flex={1} bg="$red400">
-        <BalanceCard currentSaldo={100000} cardHolder="aias" />
-        <Box marginTop={10} marginBottom={20}>
-          <Box borderWidth={1} borderColor="$warmGray300" pl={5} paddingVertical={10} rounded={3}>
-            <TextInput
-              keyboardType="number-pad"
-              value={amount}
-              onChangeText={handleInputNominal}
-              placeholder="Please enter amount"
-            />
-          </Box>
-          <Text paddingLeft={5} size="xs" italic>
-            Exp. 200.000
+      <Box bgColor="$blueGray700" rounded={10} paddingHorizontal={10}>
+        <Box
+          borderBottomWidth={1}
+          alignItems="center"
+          paddingVertical={10}
+          gap={2}
+          borderColor="$secondary200">
+          <Text size="xs" color="$secondary200">
+            Current Saldo
           </Text>
-
-          <Text bold>Quick Actions</Text>
-          <Box flexDirection="row" justifyContent="space-between" marginTop={10}>
-            <ButtonQuickAction
-              buttonText="Rp.100.000"
-              handleChangeAmount={() => setAmount('100000')}
-            />
-            <ButtonQuickAction
-              buttonText="Rp.200.000"
-              handleChangeAmount={() => setAmount('200000')}
-            />
-            <ButtonQuickAction
-              buttonText="Rp.300.000"
-              handleChangeAmount={() => setAmount('300000')}
-            />
-          </Box>
+          <Text size="sm" color="white" bold>
+            Rp 80,000
+          </Text>
         </Box>
+        <Box alignItems="center" paddingTop={10} gap={2} borderColor="$secondary200">
+          <Text size="xs" color="$secondary200">
+            Total Transfer
+          </Text>
+          <Text size="sm" bold color={amount ? '$success400' : '$error400'}>
+            {amount ? amount : '-'}
+          </Text>
+        </Box>
+        <Text size="2xs" color="$secondary200" textAlign="center" paddingTop={2} paddingBottom={10}>
+          Last Transfer to Corruptor with amount 50.000
+        </Text>
       </Box>
 
-      <Button
-        mb={20}
-        size="md"
-        variant="solid"
-        action="primary"
-        isDisabled={false}
-        isFocusVisible={false}>
-        <ButtonText>Transfer Without Card</ButtonText>
-      </Button>
+      <Box flex={3} gap={5} justifyContent="flex-start" pt={30}>
+        <Box>
+          <Text size="sm" mb={20}>
+            Select amount
+          </Text>
+          <HStack justifyContent="center" gap={50}>
+            <TouchableOpacity onPress={() => setAmount('80000')}>
+              <Box alignItems="center" gap={5}>
+                <Box bgColor="$blueGray700" padding={8} rounded={5}>
+                  <Image
+                    w={40}
+                    h={30}
+                    source={require('../../../asset/government.png')}
+                    alt="icon"
+                  />
+                </Box>
+                <Text size="xs">Entire Tax</Text>
+              </Box>
+            </TouchableOpacity>
 
-      <Button
-        mb={20}
-        size="md"
-        variant="solid"
-        action="primary"
-        onPress={moveNfc}
-        isDisabled={false}
-        isFocusVisible={false}>
-        <ButtonText>Transfer With Card</ButtonText>
-      </Button>
+            <TouchableOpacity onPress={() => setOpenModal(true)}>
+              <Box alignItems="center" gap={5}>
+                <Box bgColor="$blueGray700" padding={8} rounded={5}>
+                  <Image
+                    w={40}
+                    h={30}
+                    source={require('../../../asset/government.png')}
+                    alt="icon"
+                  />
+                </Box>
+                <Text size="xs">Other Amount</Text>
+              </Box>
+            </TouchableOpacity>
+          </HStack>
+        </Box>
+        <Checkbox
+          marginTop={20}
+          size="sm"
+          value={isNfc}
+          aria-label="label"
+          onChange={() => handleCheckbox('noCard')}>
+          <CheckboxIndicator mr="$2">
+            <CheckboxIcon as={CheckIcon} />
+          </CheckboxIndicator>
+          <CheckboxLabel size="xs">Transfer without card</CheckboxLabel>
+        </Checkbox>
+
+        <Button
+          marginTop={5}
+          size="sm"
+          variant="outline"
+          borderColor="$blueGray700"
+          isDisabled={!amount}
+          onPress={handleTransferTax}
+          isFocusVisible={false}>
+          <ButtonText color="$blueGray700">Transfer Tax</ButtonText>
+        </Button>
+      </Box>
+
+      <Box
+        flex={2}
+        gap={10}
+        bgColor="$blueGray700"
+        w={widht}
+        marginLeft={-20}
+        marginBottom={-20}
+        paddingHorizontal={20}
+        borderTopStartRadius={20}
+        borderTopEndRadius={20}>
+        <Text color="$secondary200" size="sm" textAlign="center" paddingTop={15}>
+          History Transaction
+        </Text>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <HistoryTransactionItem
+            title="Transfer to Corruptor"
+            type="transfer"
+            amount={60000}
+            dateTime="31/03/24 14:27:27"
+          />
+          <HistoryTransactionItem
+            title="Income from Corruptor"
+            type="income"
+            amount={70000}
+            dateTime="31/03/24 14:27:27"
+          />
+          <HistoryTransactionItem
+            title="Income from Bussinessman"
+            type="income"
+            amount={50000}
+            dateTime="31/03/24 14:27:27"
+          />
+        </ScrollView>
+      </Box>
+      <ModalInputAmount
+        isOpen={openModal}
+        onClose={handleClose}
+        handleInputNominal={handleInputNominal}
+        amount={amount}
+      />
     </Box>
   );
 };

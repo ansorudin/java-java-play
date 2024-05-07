@@ -5,19 +5,13 @@ import { FC, useState } from 'react';
 import { ButtonQuickAction } from './components/ButtonQuickAction';
 import { Header } from '../../components/Header';
 import { BalanceCard } from '../../components/BalanceCard';
-import { ConfirmationProps } from '../../components/Confirmation';
+import { dataConfirmationProps } from '../../components/Confirmation';
 
 interface TopupProps {
-  navigateToConfirmation: (data: ConfirmationProps) => void;
-  handleBack: () => void;
-  navigateToProfile: () => void;
+  navigateToConfirmation: (data: dataConfirmationProps) => void;
 }
 
-export const Topup: FC<TopupProps> = ({
-  navigateToConfirmation,
-  handleBack,
-  navigateToProfile,
-}) => {
+export const Topup: FC<TopupProps> = ({ navigateToConfirmation }) => {
   const [amount, setAmount] = useState<string>('');
   const handleInputNominal = (e: string) => {
     setAmount(e);
@@ -72,8 +66,6 @@ export const Topup: FC<TopupProps> = ({
                 'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
               amount: parseInt(amount),
               transaction: 'Top Up',
-              handleBack,
-              navigateToProfile,
             })
           }>
           <ButtonText size="sm" color="white">

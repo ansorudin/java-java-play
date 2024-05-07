@@ -32,7 +32,7 @@ export const History: FC<HistoryProps> = ({ buttonBack }) => {
           />
           <Box>
             <Text bold size="sm">
-              John Fonesca
+              Corruptor
             </Text>
             <Text size="xs">Transfer</Text>
           </Box>
@@ -66,7 +66,7 @@ export const History: FC<HistoryProps> = ({ buttonBack }) => {
           />
           <Box>
             <Text bold size="sm">
-              John Fonesca
+              Businessman
             </Text>
             <Text size="xs">Top Up </Text>
           </Box>
@@ -100,7 +100,7 @@ export const History: FC<HistoryProps> = ({ buttonBack }) => {
           />
           <Box>
             <Text bold size="sm">
-              Bank
+              Traveller
             </Text>
             <Text size="xs">Top Up </Text>
           </Box>

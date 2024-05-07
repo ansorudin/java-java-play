@@ -1,17 +1,22 @@
 import React from 'react';
 import { Container } from '../components/cores/Container';
 import { Profile } from '../features/profile';
-import { useNavigation } from '@react-navigation/native';
-import { MainStackNavigationProps } from '../routes/types';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { MainStackNavigationProps, MainStackParamList } from '../routes/types';
 
 export const ProfileScreen = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
+  const route: RouteProp<MainStackParamList, 'Profile'> = useRoute();
+
+  const { playerName, gender, totalBalance, description, skin } = route.params;
 
   return (
     <Container>
       <Profile
+        data={{ playerName, gender, totalBalance, description, skin }}
         handleBackHome={() => navigate.pop(1)}
         handleNavigate={screen => navigate.push(screen)}
+        handleMoveTransfer={data => navigate.push('Transfer', data)}
       />
     </Container>
   );

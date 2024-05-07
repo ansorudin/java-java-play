@@ -12,9 +12,25 @@ import { IconHistory } from '../../../asset/IconHistory';
 interface ProfileProps {
   handleBackHome: () => void;
   handleNavigate: (screen: keyof MainStackParamList) => void;
+  data: dataProfileProps;
+  handleMoveTransfer: (data: dataProfileProps) => void;
 }
 
-export const Profile: FC<ProfileProps> = ({ handleBackHome, handleNavigate }) => {
+export interface dataProfileProps {
+  playerName: string;
+  gender: string;
+  description: string;
+  totalBalance: number;
+  skin: string;
+}
+
+export const Profile: FC<ProfileProps> = ({
+  handleBackHome,
+  handleNavigate,
+  data,
+  handleMoveTransfer,
+}) => {
+  const { playerName, gender, description, totalBalance, skin } = data;
   const [eyeOff, setEyeOff] = useState<boolean>(false);
 
   const changeVisibilySaldo = () => {
@@ -26,7 +42,7 @@ export const Profile: FC<ProfileProps> = ({ handleBackHome, handleNavigate }) =>
   };
   return (
     <Box flex={1}>
-      <Header title="Hello Siavash!" buttonHeader={handleBackHome} />
+      <Header title={`Hello ${playerName} !`} buttonHeader={handleBackHome} />
       <Box
         backgroundColor="$backgroundDarkInfo"
         flexDirection="column"
@@ -43,7 +59,7 @@ export const Profile: FC<ProfileProps> = ({ handleBackHome, handleNavigate }) =>
               {eyeOff ? '' : 'Rp'}
             </Text>
             <Text color="white" size={eyeOff ? 'md' : 'xl'} bold>
-              {eyeOff ? 'Show Saldo' : '800,000'}
+              {eyeOff ? 'Show Saldo' : totalBalance.toLocaleString()}
             </Text>
             <Button variant="link" p="$0" size="sm" onPress={changeVisibilySaldo}>
               <Icon as={eyeOff ? EyeOffIcon : EyeIcon} color="white" />
@@ -75,7 +91,7 @@ export const Profile: FC<ProfileProps> = ({ handleBackHome, handleNavigate }) =>
             size="sm"
             gap={2}
             flexDirection="column"
-            onPress={() => handleNavigate('Transfer')}>
+            onPress={() => handleMoveTransfer(data)}>
             <IconTransfer />
             <ButtonText size="xs" color="$coolGray500">
               Transfer
@@ -109,15 +125,15 @@ export const Profile: FC<ProfileProps> = ({ handleBackHome, handleNavigate }) =>
           <ProfileImage
             data={{
               image: 'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
-              title: 'Siavash',
-              description: 'Player 1',
+              title: playerName,
+              description: gender,
             }}
           />
           <ProfileImage
             data={{
               image: 'https://www.mordeo.org/download/6157/',
-              title: 'Siavash',
-              description: 'have strong body, cannot easy to lose',
+              title: description,
+              description: skin,
             }}
           />
         </Swiper>

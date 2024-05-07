@@ -9,11 +9,7 @@ export const TopUpScreen = () => {
 
   return (
     <Container>
-      <Topup
-        navigateToConfirmation={data => navigate.push('Confirmation', data)}
-        handleBack={() => navigate.pop(1)}
-        navigateToProfile={() => navigate.push('Profile')}
-      />
+      <Topup navigateToConfirmation={data => navigate.push('Confirmation', data)} />
     </Container>
   );
 };

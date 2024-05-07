@@ -5,14 +5,18 @@ import { ItemTransaction } from './ItemTransaction';
 import { Header } from './Header';
 
 interface ConfirmationProps {
+  handleBack: () => void;
+  navigateToProfile: () => void;
+  data: dataConfirmationProps;
+}
+
+interface dataConfirmationProps {
   playerImage: string;
   playerName: string;
   transaction: string;
   amount: number;
-  handleBack: () => void;
   recipients?: string;
   description?: string;
-  navigateToProfile: () => void;
 }
 
 enum TransactionType {
@@ -21,21 +25,13 @@ enum TransactionType {
   Bank = 'Transfer to bank',
 }
 
-export const Confirmation: FC<ConfirmationProps> = ({
-  playerName,
-  playerImage,
-  amount,
-  transaction,
-  recipients,
-  description,
-  handleBack,
-  navigateToProfile,
-}) => {
+export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigateToProfile }) => {
+  const { playerImage, playerName, transaction, amount, recipients, description } = data;
   const [openModalSuccess, setOpenModalSuccess] = useState<boolean>(false);
 
   const handleClose = () => {
     setOpenModalSuccess(false);
-    navigateToProfile;
+    navigateToProfile();
   };
 
   return (
@@ -89,19 +85,23 @@ export const Confirmation: FC<ConfirmationProps> = ({
             />
           </Box>
         </Box>
-        <Button variant="solid" p="$0" size="md" mt={40} width="$2/3">
-          <ButtonText onPress={() => setOpenModalSuccess(true)} size="md">
-            Continue
-          </ButtonText>
+        <Button
+          variant="solid"
+          p="$0"
+          size="md"
+          mt={40}
+          width="$2/3"
+          onPress={() => setOpenModalSuccess(true)}>
+          <ButtonText size="md">Continue</ButtonText>
         </Button>
       </Box>
       <ModalSuccess
         isOpen={openModalSuccess}
         text={transaction === TransactionType.TopUp ? 'Top up money from bank' : 'Transfer money'}
-        navigateToProfile={handleClose}
+        navigateNextScreen={handleClose}
       />
     </Box>
   );
 };
 
-export type { ConfirmationProps };
+export type { dataConfirmationProps };

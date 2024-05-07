@@ -8,3 +8,6 @@ export { TransferScreen } from './TransferScreen';
 export { ScanNfcScreen } from './ScanNfcScreen';
 export { ExitGameScreen } from './ExitGameScreen';
 export { TaxBalanceScreen } from './TaxBalanceScreen';
+export { ConfirmationTaxScreen } from './ConfirmationTaxScreen';
+export { InputRecipientsScreen } from './InputRecipientsScreen';
+export { InputDataTransferScreen } from './InputDataTransferScreen';
