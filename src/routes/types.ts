@@ -22,6 +22,7 @@ export type MainStackParamList = {
   ConfirmationTax: dataConfirmationTaxProps;
   InputDataTransfer: DataInputTransferProps;
   InputRecipients: { amount: number };
+  Dice: undefined;
 };
 
 export type MainStackScreenList = {

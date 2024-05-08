@@ -12,6 +12,7 @@ import {
   ConfirmationTaxScreen,
   InputRecipientsScreen,
   InputDataTransferScreen,
+  DiceScreen,
 } from '../pages';
 import { MainStackScreenList } from './types';
 
@@ -68,5 +69,9 @@ export const MainScreens: MainStackScreenList[] = [
   {
     name: 'InputDataTransfer',
     component: InputDataTransferScreen,
+  },
+  {
+    name: 'Dice',
+    component: DiceScreen,
   },
 ];
