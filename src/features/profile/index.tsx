@@ -1,37 +1,37 @@
 import { Box, ButtonText, Button, Text, Icon, EyeOffIcon, EyeIcon } from '@gluestack-ui/themed';
 import Swiper from 'react-native-swiper';
 import { ProfileImage } from './components/ProfileImage';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { Header } from '../../components/Header';
 import { MainStackParamList } from '../../routes/types';
 import { useState } from 'react';
 import { IconTopUp } from '../../../asset/IconTopUp';
 import { IconTransfer } from '../../../asset/IconTransfer';
 import { IconHistory } from '../../../asset/IconHistory';
+import { dataProfile, initDataProfile } from './components/dataProfile';
+import { IdataProfile } from './types';
 
 interface ProfileProps {
   handleBackHome: () => void;
   handleNavigate: (screen: keyof MainStackParamList) => void;
-  data: dataProfileProps;
-  handleMoveTransfer: (data: dataProfileProps) => void;
-}
-
-export interface dataProfileProps {
-  playerName: string;
-  gender: string;
-  description: string;
-  totalBalance: number;
-  skin: string;
+  handleMoveTransfer: (data: IdataProfile) => void;
+  playerId: string;
 }
 
 export const Profile: FC<ProfileProps> = ({
   handleBackHome,
   handleNavigate,
-  data,
   handleMoveTransfer,
+  playerId,
 }) => {
-  const { playerName, gender, description, totalBalance, skin } = data;
   const [eyeOff, setEyeOff] = useState<boolean>(false);
+  const [player, setPlayer] = useState<IdataProfile>(initDataProfile);
+  const { playerName, gender, description, totalBalance, skin } = player;
+
+  useEffect(() => {
+    const dataPlayer = dataProfile.filter((profile: IdataProfile) => playerId === profile.playerId);
+    setPlayer(dataPlayer[0]);
+  }, [playerId]);
 
   const changeVisibilySaldo = () => {
     if (eyeOff) {
@@ -59,7 +59,7 @@ export const Profile: FC<ProfileProps> = ({
               {eyeOff ? '' : 'Rp'}
             </Text>
             <Text color="white" size={eyeOff ? 'md' : 'xl'} bold>
-              {eyeOff ? 'Show Saldo' : totalBalance.toLocaleString()}
+              {eyeOff ? 'Show Saldo' : totalBalance?.toLocaleString()}
             </Text>
             <Button variant="link" p="$0" size="sm" onPress={changeVisibilySaldo}>
               <Icon as={eyeOff ? EyeOffIcon : EyeIcon} color="white" />
@@ -91,7 +91,7 @@ export const Profile: FC<ProfileProps> = ({
             size="sm"
             gap={2}
             flexDirection="column"
-            onPress={() => handleMoveTransfer(data)}>
+            onPress={() => handleMoveTransfer(player)}>
             <IconTransfer />
             <ButtonText size="xs" color="$coolGray500">
               Transfer

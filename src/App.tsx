@@ -13,6 +13,9 @@ import { ButtonHeader } from './components/ButtonHeader';
 import { HomeScreen, ScanNfcScreen, TaxBalanceScreen, DiceScreen } from './pages';
 import { useNavigation } from '@react-navigation/native';
 import { MainStackNavigationProps } from './routes/types';
+import { useEffect } from 'react';
+
+import NfcManager from 'react-native-nfc-manager';
 // import Icon from 'react-native-vector-icons/Ionicons';
 
 const { Navigator, Screen } = createNativeStackNavigator<MainStackParamList>();
@@ -29,6 +32,19 @@ const MainApp = () => {
   // if (!initialRoute) {
   //   return <LoadingScreen />;
   // }
+
+  useEffect(() => {
+    const checkIsSupported = async () => {
+      const deviceIsSupported = await NfcManager.isSupported();
+      if (deviceIsSupported) {
+        await NfcManager.start();
+        console.log('nfc support');
+      } else {
+        console.log('nfc not support');
+      }
+    };
+    checkIsSupported();
+  }, []);
 
   const goBack = () => {
     return <ButtonHeader isLeft buttonHeader={() => navigate.goBack()} />;
