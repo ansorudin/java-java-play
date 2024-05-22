@@ -1,4 +1,4 @@
-import React, { useEffect, FC } from 'react';
+import { useEffect, useState, FC } from 'react';
 import { Box, Text, Button, ButtonText, Heading } from '@gluestack-ui/themed';
 import NfcManager, { NfcTech, NfcEvents, Ndef } from 'react-native-nfc-manager';
 import { registeredId } from './registeredId';
@@ -10,13 +10,13 @@ interface ScanNfcProps {
 
 export const ScanNfc: FC<ScanNfcProps> = ({ handleProfileScreen }) => {
   const secretKey = 'secret';
+  const [err, setError] = useState<any>(null);
 
   const readTag = async () => {
     try {
       await NfcManager.registerTagEvent();
-      console.log('masukk');
     } catch (error) {
-      console.log(error);
+      setError(error);
     }
   };
 
@@ -57,6 +57,7 @@ export const ScanNfc: FC<ScanNfcProps> = ({ handleProfileScreen }) => {
   };
 
   useEffect(() => {
+    readTag();
     NfcManager.setEventListener(NfcEvents.DiscoverTag, (tag: any) => {
       if (tag.ndefMessage) {
         const ndefRecords = tag.ndefMessage;
@@ -64,7 +65,7 @@ export const ScanNfc: FC<ScanNfcProps> = ({ handleProfileScreen }) => {
         const decrypt = parseData.map((data: string) => decryptData(data));
         const textData = JSON.parse(decrypt.join('\n'));
 
-        const isId = registeredId.filter(id => id === tag.id);
+        const isId = registeredId.find(id => id === tag.id);
         if (isId) {
           handleProfileScreen(textData.playerId);
         }
@@ -84,8 +85,14 @@ export const ScanNfc: FC<ScanNfcProps> = ({ handleProfileScreen }) => {
         </Heading>
         <Text size="sm">Scanning...</Text>
       </Box>
-      <Button onPress={readTag} mb={10} size="md" variant="solid" isFocusVisible={false}>
-        <ButtonText>Scan</ButtonText>
+      <Button
+        display={err ? 'flex' : 'none'}
+        onPress={readTag}
+        mb={10}
+        size="md"
+        variant="solid"
+        isFocusVisible={false}>
+        <ButtonText>Scan Again</ButtonText>
       </Button>
 
       {/* <Button onPress={writeNFC} mb={10} size="md" variant="solid" isFocusVisible={false}>

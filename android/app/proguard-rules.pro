@@ -8,3 +8,12 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
+-keep class io.realm.annotations.RealmModule
+-keep @io.realm.annotations.RealmModule class *
+-dontwarn javax.**
+-keepnames class * extends io.realm.RealmObject
+-keep class ** extends io.realm.RealmObject
+-keep class ** extends io.realm.RealmModel
+-keep class ** implements io.realm.RealmModel
+-keep @io.realm.annotations.RealmClass class *
+-keepnames public class * extends android.app.Application
