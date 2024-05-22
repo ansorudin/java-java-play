@@ -1,18 +1,85 @@
-import { Box, Text } from '@gluestack-ui/themed';
+import { Box, Button, ButtonText, Text } from '@gluestack-ui/themed';
 import { Player } from './components/Player';
-import { Dimensions, ScrollView } from 'react-native';
+import { Dimensions, ListRenderItemInfo, ScrollView, FlatList } from 'react-native';
 import { TopPlayer } from './components/TopPlayer';
+import Realm from 'realm';
+import { useEffect, useState } from 'react';
+import NfcManager, { NfcEvents, Ndef } from 'react-native-nfc-manager';
+import { registeredId } from './registeredId';
+import CryptoJS from 'react-native-crypto-js';
+import { ModalInputPerson } from './components/ModalInputPerson';
+import { PlayerSchema } from '../../components/Schema';
 
 interface HomeProps {
   handleProfileScreen: (playerId: string) => void;
 }
 
+interface PlayerProps {
+  id: string;
+  saldo: number;
+  username: string;
+}
+
 const widht = Dimensions.get('window').width;
 
 export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
+  const realm = new Realm({ schema: [PlayerSchema] });
+  const [players, setPlayers] = useState<any>(null);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const secretKey = 'secret';
+
+  const getData = () => {
+    const dataPlayer = realm.objects('Players');
+    setPlayers(dataPlayer);
+  };
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const decryptData = (data: string) => {
+    const bytes = CryptoJS.AES.decrypt(data, secretKey);
+    return bytes.toString(CryptoJS.enc.Utf8);
+  };
+
+  const readTag = async (e: string) => {
+    setIsOpen(false);
+    try {
+      await NfcManager.registerTagEvent();
+      NfcManager.setEventListener(NfcEvents.DiscoverTag, (tag: any) => {
+        if (tag.ndefMessage) {
+          const ndefRecords = tag.ndefMessage;
+          const parseData = ndefRecords.map((record: any) =>
+            Ndef.text.decodePayload(record.payload),
+          );
+          const decrypt = parseData.map((data: string) => decryptData(data));
+          const textData = JSON.parse(decrypt.join('\n'));
+          const isId = registeredId.find(id => id === tag.id);
+          const isAdding = players.find((data: PlayerProps) => data.id === textData.playerId);
+          if (isId && !isAdding) {
+            realm.write(() => {
+              realm.create('Players', { id: textData.playerId, username: e, saldo: 0 });
+            });
+            getData();
+          } else {
+            console.log('data not registered');
+          }
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Box flex={1}>
-      <Box h="$1/2">
+      <Box h="$1/2" gap={20}>
+        {/* <Button onPress={() => setIsOpen(true)}>
+          <ButtonText>Scan NFC for adding player</ButtonText>
+        </Button> */}
+
         <Box
           flexDirection="row"
           justifyContent="space-between"
@@ -50,7 +117,21 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
         </Box>
       </Box>
 
-      <Box
+      <Box py="$10">
+        <FlatList
+          data={players}
+          keyExtractor={item => item.id}
+          renderItem={({ item }: ListRenderItemInfo<PlayerProps>) => (
+            <Player
+              moveProfile={() => handleProfileScreen(item.id)}
+              playerId={item.id}
+              detail={item.username}
+              amount={item.saldo}
+            />
+          )}
+        />
+      </Box>
+      {/* <Box
         flex={1}
         gap={10}
         bgColor="$coolGray200"
@@ -104,7 +185,12 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
             image="https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg"
           />
         </ScrollView>
-      </Box>
+      </Box> */}
+      <ModalInputPerson
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        handleInputUsername={readTag}
+      />
     </Box>
   );
 };

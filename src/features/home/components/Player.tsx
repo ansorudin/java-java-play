@@ -1,16 +1,17 @@
 import { Box, Text, Image } from '@gluestack-ui/themed';
 import { FC } from 'react';
 import { TouchableOpacity } from 'react-native';
+import { dataProfile } from '../../../components/dataProfile';
 
 interface PlayerProps {
-  playerName: string;
+  playerId: string;
   amount: number;
   detail: string;
-  image: string;
   moveProfile: () => void;
 }
 
-export const Player: FC<PlayerProps> = ({ playerName, amount, detail, image, moveProfile }) => {
+export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile }) => {
+  const DataPlayer = dataProfile.find(profile => profile.playerId === playerId);
   return (
     <TouchableOpacity onPress={moveProfile}>
       <Box
@@ -32,7 +33,7 @@ export const Player: FC<PlayerProps> = ({ playerName, amount, detail, image, mov
             size="full"
             alt="image"
             source={{
-              uri: image,
+              uri: 'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
             }}
           />
         </Box>
@@ -44,7 +45,7 @@ export const Player: FC<PlayerProps> = ({ playerName, amount, detail, image, mov
           gap={10}>
           <Box>
             <Text bold size="sm" color="$coolGray700">
-              {playerName}
+              {DataPlayer?.playerName}
             </Text>
             <Text size="2xs" color="$coolGray400">
               {detail}
