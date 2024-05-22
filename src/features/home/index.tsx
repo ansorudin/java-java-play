@@ -2,10 +2,9 @@ import { Box, Text } from '@gluestack-ui/themed';
 import { Player } from './components/Player';
 import { Dimensions, ScrollView } from 'react-native';
 import { TopPlayer } from './components/TopPlayer';
-import { dataProfileProps } from '../profile';
 
 interface HomeProps {
-  handleProfileScreen: (data: dataProfileProps) => void;
+  handleProfileScreen: (playerId: string) => void;
 }
 
 const widht = Dimensions.get('window').width;
@@ -63,90 +62,42 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
         borderTopEndRadius={30}>
         <ScrollView showsVerticalScrollIndicator={false}>
           <Player
-            moveProfile={() =>
-              handleProfileScreen({
-                playerName: 'Traveller',
-                description: 'Happy Go Round',
-                skin: 'Once per turn, if you stop at touris',
-                totalBalance: 20000,
-                gender: 'Female',
-              })
-            }
+            moveProfile={() => handleProfileScreen('eda23c1b')}
             playerName="TRAVELLER"
             detail="Bayu Pratama"
             amount={20000}
             image="https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg"
           />
           <Player
-            moveProfile={() =>
-              handleProfileScreen({
-                playerName: 'Corruptor',
-                description: 'Bribery',
-                skin: 'When you get in jail, you can bribe the warden Rp. 20,000 to instantly escape from jail!',
-                totalBalance: 60000,
-                gender: 'Male',
-              })
-            }
+            moveProfile={() => handleProfileScreen('9d71fb69')}
             playerName="CORRUPTOR"
             detail="Cherlyn"
             amount={60000}
             image="https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg"
           />
           <Player
-            moveProfile={() =>
-              handleProfileScreen({
-                playerName: 'Bussinesman',
-                description: 'Tax Evasion',
-                skin: '',
-                totalBalance: 50000,
-                gender: 'Male',
-              })
-            }
+            moveProfile={() => handleProfileScreen('ddd0861a')}
             playerName="BUSINESSMAN"
             detail="Eva"
             amount={50000}
             image="https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg"
           />
           <Player
-            moveProfile={() =>
-              handleProfileScreen({
-                playerName: 'Office Worker',
-                description: 'Overtime Payment',
-                skin: '',
-                totalBalance: 20000,
-                gender: 'Male',
-              })
-            }
+            moveProfile={() => handleProfileScreen('600da590')}
             playerName="OFFICE WORKER"
             detail=""
             amount={20000}
             image="https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg"
           />
           <Player
-            moveProfile={() =>
-              handleProfileScreen({
-                playerName: 'Contractor',
-                description: 'Building Master',
-                skin: '',
-                totalBalance: 60000,
-                gender: 'Male',
-              })
-            }
+            moveProfile={() => handleProfileScreen('cbcb7269')}
             playerName="CONTRACTOR"
             detail="Lulu"
             amount={60000}
             image="https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg"
           />
           <Player
-            moveProfile={() =>
-              handleProfileScreen({
-                playerName: 'Celebrity',
-                description: '',
-                skin: '',
-                totalBalance: 0,
-                gender: '',
-              })
-            }
+            moveProfile={() => handleProfileScreen('c87dd1a6')}
             playerName="CELEBRITY"
             detail="Wulan"
             amount={50000}

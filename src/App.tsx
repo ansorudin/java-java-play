@@ -6,15 +6,17 @@ import { MainScreens } from './routes/MainNavigatorScreens';
 import { NavigationContainer } from '@react-navigation/native';
 import { navigationRef } from './routes/MainNavigator';
 import { ErrorBoundary } from './ErrorBoundary';
-import { GluestackUIProvider, Text } from '@gluestack-ui/themed';
+import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { config } from '@gluestack-ui/config';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ButtonHeader } from './components/ButtonHeader';
-import { HomeScreen, ScanNfcScreen, TaxBalanceScreen } from './pages';
+import { HomeScreen, ScanNfcScreen, TaxBalanceScreen, DiceScreen } from './pages';
 import { useNavigation } from '@react-navigation/native';
 import { MainStackNavigationProps } from './routes/types';
+import { useEffect } from 'react';
+
+import NfcManager from 'react-native-nfc-manager';
 // import Icon from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { Navigator, Screen } = createNativeStackNavigator<MainStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -30,6 +32,19 @@ const MainApp = () => {
   // if (!initialRoute) {
   //   return <LoadingScreen />;
   // }
+
+  useEffect(() => {
+    const checkIsSupported = async () => {
+      const deviceIsSupported = await NfcManager.isSupported();
+      if (deviceIsSupported) {
+        await NfcManager.start();
+        console.log('nfc support');
+      } else {
+        console.log('nfc not support');
+      }
+    };
+    checkIsSupported();
+  }, []);
 
   const goBack = () => {
     return <ButtonHeader isLeft buttonHeader={() => navigate.goBack()} />;
@@ -48,9 +63,6 @@ const MainApp = () => {
           options={() => ({
             headerRight: exitGame,
             tabBarLabel: 'Home',
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="home" color={color} size={26} />
-            ),
           })}
         />
         <Tab.Screen name="NFC" component={ScanNfcScreen} options={() => ({ headerLeft: goBack })} />
@@ -59,6 +71,7 @@ const MainApp = () => {
           component={TaxBalanceScreen}
           options={() => ({ headerLeft: goBack })}
         />
+        <Tab.Screen name="Dice" component={DiceScreen} options={() => ({ headerLeft: goBack })} />
       </Tab.Navigator>
     </>
   );

@@ -52,7 +52,7 @@ export const TaxBalance: FC<TaxBalanceProps> = ({ moveConfirmation, moveInputRec
     setOpenModal(false);
   };
 
-  const widht = Dimensions.get('window').width;
+  // const widht = Dimensions.get('window').width;
 
   return (
     <Box flex={1}>
@@ -142,11 +142,11 @@ export const TaxBalance: FC<TaxBalanceProps> = ({ moveConfirmation, moveInputRec
         </Button>
       </Box>
 
-      <Box
+      {/* <Box
         flex={2}
         gap={10}
         bgColor="$blueGray700"
-        w={widht}
+        // style={{ width: widht }}
         marginLeft={-20}
         marginBottom={-20}
         paddingHorizontal={20}
@@ -175,7 +175,7 @@ export const TaxBalance: FC<TaxBalanceProps> = ({ moveConfirmation, moveInputRec
             dateTime="31/03/24 14:27:27"
           />
         </ScrollView>
-      </Box>
+      </Box> */}
       <ModalInputAmount
         isOpen={openModal}
         onClose={handleClose}
