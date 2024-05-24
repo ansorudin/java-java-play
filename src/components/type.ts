@@ -5,4 +5,5 @@ export interface IdataProfile {
   description: string;
   totalBalance: number;
   skin: string;
+  image: string;
 }

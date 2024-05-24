@@ -11,7 +11,7 @@ interface PlayerProps {
 }
 
 export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile }) => {
-  const DataPlayer = dataProfile.find(profile => profile.playerId === playerId);
+  const dataPlayer = dataProfile.find(profile => profile.playerId === playerId);
   return (
     <TouchableOpacity onPress={moveProfile}>
       <Box
@@ -32,9 +32,9 @@ export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile 
             h={50}
             size="full"
             alt="image"
-            source={{
-              uri: 'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
-            }}
+            source={dataPlayer?.image}
+            borderWidth={1}
+            borderColor="$coolGray300"
           />
         </Box>
         <Box
@@ -45,7 +45,7 @@ export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile 
           gap={10}>
           <Box>
             <Text bold size="sm" color="$coolGray700">
-              {DataPlayer?.playerName}
+              {dataPlayer?.playerName}
             </Text>
             <Text size="2xs" color="$coolGray400">
               {detail}
