@@ -1,11 +1,19 @@
 import { Box, Text, Button, ButtonText, Image } from '@gluestack-ui/themed';
 import { Header } from '../../components/Header';
 import { FC } from 'react';
+import Realm from 'realm';
+import { PlayerSchema } from '../../components/Schema';
 
 interface ExitGameProps {
   buttonBack: () => void;
 }
 export const ExitGame: FC<ExitGameProps> = ({ buttonBack }) => {
+  const realm = new Realm({ schema: [PlayerSchema] });
+  const cleanRealm = () => {
+    realm.write(() => {
+      realm.deleteAll();
+    });
+  };
   return (
     <Box flex={1}>
       <Header title="Exit Game" buttonHeader={buttonBack} />
@@ -22,6 +30,7 @@ export const ExitGame: FC<ExitGameProps> = ({ buttonBack }) => {
       </Box>
 
       <Button
+        onPress={cleanRealm}
         mb={20}
         size="md"
         variant="solid"

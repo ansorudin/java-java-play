@@ -1,14 +1,14 @@
 import { Box, Image, Text } from '@gluestack-ui/themed';
 import { FC } from 'react';
+import { PlayerProps } from '..';
+import { dataProfile } from '../../../components/dataProfile';
 
 interface TopPlayerProps {
-  playerName: string;
-  amount: number;
   index: number;
-  image: string;
+  player: PlayerProps;
 }
 
-export const TopPlayer: FC<TopPlayerProps> = ({ playerName, amount, index, image }) => {
+export const TopPlayer: FC<TopPlayerProps> = ({ index, player }) => {
   let color = '';
   if (index === 1) {
     color = '$amber600';
@@ -19,6 +19,9 @@ export const TopPlayer: FC<TopPlayerProps> = ({ playerName, amount, index, image
   }
 
   const size = index === 1 ? 130 : 90;
+
+  const dataPlayer = dataProfile.find(profile => profile.playerId === player?.id);
+
   return (
     <Box justifyContent="center" alignItems="center">
       <Image
@@ -39,9 +42,7 @@ export const TopPlayer: FC<TopPlayerProps> = ({ playerName, amount, index, image
           borderWidth={4}
           borderColor={color}
           alt="image"
-          source={{
-            uri: image,
-          }}
+          source={dataPlayer ? dataPlayer.image : require('../../../../asset/crown.png')}
         />
         <Box
           position="absolute"
@@ -58,11 +59,13 @@ export const TopPlayer: FC<TopPlayerProps> = ({ playerName, amount, index, image
       </Box>
       <Box mt={10} alignItems="center">
         <Text bold size="sm" color={color}>
-          {playerName}
+          {dataPlayer?.playerName}
         </Text>
-
+        <Text bold size="xs" color={color}>
+          {player?.username}
+        </Text>
         <Text size="sm" color={color}>
-          {amount.toLocaleString()}
+          {player?.saldo?.toLocaleString()}
         </Text>
       </Box>
     </Box>

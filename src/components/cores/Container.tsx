@@ -19,8 +19,8 @@ export const Container: React.FC<PropsWithChildren<ContainerProps>> = ({
     <SafeAreaView
       style={{
         flex: 1,
-        paddingBottom: android ? 35 : 0,
-        paddingTop: android ? 20 : 0,
+        paddingBottom: android ? 10 : 0,
+        paddingTop: android ? 10 : 0,
       }}>
       <Box flex={1}>
         {header}
