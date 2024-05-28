@@ -6,22 +6,44 @@ import { ButtonQuickAction } from './components/ButtonQuickAction';
 import { Header } from '../../components/Header';
 import { BalanceCard } from '../../components/BalanceCard';
 import { dataConfirmationProps } from '../../components/Confirmation';
+import { IdataProfile } from '../../components/type';
 
 interface TopupProps {
+  data: DataTopUpProps;
   navigateToConfirmation: (data: dataConfirmationProps) => void;
 }
 
-export const Topup: FC<TopupProps> = ({ navigateToConfirmation }) => {
+export interface DataTopUpProps extends IdataProfile {
+  saldo: number;
+}
+
+export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data }) => {
   const [amount, setAmount] = useState<string>('');
   const handleInputNominal = (e: string) => {
     setAmount(e);
+  };
+
+  const { playerId, saldo, playerName, image } = data;
+
+  const handleButtonNext = () => {
+    setAmount('');
+    const dataToSend: dataConfirmationProps = {
+      playerId,
+      saldo,
+      playerName,
+      playerImage: image,
+      amount: parseInt(amount),
+      transaction: 'Top Up',
+    };
+
+    navigateToConfirmation(dataToSend);
   };
 
   return (
     <Box flex={1}>
       <Header title="Money Top Up" buttonHeader={() => navigate('Profile')} />
       <Box flex={1}>
-        <BalanceCard currentSaldo={60000} cardHolder="Siavash" />
+        <BalanceCard currentSaldo={saldo} cardHolder={playerName} />
         <Box marginHorizontal={4} flex={1} mt={40}>
           <Text bold>Enter Amount</Text>
           <Box marginTop={10} marginBottom={20}>
@@ -54,20 +76,7 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation }) => {
             />
           </Box>
         </Box>
-        <Button
-          isDisabled={!amount}
-          variant="solid"
-          size="md"
-          mb={20}
-          onPress={() =>
-            navigateToConfirmation({
-              playerName: 'Siavash',
-              playerImage:
-                'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
-              amount: parseInt(amount),
-              transaction: 'Top Up',
-            })
-          }>
+        <Button isDisabled={!amount} variant="solid" size="md" mb={20} onPress={handleButtonNext}>
           <ButtonText size="sm" color="white">
             Next
           </ButtonText>

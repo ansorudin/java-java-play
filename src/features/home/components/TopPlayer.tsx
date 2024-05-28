@@ -19,9 +19,7 @@ export const TopPlayer: FC<TopPlayerProps> = ({ index, player }) => {
   }
 
   const size = index === 1 ? 130 : 90;
-
   const dataPlayer = dataProfile.find(profile => profile.playerId === player?.id);
-
   return (
     <Box justifyContent="center" alignItems="center">
       <Image

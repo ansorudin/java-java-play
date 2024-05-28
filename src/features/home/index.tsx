@@ -1,18 +1,17 @@
-import { Box, Button, ButtonText, Text, ButtonIcon, AddIcon, Image } from '@gluestack-ui/themed';
+import { Box, Button, ButtonText, Text, ButtonIcon, AddIcon } from '@gluestack-ui/themed';
 import { Player } from './components/Player';
 import { ListRenderItemInfo, ScrollView, FlatList } from 'react-native';
 import { TopPlayer } from './components/TopPlayer';
-import Realm from 'realm';
 import { useEffect, useState } from 'react';
 import NfcManager, { NfcEvents, Ndef } from 'react-native-nfc-manager';
 import { registeredId } from './registeredId';
 import CryptoJS from 'react-native-crypto-js';
 import { ModalInputPerson } from './components/ModalInputPerson';
-import { PlayerSchema } from '../../components/Schema';
 import { DataEmpty } from './components/DataEmpty';
+import getRealm from '../../components/schema/SchemaRealm';
 
 interface HomeProps {
-  handleProfileScreen: (playerId: string) => void;
+  handleProfileScreen: (data: PlayerProps) => void;
 }
 
 export interface PlayerProps {
@@ -22,7 +21,8 @@ export interface PlayerProps {
 }
 
 export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
-  const realm = new Realm({ schema: [PlayerSchema] });
+  const realm = getRealm();
+
   const [players, setPlayers] = useState<PlayerProps[]>([]);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [leaderBoard, setLeaderBoard] = useState<PlayerProps[]>([]);
@@ -30,14 +30,12 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
   const secretKey = 'secret';
 
   const getData = () => {
-    const dataPlayer = realm.objects('Players') as unknown as PlayerProps[];
+    const dataPlayer = realm.objects('PlayerGame') as unknown as PlayerProps[];
     setPlayers(dataPlayer);
-
     const dataLeaderBoard = realm
-      .objects('Players')
+      .objects('PlayerGame')
       .sorted('saldo', true)
       .slice(0, 3) as unknown as PlayerProps[];
-
     setLeaderBoard(dataLeaderBoard);
   };
 
@@ -65,9 +63,10 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
           const textData = JSON.parse(decrypt.join('\n'));
           const isId = registeredId.find(id => id === tag.id);
           const isAdding = players.find((data: PlayerProps) => data.id === textData.playerId);
+
           if (isId && !isAdding) {
             realm.write(() => {
-              realm.create('Players', { id: textData.playerId, username: e, saldo: 70000 });
+              realm.create('PlayerGame', { id: textData.playerId, username: e, saldo: 0 });
             });
             getData();
           } else {
@@ -128,7 +127,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
           renderItem={({ item }: ListRenderItemInfo<PlayerProps>) => (
             <ScrollView>
               <Player
-                moveProfile={() => handleProfileScreen(item.id)}
+                moveProfile={() => handleProfileScreen(item)}
                 playerId={item.id}
                 detail={item.username}
                 amount={item.saldo}
