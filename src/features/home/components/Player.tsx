@@ -1,7 +1,7 @@
 import { Box, Text, Image } from '@gluestack-ui/themed';
 import { FC } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { dataProfile } from '../../../components/dataProfile';
+import { useGlobalStore } from '../../../stores';
 
 interface PlayerProps {
   playerId: string;
@@ -11,7 +11,8 @@ interface PlayerProps {
 }
 
 export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile }) => {
-  const dataPlayer = dataProfile.find(profile => profile.playerId === playerId);
+  const { profiles } = useGlobalStore();
+  const dataPlayer = profiles.find(profile => profile.playerId === playerId);
   return (
     <TouchableOpacity onPress={moveProfile}>
       <Box

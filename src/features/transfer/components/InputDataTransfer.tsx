@@ -1,18 +1,22 @@
 import { Text, Box, Button, ButtonText, SelectItem } from '@gluestack-ui/themed';
 import { TextInput } from 'react-native';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { InputSelect } from './InputSelect';
 import { BalanceCard } from '../../../components/BalanceCard';
 import { Header } from '../../../components/Header';
 import { dataConfirmationProps } from '../../../components/Confirmation';
-import { dataProfileProps } from '../../profile';
+import { DataTransferProps } from '..';
+import getRealm, { Player } from '../../../components/schema/SchemaRealm';
+import { FlatList, ListRenderItemInfo } from 'react-native';
+import { useGlobalStore } from '../../../stores';
+import { IPlayer } from '../../../stores/type';
 
 interface TransferProps {
   navigateToConfirmation: (data: dataConfirmationProps) => void;
   handleBack: () => void;
   data: DataInputTransferProps;
 }
-export interface DataInputTransferProps extends dataProfileProps {
+export interface DataInputTransferProps extends DataTransferProps {
   transferDestination: string;
 }
 
@@ -21,31 +25,52 @@ export const InputDataTransfer: FC<TransferProps> = ({
   handleBack,
   data,
 }) => {
-  const { transferDestination, playerName } = data;
+  const { profiles } = useGlobalStore();
+  const { transferDestination, playerName, playerId, saldo, image } = data;
   const [amount, setAmount] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [player, setPlayer] = useState<string>('');
+  const [players, setPlayers] = useState<IPlayer[]>([]);
   const handleInputNominal = (e: string) => {
     setAmount(e);
   };
 
+  useEffect(() => {
+    try {
+      const realm = getRealm();
+      const dataPlayers = realm.objects<Player>('PlayerGame').filter(item => item.id !== playerId);
+      setPlayers(Array.from(dataPlayers));
+    } catch (error) {
+      console.log(error);
+    }
+  }, [playerId]);
+
   const buttonNext = () => {
     const datas: dataConfirmationProps = {
+      playerId,
       playerName: playerName,
-      playerImage: 'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
+      playerImage: image,
       recipients: player,
       description,
       amount: parseInt(amount),
       transaction: 'Transfer to ' + transferDestination,
+      saldo,
     };
     navigateToConfirmation(datas);
+  };
+
+  const renderPlayer = (listRenderItemInfo: ListRenderItemInfo<IPlayer>) => {
+    const { id, username } = listRenderItemInfo.item;
+    const dataPlayer = profiles.find(profile => profile.playerId === id);
+
+    return <SelectItem label={`${dataPlayer?.playerName}  - ${username}`} value={id} />;
   };
 
   return (
     <Box flex={1}>
       <Header title={`Transfer to ${transferDestination}`} buttonHeader={handleBack} />
       <Box flex={1}>
-        <BalanceCard currentSaldo={data.totalBalance} cardHolder={data.playerName} />
+        <BalanceCard currentSaldo={data.saldo} cardHolder={data.playerName} />
 
         <Box
           height={200}
@@ -59,12 +84,7 @@ export const InputDataTransfer: FC<TransferProps> = ({
               title="Recipient"
               handleChangeValue={e => setPlayer(e)}
               placeHolder="Select Player">
-              <SelectItem label="Traveller - Happy Go Round" value="Traveller" />
-              <SelectItem label="Corruptor - Bribery" value="Corruptor" />
-              <SelectItem label="Businessman - Tax Evasion" value="Businessman" />
-              <SelectItem label="Office Worker - Overtime Payment" value="Office Worker" />
-              <SelectItem label="Contractor - Building Master" value="Contractor" />
-              <SelectItem label="Celebrity - Endorsement" value="Celebrity" />
+              <FlatList data={players} renderItem={renderPlayer} />
             </InputSelect>
           </Box>
 

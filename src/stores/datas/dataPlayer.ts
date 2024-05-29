@@ -7,7 +7,7 @@ export const dataProfile: IdataProfile[] = [
     description: 'Bribery',
     skin: 'When you get in jail, you can bribe the warden Rp. 20,000 to instantly escape from jail!',
     gender: 'Male',
-    image: require('../../asset/corruptor.png'),
+    image: require('../../../asset/corruptor.png'),
   },
   {
     playerId: 'eda23c1b',
@@ -15,7 +15,7 @@ export const dataProfile: IdataProfile[] = [
     description: 'Happy Go Round',
     skin: 'Once per turn, if you stop at tourist trap, you can travel to the next tourist trap on the map. (Do not collect salary if passing start)',
     gender: 'Female',
-    image: require('../../asset/traveller.png'),
+    image: require('../../../asset/traveller.png'),
   },
   {
     playerId: 'ddd0861a',
@@ -23,7 +23,7 @@ export const dataProfile: IdataProfile[] = [
     description: 'Tax Evasion',
     skin: 'Get 50% discount everytime you stop on tax block',
     gender: 'Male',
-    image: require('../../asset/businessman.png'),
+    image: require('../../../asset/businessman.png'),
   },
   {
     playerId: '600da590',
@@ -31,7 +31,7 @@ export const dataProfile: IdataProfile[] = [
     description: 'Overtime Payment',
     skin: 'Everytime ypu pass start, get extra salary of Rp. 10.000',
     gender: 'Male',
-    image: require('../../asset/office-worker.png'),
+    image: require('../../../asset/office-worker.png'),
   },
   {
     playerId: 'cbcb7269',
@@ -39,7 +39,7 @@ export const dataProfile: IdataProfile[] = [
     description: 'Building Masterrrr',
     skin: 'Get 50% discount of constructing cost when you build villa or resort',
     gender: 'Male',
-    image: require('../../asset/contractor.png'),
+    image: require('../../../asset/contractor.png'),
   },
   {
     playerId: 'c87dd1a6',
@@ -47,7 +47,7 @@ export const dataProfile: IdataProfile[] = [
     description: 'Endorsement',
     skin: 'Once per turn, if you stop at a property that owned by other player, roll the dices, get 100% discount if you roll a double dice',
     gender: 'Male',
-    image: require('../../asset/celebrity.png'),
+    image: require('../../../asset/celebrity.png'),
   },
 ];
 

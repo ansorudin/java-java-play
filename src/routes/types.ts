@@ -4,20 +4,20 @@ import {
 } from '@react-navigation/native-stack';
 import { dataConfirmationProps } from '../components/Confirmation';
 import { dataConfirmationTaxProps } from '../features/Tax/components/ConfirmationTax';
-import { PlayerProps } from '../features/home';
-import { IdataProfile } from '../components/type';
+import { IPlayer } from '../stores/type';
 import { DataTopUpProps } from '../features/topup';
+import { DataTransferProps } from '../features/transfer';
 import { DataInputTransferProps } from '../features/transfer/components/InputDataTransfer';
 
 export type MainStackParamList = {
   Home_Tabs: undefined;
   Login: undefined;
   Home: undefined;
-  Profile: PlayerProps;
+  Profile: IPlayer;
   History: { playerId: string };
   TopUp: DataTopUpProps;
   Confirmation: dataConfirmationProps;
-  Transfer: IdataProfile;
+  Transfer: DataTransferProps;
   ScanNfc: undefined;
   ExitGame: undefined;
   Tax: undefined;

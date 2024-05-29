@@ -1,9 +1,13 @@
 import { create } from 'zustand';
 import { AuthSlice, createAuthSlice } from './auth';
+import { ProfileSlice, createProfileSlice } from './dataPlayer';
+import { PlayerSlice, createPlayerSlice } from './activePlayer';
+import { DescrypSlice, createDescrypSlice } from './descryptData';
 import { createJSONStorage, persist } from 'zustand/middleware';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export type GlobalStoreProps = AuthSlice;
+export type GlobalStoreProps = AuthSlice & ProfileSlice & PlayerSlice & DescrypSlice;
 
 export const STORAGE_KEY = 'app-storage';
 
@@ -14,6 +18,9 @@ export const useGlobalStore = create<
   persist(
     (...a) => ({
       ...createAuthSlice(...a),
+      ...createProfileSlice(...a),
+      ...createPlayerSlice(...a),
+      ...createDescrypSlice(...a),
     }),
     {
       name: STORAGE_KEY,

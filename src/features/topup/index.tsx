@@ -1,12 +1,11 @@
 import { Text, Box, Button, ButtonText } from '@gluestack-ui/themed';
-import { navigate } from '../../routes/MainNavigator';
 import { TextInput } from 'react-native';
 import { FC, useState } from 'react';
 import { ButtonQuickAction } from './components/ButtonQuickAction';
 import { Header } from '../../components/Header';
 import { BalanceCard } from '../../components/BalanceCard';
 import { dataConfirmationProps } from '../../components/Confirmation';
-import { IdataProfile } from '../../components/type';
+import { IdataProfile } from '../../stores/datas/type';
 
 interface TopupProps {
   data: DataTopUpProps;
@@ -41,7 +40,7 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data }) => {
 
   return (
     <Box flex={1}>
-      <Header title="Money Top Up" buttonHeader={() => navigate('Profile')} />
+      <Header title="Money Top Up" buttonHeader={() => {}} />
       <Box flex={1}>
         <BalanceCard currentSaldo={saldo} cardHolder={playerName} />
         <Box marginHorizontal={4} flex={1} mt={40}>

@@ -1,9 +1,9 @@
 import { Button, Image, ButtonText, Text, Box } from '@gluestack-ui/themed';
 import { FC } from 'react';
-import { PlayerProps } from '..';
+import { IPlayer } from '../../../stores/type';
 
 interface DataEmptyProps {
-  dataPlayer: PlayerProps[];
+  dataPlayer: IPlayer[];
   buttonScan: () => void;
 }
 

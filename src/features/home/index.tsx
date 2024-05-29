@@ -5,49 +5,24 @@ import { TopPlayer } from './components/TopPlayer';
 import { useEffect, useState } from 'react';
 import NfcManager, { NfcEvents, Ndef } from 'react-native-nfc-manager';
 import { registeredId } from './registeredId';
-import CryptoJS from 'react-native-crypto-js';
 import { ModalInputPerson } from './components/ModalInputPerson';
 import { DataEmpty } from './components/DataEmpty';
 import getRealm from '../../components/schema/SchemaRealm';
+import { useGlobalStore } from '../../stores';
+import { IPlayer } from '../../stores/type';
 
 interface HomeProps {
-  handleProfileScreen: (data: PlayerProps) => void;
-}
-
-export interface PlayerProps {
-  id: string;
-  saldo: number;
-  username: string;
+  handleProfileScreen: (data: IPlayer) => void;
 }
 
 export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
   const realm = getRealm();
-
-  const [players, setPlayers] = useState<PlayerProps[]>([]);
+  const { activePlayer, leaderBoard, getDataPlayer, getDecryptData } = useGlobalStore();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [leaderBoard, setLeaderBoard] = useState<PlayerProps[]>([]);
-
-  const secretKey = 'secret';
-
-  const getData = () => {
-    const dataPlayer = realm.objects('PlayerGame') as unknown as PlayerProps[];
-    setPlayers(dataPlayer);
-    const dataLeaderBoard = realm
-      .objects('PlayerGame')
-      .sorted('saldo', true)
-      .slice(0, 3) as unknown as PlayerProps[];
-    setLeaderBoard(dataLeaderBoard);
-  };
 
   useEffect(() => {
-    getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const decryptData = (data: string) => {
-    const bytes = CryptoJS.AES.decrypt(data, secretKey);
-    return bytes.toString(CryptoJS.enc.Utf8);
-  };
+    getDataPlayer();
+  }, [getDataPlayer]);
 
   const readTag = async (e: string) => {
     setIsOpen(false);
@@ -59,16 +34,16 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
           const parseData = ndefRecords.map((record: any) =>
             Ndef.text.decodePayload(record.payload),
           );
-          const decrypt = parseData.map((data: string) => decryptData(data));
+          const decrypt = parseData.map((data: string) => getDecryptData(data));
           const textData = JSON.parse(decrypt.join('\n'));
           const isId = registeredId.find(id => id === tag.id);
-          const isAdding = players.find((data: PlayerProps) => data.id === textData.playerId);
+          const isAdding = activePlayer.find((data: IPlayer) => data.id === textData.playerId);
 
           if (isId && !isAdding) {
             realm.write(() => {
               realm.create('PlayerGame', { id: textData.playerId, username: e, saldo: 0 });
             });
-            getData();
+            getDataPlayer();
           } else {
             console.log('data not registered');
           }
@@ -122,9 +97,9 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
           </Button>
         </Box>
         <FlatList
-          data={players}
+          data={activePlayer}
           keyExtractor={item => item.id}
-          renderItem={({ item }: ListRenderItemInfo<PlayerProps>) => (
+          renderItem={({ item }: ListRenderItemInfo<IPlayer>) => (
             <ScrollView>
               <Player
                 moveProfile={() => handleProfileScreen(item)}
@@ -141,7 +116,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
         onClose={() => setIsOpen(false)}
         handleInputUsername={readTag}
       />
-      <DataEmpty buttonScan={() => setIsOpen(true)} dataPlayer={players} />
+      <DataEmpty buttonScan={() => setIsOpen(true)} dataPlayer={activePlayer} />
     </Box>
   );
 };

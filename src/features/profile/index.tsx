@@ -7,17 +7,19 @@ import { useState } from 'react';
 import { IconTopUp } from '../../../asset/IconTopUp';
 import { IconTransfer } from '../../../asset/IconTransfer';
 import { IconHistory } from '../../../asset/IconHistory';
-import { dataProfile, initDataProfile } from '../../components/dataProfile';
-import { IdataProfile } from '../../components/type';
-import { PlayerProps } from '../home';
 import { DataTopUpProps } from '../topup';
+import { DataTransferProps } from '../transfer';
+import { useGlobalStore } from '../../stores';
+import { IdataProfile } from '../../stores/datas/type';
+import { IPlayer } from '../../stores/type';
+import { initDataProfile } from '../../stores/datas/dataPlayer';
 
 interface ProfileProps {
   handleBackHome: () => void;
   handleTopUp: (data: DataTopUpProps) => void;
-  handleMoveTransfer: (data: IdataProfile) => void;
+  handleMoveTransfer: (data: DataTransferProps) => void;
   handleMoveHistory: (playerId: string) => void;
-  data: PlayerProps;
+  data: IPlayer;
 }
 
 export const Profile: FC<ProfileProps> = ({
@@ -31,11 +33,12 @@ export const Profile: FC<ProfileProps> = ({
   const [player, setPlayer] = useState<IdataProfile>(initDataProfile);
   const { id, saldo } = data;
   const { playerName, gender, description, skin, image } = player;
+  const { profiles } = useGlobalStore();
 
   useEffect(() => {
-    const dataPlayer = dataProfile.filter((profile: IdataProfile) => id === profile.playerId);
+    const dataPlayer = profiles.filter((profile: IdataProfile) => id === profile.playerId);
     setPlayer(dataPlayer[0]);
-  }, [id]);
+  }, [id, profiles]);
 
   const changeVisibilySaldo = () => {
     if (eyeOff) {
@@ -96,7 +99,7 @@ export const Profile: FC<ProfileProps> = ({
             size="sm"
             gap={2}
             flexDirection="column"
-            onPress={() => handleMoveTransfer(player)}>
+            onPress={() => handleMoveTransfer({ ...player, saldo })}>
             <IconTransfer />
             <ButtonText size="xs" color="$coolGray500">
               Transfer
