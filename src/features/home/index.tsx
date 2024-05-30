@@ -18,10 +18,12 @@ interface HomeProps {
 export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
   const realm = getRealm();
   const { activePlayer, leaderBoard, getDataPlayer, getDecryptData } = useGlobalStore();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   useEffect(() => {
     getDataPlayer();
+    setIsLoading(false);
   }, [getDataPlayer]);
 
   const readTag = async (e: string) => {
@@ -55,7 +57,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
   };
 
   return (
-    <Box flex={1}>
+    <Box flex={1} display={isLoading ? 'none' : 'flex'}>
       <Box h="$1/2" display={leaderBoard.length > 0 ? 'flex' : 'none'}>
         <Box
           flexDirection="row"

@@ -15,7 +15,7 @@ export const ConfirmationScreen = () => {
       <Confirmation
         data={data}
         handleBack={() => navigate.pop(1)}
-        navigateToProfile={() => navigate.popToTop()}
+        navigateToHome={() => navigate.popToTop()}
       />
     </Container>
   );

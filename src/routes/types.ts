@@ -2,7 +2,7 @@ import {
   NativeStackNavigationOptions,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-import { dataConfirmationProps } from '../components/Confirmation';
+import { DataConfirmationProps } from '../components/Confirmation';
 import { dataConfirmationTaxProps } from '../features/Tax/components/ConfirmationTax';
 import { IPlayer } from '../stores/type';
 import { DataTopUpProps } from '../features/topup';
@@ -16,7 +16,7 @@ export type MainStackParamList = {
   Profile: IPlayer;
   History: { playerId: string };
   TopUp: DataTopUpProps;
-  Confirmation: dataConfirmationProps;
+  Confirmation: DataConfirmationProps;
   Transfer: DataTransferProps;
   ScanNfc: undefined;
   ExitGame: undefined;

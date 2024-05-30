@@ -43,8 +43,16 @@ export const CardHistory: FC<CardHistoryProps> = ({
           <Text size="xs">{transaction}</Text>
         </Box>
       </Box>
-      <Text size="sm" color={transaction === TransactionType.TopUp ? '$green400' : '$red400'}>
-        {transaction === TransactionType.TopUp ? '+' : '-'}
+      <Text
+        size="sm"
+        color={
+          transaction === TransactionType.TopUp || transaction === TransactionType.Earning
+            ? '$green400'
+            : '$red400'
+        }>
+        {transaction === TransactionType.TopUp || transaction === TransactionType.Earning
+          ? '+'
+          : '-'}
         Rp {amount.toLocaleString()}
       </Text>
     </Box>

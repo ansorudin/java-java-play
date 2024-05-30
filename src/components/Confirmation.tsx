@@ -4,14 +4,16 @@ import { FC, useState } from 'react';
 import { ItemTransaction } from './ItemTransaction';
 import { Header } from './Header';
 import getRealm, { Histories, Player } from './schema/SchemaRealm';
+import { useGlobalStore } from '../stores';
+import { ModalFailed } from './ModalFailed';
 
 interface ConfirmationProps {
   handleBack: () => void;
-  navigateToProfile: () => void;
-  data: dataConfirmationProps;
+  navigateToHome: () => void;
+  data: DataConfirmationProps;
 }
 
-interface dataConfirmationProps {
+interface DataConfirmationProps {
   playerId: string;
   playerImage: string;
   playerName: string;
@@ -20,23 +22,29 @@ interface dataConfirmationProps {
   amount: number;
   recipients?: string;
   description?: string;
+  recipientsImage?: string;
 }
 
 export enum TransactionType {
   TopUp = 'Top Up',
   OtherPlayer = 'Transfer to player',
   Bank = 'Transfer to bank',
+  Tax = 'Transfer to tax',
+  Earning = 'Earning from other player',
 }
 
-export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigateToProfile }) => {
+export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigateToHome }) => {
   const { playerId, playerImage, playerName, transaction, amount, recipients, description, saldo } =
     data;
   const [openModalSuccess, setOpenModalSuccess] = useState<boolean>(false);
+  const [openModalFailed, setModalFailed] = useState<boolean>(false);
+  const [err, setErr] = useState<string>('');
+  const { getDataPlayer } = useGlobalStore();
   const realm = getRealm();
 
   const handleClose = () => {
     setOpenModalSuccess(false);
-    navigateToProfile();
+    navigateToHome();
   };
 
   const handleButtonContinue = () => {
@@ -44,62 +52,88 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
       if (!realm.isInTransaction) {
         realm.write(() => {
           const player = realm.objectForPrimaryKey<Player>('PlayerGame', playerId);
-          if (player && transaction === TransactionType.TopUp) {
+          if (!player) {
+            throw new Error('Recipient Data not found');
+          }
+
+          if (transaction === TransactionType.TopUp) {
             player.saldo = amount + saldo;
-          } else if (player && transaction === TransactionType.Bank) {
+          } else if (transaction === TransactionType.Bank) {
             player.saldo = saldo - amount;
-          } else if (player && transaction === TransactionType.OtherPlayer && recipients) {
+          } else if (transaction === TransactionType.Tax) {
+            player.saldo = saldo - amount;
+          } else if (transaction === TransactionType.OtherPlayer && recipients) {
             player.saldo = saldo - amount;
             const recipient = realm.objectForPrimaryKey<Player>('PlayerGame', recipients);
             if (recipient) {
               const oldSaldo = recipient.saldo;
               recipient.saldo = amount + oldSaldo;
+            } else {
+              throw new Error('Recipient Data not found');
             }
-            // const histories = realm.objectForPrimaryKey<Histories>(
-            //   'TransactionHistory',
-            //   recipients,
-            // );
-            // const dataToSend: any = {
-            //   id: recipient,
-            //   playerName: 'abi',
-            //   playerImage: 1,
-            //   transaction: 'Top Up',
-            //   amount,
-            // };
-            // if (histories) {
-            //   histories.histories.push(dataToSend);
-            // } else {
-            //   realm.create('TransactionHistory', {
-            //     id: recipient,
-            //     histories: [dataToSend],
-            //   });
-            // }
           } else {
-            console.log('Player Not Found');
+            throw new Error('Invalid Transaction Type or Missing Recipients');
           }
 
-          const histories = realm.objectForPrimaryKey<Histories>('TransactionHistory', playerId);
-          const dataToSend: any = {
-            id: playerId,
-            playerName,
-            playerImage: parseInt(playerImage),
-            transaction,
-            amount,
-          };
-
-          if (histories) {
-            histories.histories.push(dataToSend);
-          } else {
-            realm.create('TransactionHistory', {
+          try {
+            const histories = realm.objectForPrimaryKey<Histories>('TransactionHistory', playerId);
+            const dataToSend: any = {
               id: playerId,
-              histories: [dataToSend],
-            });
+              playerName:
+                transaction === TransactionType.OtherPlayer
+                  ? recipients
+                  : transaction === TransactionType.Tax
+                  ? 'Tax'
+                  : 'Bank',
+              playerImage: parseInt(playerImage),
+              transaction,
+              amount,
+            };
+
+            if (histories) {
+              histories.histories.push(dataToSend);
+            } else {
+              realm.create('TransactionHistory', {
+                id: playerId,
+                histories: [dataToSend],
+              });
+            }
+          } catch (error) {
+            throw new Error('Invalid Transaction Type or Missing Recipients');
+          }
+          if (recipients) {
+            try {
+              const histories = realm.objectForPrimaryKey<Histories>(
+                'TransactionHistory',
+                recipients,
+              );
+              const dataToSend: any = {
+                id: recipients,
+                playerName,
+                playerImage: parseInt(playerImage),
+                transaction: 'Earning from other player',
+                amount,
+              };
+
+              if (histories) {
+                histories.histories.push(dataToSend);
+              } else {
+                realm.create('TransactionHistory', {
+                  id: recipients,
+                  histories: [dataToSend],
+                });
+              }
+            } catch (error) {
+              throw new Error('Invalid Transaction');
+            }
           }
         });
+        setOpenModalSuccess(true);
+        getDataPlayer();
       }
-      setOpenModalSuccess(true);
-    } catch (error) {
-      console.log('Error handling button continue:', error);
+    } catch (error: any) {
+      setModalFailed(true);
+      setErr(error.message);
     }
   };
 
@@ -170,8 +204,9 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
         text={transaction === TransactionType.TopUp ? 'Top up money from bank' : 'Transfer money'}
         navigateNextScreen={handleClose}
       />
+      <ModalFailed isOpen={openModalFailed} navigateNextScreen={handleClose} text={err} />
     </Box>
   );
 };
 
-export type { dataConfirmationProps };
+export type { DataConfirmationProps };

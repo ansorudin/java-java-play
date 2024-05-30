@@ -7,13 +7,17 @@ import { MainStackNavigationProps, MainStackParamList } from '../routes/types';
 export const TopUpScreen = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
 
-  const route: RouteProp<MainStackParamList, 'Profile'> = useRoute();
+  const route: RouteProp<MainStackParamList, 'TopUp'> = useRoute();
 
   const datas = route.params;
 
   return (
     <Container>
-      <Topup data={datas} navigateToConfirmation={data => navigate.push('Confirmation', data)} />
+      <Topup
+        data={datas}
+        navigateToConfirmation={data => navigate.push('Confirmation', data)}
+        handleBack={() => navigate.pop(1)}
+      />
     </Container>
   );
 };

@@ -4,7 +4,7 @@ import { FC, useEffect, useState } from 'react';
 import { InputSelect } from './InputSelect';
 import { BalanceCard } from '../../../components/BalanceCard';
 import { Header } from '../../../components/Header';
-import { dataConfirmationProps } from '../../../components/Confirmation';
+import { DataConfirmationProps } from '../../../components/Confirmation';
 import { DataTransferProps } from '..';
 import getRealm, { Player } from '../../../components/schema/SchemaRealm';
 import { FlatList, ListRenderItemInfo } from 'react-native';
@@ -12,7 +12,7 @@ import { useGlobalStore } from '../../../stores';
 import { IPlayer } from '../../../stores/type';
 
 interface TransferProps {
-  navigateToConfirmation: (data: dataConfirmationProps) => void;
+  navigateToConfirmation: (data: DataConfirmationProps) => void;
   handleBack: () => void;
   data: DataInputTransferProps;
 }
@@ -46,7 +46,7 @@ export const InputDataTransfer: FC<TransferProps> = ({
   }, [playerId]);
 
   const buttonNext = () => {
-    const datas: dataConfirmationProps = {
+    const datas: DataConfirmationProps = {
       playerId,
       playerName: playerName,
       playerImage: image,

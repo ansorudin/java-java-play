@@ -42,7 +42,7 @@ export const TopPlayer: FC<TopPlayerProps> = ({ index, player }) => {
           borderWidth={4}
           borderColor={color}
           alt="image"
-          source={dataPlayer ? dataPlayer.image : require('../../../../asset/crown.png')}
+          source={dataPlayer ? dataPlayer.image : require('../../../../asset/no-image.png')}
         />
         <Box
           position="absolute"

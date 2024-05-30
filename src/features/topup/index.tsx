@@ -4,19 +4,19 @@ import { FC, useState } from 'react';
 import { ButtonQuickAction } from './components/ButtonQuickAction';
 import { Header } from '../../components/Header';
 import { BalanceCard } from '../../components/BalanceCard';
-import { dataConfirmationProps } from '../../components/Confirmation';
+import { DataConfirmationProps } from '../../components/Confirmation';
 import { IdataProfile } from '../../stores/datas/type';
-
-interface TopupProps {
-  data: DataTopUpProps;
-  navigateToConfirmation: (data: dataConfirmationProps) => void;
-}
 
 export interface DataTopUpProps extends IdataProfile {
   saldo: number;
 }
+interface TopupProps {
+  data: DataTopUpProps;
+  navigateToConfirmation: (data: DataConfirmationProps) => void;
+  handleBack: () => void;
+}
 
-export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data }) => {
+export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data, handleBack }) => {
   const [amount, setAmount] = useState<string>('');
   const handleInputNominal = (e: string) => {
     setAmount(e);
@@ -26,7 +26,7 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data }) => {
 
   const handleButtonNext = () => {
     setAmount('');
-    const dataToSend: dataConfirmationProps = {
+    const dataToSend: DataConfirmationProps = {
       playerId,
       saldo,
       playerName,
@@ -40,7 +40,7 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data }) => {
 
   return (
     <Box flex={1}>
-      <Header title="Money Top Up" buttonHeader={() => {}} />
+      <Header title="Money Top Up" buttonHeader={handleBack} />
       <Box flex={1}>
         <BalanceCard currentSaldo={saldo} cardHolder={playerName} />
         <Box marginHorizontal={4} flex={1} mt={40}>

@@ -26,6 +26,7 @@ export const History: FC<HistoryProps> = ({ buttonBack, playerId }) => {
       <Header title="History" buttonHeader={buttonBack} />
       <FlatList
         data={histories}
+        keyExtractor={(item, index) => index.toLocaleString()}
         renderItem={({ item }: ListRenderItemInfo<HistoryGames>) => (
           <ScrollView>
             <CardHistory
