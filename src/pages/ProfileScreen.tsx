@@ -8,15 +8,16 @@ export const ProfileScreen = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
   const route: RouteProp<MainStackParamList, 'Profile'> = useRoute();
 
-  const playerId = route.params;
+  const { id, saldo, username } = route.params;
 
   return (
     <Container>
       <Profile
-        playerId={playerId}
+        data={{ id, saldo, username }}
         handleBackHome={() => navigate.pop(1)}
-        handleNavigate={screen => navigate.push(screen)}
+        handleMoveHistory={playerId => navigate.push('History', { playerId: playerId })}
         handleMoveTransfer={data => navigate.push('Transfer', data)}
+        handleTopUp={data => navigate.push('TopUp', data)}
       />
     </Container>
   );

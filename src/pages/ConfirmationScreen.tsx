@@ -8,14 +8,14 @@ export const ConfirmationScreen = () => {
   const route: RouteProp<MainStackParamList, 'Confirmation'> = useRoute();
   const navigate = useNavigation<MainStackNavigationProps>();
 
-  const { playerName, playerImage, amount, transaction, recipients, description } = route.params;
+  const data = route.params;
 
   return (
     <Container>
       <Confirmation
-        data={{ recipients, playerImage, playerName, amount, transaction, description }}
+        data={data}
         handleBack={() => navigate.pop(1)}
-        navigateToProfile={() => navigate.popToTop()}
+        navigateToHome={() => navigate.popToTop()}
       />
     </Container>
   );

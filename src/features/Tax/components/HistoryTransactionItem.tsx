@@ -23,7 +23,7 @@ export const HistoryTransactionItem: FC<HistoryTransactionItemProps> = ({
       paddingVertical={5}
       gap={10}
       borderColor="$secondary300">
-      <Icon as={icon} color={color} size="xl" />
+      <Icon as={icon} color={color} />
       <Box>
         <Text color="white" size="xs" bold>
           {title}

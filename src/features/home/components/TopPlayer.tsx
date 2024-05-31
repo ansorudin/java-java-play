@@ -1,14 +1,15 @@
 import { Box, Image, Text } from '@gluestack-ui/themed';
 import { FC } from 'react';
-import { PlayerProps } from '..';
-import { dataProfile } from '../../../components/dataProfile';
+import { useGlobalStore } from '../../../stores';
+import { IPlayer } from '../../../stores/type';
 
 interface TopPlayerProps {
   index: number;
-  player: PlayerProps;
+  player: IPlayer;
 }
 
 export const TopPlayer: FC<TopPlayerProps> = ({ index, player }) => {
+  const { profiles } = useGlobalStore();
   let color = '';
   if (index === 1) {
     color = '$amber600';
@@ -20,8 +21,7 @@ export const TopPlayer: FC<TopPlayerProps> = ({ index, player }) => {
 
   const size = index === 1 ? 130 : 90;
 
-  const dataPlayer = dataProfile.find(profile => profile.playerId === player?.id);
-
+  const dataPlayer = profiles.find(profile => profile.playerId === player?.id);
   return (
     <Box justifyContent="center" alignItems="center">
       <Image
@@ -42,7 +42,7 @@ export const TopPlayer: FC<TopPlayerProps> = ({ index, player }) => {
           borderWidth={4}
           borderColor={color}
           alt="image"
-          source={dataPlayer ? dataPlayer.image : require('../../../../asset/crown.png')}
+          source={dataPlayer ? dataPlayer.image : require('../../../../asset/no-image.png')}
         />
         <Box
           position="absolute"

@@ -1,27 +1,48 @@
 import { Text, Box, Button, ButtonText } from '@gluestack-ui/themed';
-import { navigate } from '../../routes/MainNavigator';
 import { TextInput } from 'react-native';
 import { FC, useState } from 'react';
 import { ButtonQuickAction } from './components/ButtonQuickAction';
 import { Header } from '../../components/Header';
 import { BalanceCard } from '../../components/BalanceCard';
-import { dataConfirmationProps } from '../../components/Confirmation';
+import { DataConfirmationProps } from '../../components/Confirmation';
+import { IdataProfile } from '../../stores/datas/type';
 
+export interface DataTopUpProps extends IdataProfile {
+  saldo: number;
+}
 interface TopupProps {
-  navigateToConfirmation: (data: dataConfirmationProps) => void;
+  data: DataTopUpProps;
+  navigateToConfirmation: (data: DataConfirmationProps) => void;
+  handleBack: () => void;
 }
 
-export const Topup: FC<TopupProps> = ({ navigateToConfirmation }) => {
+export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data, handleBack }) => {
   const [amount, setAmount] = useState<string>('');
   const handleInputNominal = (e: string) => {
     setAmount(e);
   };
 
+  const { playerId, saldo, playerName, image } = data;
+
+  const handleButtonNext = () => {
+    setAmount('');
+    const dataToSend: DataConfirmationProps = {
+      playerId,
+      saldo,
+      playerName,
+      playerImage: image,
+      amount: parseInt(amount),
+      transaction: 'Top Up',
+    };
+
+    navigateToConfirmation(dataToSend);
+  };
+
   return (
     <Box flex={1}>
-      <Header title="Money Top Up" buttonHeader={() => navigate('Profile')} />
+      <Header title="Money Top Up" buttonHeader={handleBack} />
       <Box flex={1}>
-        <BalanceCard currentSaldo={60000} cardHolder="Siavash" />
+        <BalanceCard currentSaldo={saldo} cardHolder={playerName} />
         <Box marginHorizontal={4} flex={1} mt={40}>
           <Text bold>Enter Amount</Text>
           <Box marginTop={10} marginBottom={20}>
@@ -54,20 +75,7 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation }) => {
             />
           </Box>
         </Box>
-        <Button
-          isDisabled={!amount}
-          variant="solid"
-          size="md"
-          mb={20}
-          onPress={() =>
-            navigateToConfirmation({
-              playerName: 'Siavash',
-              playerImage:
-                'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
-              amount: parseInt(amount),
-              transaction: 'Top Up',
-            })
-          }>
+        <Button isDisabled={!amount} variant="solid" size="md" mb={20} onPress={handleButtonNext}>
           <ButtonText size="sm" color="white">
             Next
           </ButtonText>

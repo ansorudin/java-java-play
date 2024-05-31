@@ -3,7 +3,6 @@ export interface IdataProfile {
   playerName: string;
   gender: string;
   description: string;
-  totalBalance: number;
   skin: string;
   image: string;
 }

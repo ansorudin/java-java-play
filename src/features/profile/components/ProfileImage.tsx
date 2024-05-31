@@ -15,9 +15,7 @@ export const ProfileImage = (props: Props) => {
         size="full"
         alt="image"
         position="absolute"
-        source={{
-          uri: image,
-        }}
+        source={image ? image : require('../../../../asset/crown.png')}
       />
       <Box
         width="$full"

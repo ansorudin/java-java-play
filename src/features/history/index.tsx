@@ -1,115 +1,43 @@
-import { Box, Text, Image } from '@gluestack-ui/themed';
+import { Box } from '@gluestack-ui/themed';
 import { Header } from '../../components/Header';
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
+import getRealm, { Histories, History as HistoryGames } from '../../components/schema/SchemaRealm';
+import { CardHistory } from './components/CardHistory';
+import { FlatList, ListRenderItemInfo, ScrollView } from 'react-native';
 
 interface HistoryProps {
   buttonBack: () => void;
+  playerId: string;
 }
 
-export const History: FC<HistoryProps> = ({ buttonBack }) => {
+export const History: FC<HistoryProps> = ({ buttonBack, playerId }) => {
+  const [histories, setHistories] = useState<HistoryGames[]>([]);
+  useEffect(() => {
+    const realm = getRealm();
+    let dataHistories = realm.objectForPrimaryKey<Histories>('TransactionHistory', playerId);
+    const data = dataHistories?.histories;
+    if (data) {
+      setHistories(Array.from(data));
+    }
+  }, [playerId]);
+
   return (
     <Box flex={1}>
       <Header title="History" buttonHeader={buttonBack} />
-      <Box
-        flexDirection="row"
-        justifyContent="space-between"
-        bgColor="$white"
-        shadowColor="$white"
-        paddingHorizontal={10}
-        paddingVertical={10}
-        rounded={10}>
-        <Box flexDirection="row" gap={10}>
-          <Image
-            height={35}
-            width={35}
-            rounded="$full"
-            borderWidth={1}
-            borderColor="$secondary300"
-            alt="image"
-            source={{
-              uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbK45YvXlYTC3t0rH6SONYBr-aZiVxi_dsfg&usqp=CAU',
-            }}
-          />
-          <Box>
-            <Text bold size="sm">
-              Corruptor
-            </Text>
-            <Text size="xs">Transfer</Text>
-          </Box>
-        </Box>
-        <Text size="sm" color="$red400">
-          {' '}
-          - Rp. 800,400
-        </Text>
-      </Box>
-
-      <Box
-        marginTop={20}
-        flexDirection="row"
-        justifyContent="space-between"
-        bgColor="$white"
-        shadowColor="$white"
-        paddingHorizontal={10}
-        paddingVertical={10}
-        rounded={10}>
-        <Box flexDirection="row" gap={10}>
-          <Image
-            height={35}
-            width={35}
-            rounded="$full"
-            borderWidth={1}
-            borderColor="$secondary300"
-            alt="image"
-            source={{
-              uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbK45YvXlYTC3t0rH6SONYBr-aZiVxi_dsfg&usqp=CAU',
-            }}
-          />
-          <Box>
-            <Text bold size="sm">
-              Businessman
-            </Text>
-            <Text size="xs">Top Up </Text>
-          </Box>
-        </Box>
-        <Text size="sm" color="$green400">
-          {' '}
-          + Rp. 800,400
-        </Text>
-      </Box>
-
-      <Box
-        marginTop={20}
-        flexDirection="row"
-        justifyContent="space-between"
-        bgColor="$white"
-        shadowColor="$white"
-        paddingHorizontal={10}
-        paddingVertical={10}
-        rounded={10}>
-        <Box flexDirection="row" gap={10}>
-          <Image
-            height={35}
-            width={35}
-            rounded="$full"
-            borderWidth={1}
-            borderColor="$secondary300"
-            alt="image"
-            source={{
-              uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbK45YvXlYTC3t0rH6SONYBr-aZiVxi_dsfg&usqp=CAU',
-            }}
-          />
-          <Box>
-            <Text bold size="sm">
-              Traveller
-            </Text>
-            <Text size="xs">Top Up </Text>
-          </Box>
-        </Box>
-        <Text size="sm" color="$green400">
-          {' '}
-          + Rp. 800,400
-        </Text>
-      </Box>
+      <FlatList
+        data={histories}
+        keyExtractor={(item, index) => index.toLocaleString()}
+        renderItem={({ item }: ListRenderItemInfo<HistoryGames>) => (
+          <ScrollView>
+            <CardHistory
+              playerName={item.playerName}
+              playerImage={item.playerImage}
+              transaction={item.transaction}
+              amount={item.amount}
+            />
+          </ScrollView>
+        )}
+      />
     </Box>
   );
 };

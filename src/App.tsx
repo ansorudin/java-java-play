@@ -14,24 +14,14 @@ import { HomeScreen, ScanNfcScreen, TaxBalanceScreen, DiceScreen } from './pages
 import { useNavigation } from '@react-navigation/native';
 import { MainStackNavigationProps } from './routes/types';
 import { useEffect } from 'react';
-
+import { useGlobalStore } from './stores';
 import NfcManager from 'react-native-nfc-manager';
-// import Icon from 'react-native-vector-icons/Ionicons';
 
 const { Navigator, Screen } = createNativeStackNavigator<MainStackParamList>();
 const Tab = createBottomTabNavigator();
 
 const MainApp = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
-  // useEffect(() => {
-  //   if (initialRoute && hydrated) {
-  //     RNSplashScreen.hide();
-  //   }
-  // }, [initialRoute, hydrated]);
-
-  // if (!initialRoute) {
-  //   return <LoadingScreen />;
-  // }
 
   useEffect(() => {
     const checkIsSupported = async () => {
@@ -65,7 +55,11 @@ const MainApp = () => {
             tabBarLabel: 'Home',
           })}
         />
-        <Tab.Screen name="NFC" component={ScanNfcScreen} options={() => ({ headerLeft: goBack })} />
+        <Tab.Screen
+          name="NFC"
+          component={ScanNfcScreen}
+          options={() => ({ headerLeft: goBack, tabBarStyle: { display: 'none' } })}
+        />
         <Tab.Screen
           name="Tax"
           component={TaxBalanceScreen}
@@ -77,10 +71,41 @@ const MainApp = () => {
   );
 };
 
+const MainApp2 = () => {
+  useEffect(() => {
+    const checkIsSupported = async () => {
+      const deviceIsSupported = await NfcManager.isSupported();
+      if (deviceIsSupported) {
+        await NfcManager.start();
+        console.log('nfc support');
+      } else {
+        console.log('nfc not support');
+      }
+    };
+    checkIsSupported();
+  }, []);
+
+  return (
+    <Tab.Navigator>
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={() => ({
+          tabBarStyle: { display: 'none' },
+          headerShown: false,
+        })}
+      />
+    </Tab.Navigator>
+  );
+};
+
 function RootStack() {
+  const { activePlayer } = useGlobalStore();
+  const renderTab = activePlayer.length > 0 ? MainApp : MainApp2;
+
   return (
     <Navigator initialRouteName="Home_Tabs" screenOptions={{ headerShown: false }}>
-      <Screen name="Home_Tabs" component={MainApp} />
+      <Screen name="Home_Tabs" component={renderTab} />
       {MainScreens.map(screen => (
         <Screen
           key={screen.name}

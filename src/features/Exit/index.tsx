@@ -1,22 +1,69 @@
-import { Box, Text, Button, ButtonText, Image } from '@gluestack-ui/themed';
+import {
+  Box,
+  Text,
+  Button,
+  ButtonText,
+  Image,
+  Alert,
+  AlertIcon,
+  AlertText,
+  InfoIcon,
+} from '@gluestack-ui/themed';
 import { Header } from '../../components/Header';
-import { FC } from 'react';
-import Realm from 'realm';
-import { PlayerSchema } from '../../components/Schema';
+import { FC, useState } from 'react';
+import getRealm from '../../components/schema/SchemaRealm';
+import { useGlobalStore } from '../../stores';
 
 interface ExitGameProps {
   buttonBack: () => void;
 }
 export const ExitGame: FC<ExitGameProps> = ({ buttonBack }) => {
-  const realm = new Realm({ schema: [PlayerSchema] });
+  const { getDataPlayer, onChangeTax } = useGlobalStore();
+  const [errMessage, setErrorMessage] = useState<string>('');
+
   const cleanRealm = () => {
-    realm.write(() => {
-      realm.deleteAll();
-    });
+    const realm = getRealm();
+
+    if (!realm.isInTransaction) {
+      try {
+        realm.write(() => {
+          const allPlayers = realm.objects('PlayerGame');
+          if (allPlayers.length > 0) {
+            try {
+              const allHistories = realm.objects('TransactionHistory');
+              realm.delete(allHistories);
+              realm.delete(allPlayers);
+              onChangeTax(0);
+              getDataPlayer();
+              buttonBack();
+            } catch (error: any) {
+              throw new Error(error.message);
+            }
+          } else {
+            throw new Error('No player active in game !');
+          }
+        });
+        realm.close();
+      } catch (error: any) {
+        console.log(error);
+        setErrorMessage(error.message);
+      }
+    }
   };
+
   return (
     <Box flex={1}>
       <Header title="Exit Game" buttonHeader={buttonBack} />
+      <Alert
+        mx="$2.5"
+        action="error"
+        variant="accent"
+        position="absolute"
+        marginTop={60}
+        display={errMessage ? 'flex' : 'none'}>
+        <AlertIcon as={InfoIcon} mr="$3" />
+        <AlertText>No player active in game !'</AlertText>
+      </Alert>
       <Box flex={1} alignItems="center" justifyContent="center" gap={20}>
         <Image w={120} h={120} source={require('../../../asset/iconExit.png')} alt="icon" />
         <Box w="$3/4" gap={10}>

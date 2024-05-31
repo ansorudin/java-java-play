@@ -3,35 +3,42 @@ import Swiper from 'react-native-swiper';
 import { ProfileImage } from './components/ProfileImage';
 import { FC, useEffect } from 'react';
 import { Header } from '../../components/Header';
-import { MainStackParamList } from '../../routes/types';
 import { useState } from 'react';
 import { IconTopUp } from '../../../asset/IconTopUp';
 import { IconTransfer } from '../../../asset/IconTransfer';
 import { IconHistory } from '../../../asset/IconHistory';
-import { dataProfile, initDataProfile } from './components/dataProfile';
-import { IdataProfile } from './types';
+import { DataTopUpProps } from '../topup';
+import { DataTransferProps } from '../transfer';
+import { useGlobalStore } from '../../stores';
+import { IdataProfile } from '../../stores/datas/type';
+import { IPlayer } from '../../stores/type';
+import { initDataProfile } from '../../stores/datas/dataPlayer';
 
 interface ProfileProps {
   handleBackHome: () => void;
-  handleNavigate: (screen: keyof MainStackParamList) => void;
-  handleMoveTransfer: (data: IdataProfile) => void;
-  playerId: string;
+  handleTopUp: (data: DataTopUpProps) => void;
+  handleMoveTransfer: (data: DataTransferProps) => void;
+  handleMoveHistory: (playerId: string) => void;
+  data: IPlayer;
 }
 
 export const Profile: FC<ProfileProps> = ({
   handleBackHome,
-  handleNavigate,
+  handleTopUp,
   handleMoveTransfer,
-  playerId,
+  handleMoveHistory,
+  data,
 }) => {
   const [eyeOff, setEyeOff] = useState<boolean>(false);
   const [player, setPlayer] = useState<IdataProfile>(initDataProfile);
-  const { playerName, gender, description, totalBalance, skin } = player;
+  const { id, saldo } = data;
+  const { playerName, gender, description, skin, image } = player;
+  const { profiles } = useGlobalStore();
 
   useEffect(() => {
-    const dataPlayer = dataProfile.filter((profile: IdataProfile) => playerId === profile.playerId);
+    const dataPlayer = profiles.filter((profile: IdataProfile) => id === profile.playerId);
     setPlayer(dataPlayer[0]);
-  }, [playerId]);
+  }, [id, profiles]);
 
   const changeVisibilySaldo = () => {
     if (eyeOff) {
@@ -40,6 +47,7 @@ export const Profile: FC<ProfileProps> = ({
       setEyeOff(true);
     }
   };
+
   return (
     <Box flex={1}>
       <Header title={`Hello ${playerName} !`} buttonHeader={handleBackHome} />
@@ -59,7 +67,7 @@ export const Profile: FC<ProfileProps> = ({
               {eyeOff ? '' : 'Rp'}
             </Text>
             <Text color="white" size={eyeOff ? 'md' : 'xl'} bold>
-              {eyeOff ? 'Show Saldo' : totalBalance?.toLocaleString()}
+              {eyeOff ? 'Show Saldo' : saldo?.toLocaleString()}
             </Text>
             <Button variant="link" p="$0" size="sm" onPress={changeVisibilySaldo}>
               <Icon as={eyeOff ? EyeOffIcon : EyeIcon} color="white" />
@@ -80,7 +88,7 @@ export const Profile: FC<ProfileProps> = ({
             size="sm"
             flexDirection="column"
             gap={2}
-            onPress={() => handleNavigate('TopUp')}>
+            onPress={() => handleTopUp({ ...player, saldo })}>
             <IconTopUp />
             <ButtonText size="xs" color="$coolGray500">
               Top up
@@ -91,14 +99,14 @@ export const Profile: FC<ProfileProps> = ({
             size="sm"
             gap={2}
             flexDirection="column"
-            onPress={() => handleMoveTransfer(player)}>
+            onPress={() => handleMoveTransfer({ ...player, saldo })}>
             <IconTransfer />
             <ButtonText size="xs" color="$coolGray500">
               Transfer
             </ButtonText>
           </Button>
           <Button
-            onPress={() => handleNavigate('History')}
+            onPress={() => handleMoveHistory(id)}
             variant="link"
             size="sm"
             gap={2}
@@ -124,14 +132,14 @@ export const Profile: FC<ProfileProps> = ({
           }}>
           <ProfileImage
             data={{
-              image: 'https://i.pinimg.com/474x/46/99/a9/4699a943e8eeb6adcfdfff87efbc1297.jpg',
+              image: image,
               title: playerName,
               description: gender,
             }}
           />
           <ProfileImage
             data={{
-              image: 'https://www.mordeo.org/download/6157/',
+              image: image,
               title: description,
               description: skin,
             }}

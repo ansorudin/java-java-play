@@ -1,55 +1,31 @@
-import { Box, Button, ButtonText, Text, ButtonIcon, AddIcon, Image } from '@gluestack-ui/themed';
+import { Box, Button, ButtonText, Text, ButtonIcon, AddIcon } from '@gluestack-ui/themed';
 import { Player } from './components/Player';
 import { ListRenderItemInfo, ScrollView, FlatList } from 'react-native';
 import { TopPlayer } from './components/TopPlayer';
-import Realm from 'realm';
 import { useEffect, useState } from 'react';
 import NfcManager, { NfcEvents, Ndef } from 'react-native-nfc-manager';
 import { registeredId } from './registeredId';
-import CryptoJS from 'react-native-crypto-js';
 import { ModalInputPerson } from './components/ModalInputPerson';
-import { PlayerSchema } from '../../components/Schema';
 import { DataEmpty } from './components/DataEmpty';
+import getRealm from '../../components/schema/SchemaRealm';
+import { useGlobalStore } from '../../stores';
+import { IPlayer } from '../../stores/type';
 
 interface HomeProps {
-  handleProfileScreen: (playerId: string) => void;
-}
-
-export interface PlayerProps {
-  id: string;
-  saldo: number;
-  username: string;
+  handleProfileScreen: (data: IPlayer) => void;
 }
 
 export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
-  const realm = new Realm({ schema: [PlayerSchema] });
-  const [players, setPlayers] = useState<PlayerProps[]>([]);
+  const realm = getRealm();
+  const { activePlayer, leaderBoard, getDataPlayer, getDecryptData, taxAmount, playerId } =
+    useGlobalStore();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [leaderBoard, setLeaderBoard] = useState<PlayerProps[]>([]);
-
-  const secretKey = 'secret';
-
-  const getData = () => {
-    const dataPlayer = realm.objects('Players') as unknown as PlayerProps[];
-    setPlayers(dataPlayer);
-
-    const dataLeaderBoard = realm
-      .objects('Players')
-      .sorted('saldo', true)
-      .slice(0, 3) as unknown as PlayerProps[];
-
-    setLeaderBoard(dataLeaderBoard);
-  };
 
   useEffect(() => {
-    getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const decryptData = (data: string) => {
-    const bytes = CryptoJS.AES.decrypt(data, secretKey);
-    return bytes.toString(CryptoJS.enc.Utf8);
-  };
+    getDataPlayer();
+    setIsLoading(false);
+  }, [getDataPlayer]);
 
   const readTag = async (e: string) => {
     setIsOpen(false);
@@ -61,15 +37,17 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
           const parseData = ndefRecords.map((record: any) =>
             Ndef.text.decodePayload(record.payload),
           );
-          const decrypt = parseData.map((data: string) => decryptData(data));
+          const decrypt = parseData.map((data: string) => getDecryptData(data));
           const textData = JSON.parse(decrypt.join('\n'));
+          console.log(textData);
           const isId = registeredId.find(id => id === tag.id);
-          const isAdding = players.find((data: PlayerProps) => data.id === textData.playerId);
+          const isAdding = activePlayer.find((data: IPlayer) => data.id === textData.playerId);
+
           if (isId && !isAdding) {
             realm.write(() => {
-              realm.create('Players', { id: textData.playerId, username: e, saldo: 70000 });
+              realm.create('PlayerGame', { id: textData.playerId, username: e, saldo: 0 });
             });
-            getData();
+            getDataPlayer();
           } else {
             console.log('data not registered');
           }
@@ -81,7 +59,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
   };
 
   return (
-    <Box flex={1}>
+    <Box flex={1} display={isLoading ? 'none' : 'flex'}>
       <Box h="$1/2" display={leaderBoard.length > 0 ? 'flex' : 'none'}>
         <Box
           flexDirection="row"
@@ -93,7 +71,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
           <Text size="xs" bold>
             Tax Amount
           </Text>
-          <Text size="xs">2000,000</Text>
+          <Text size="xs">{taxAmount}</Text>
         </Box>
 
         <Box w="$full" flex={1} justifyContent="flex-end" alignItems="center">
@@ -123,12 +101,12 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
           </Button>
         </Box>
         <FlatList
-          data={players}
+          data={activePlayer}
           keyExtractor={item => item.id}
-          renderItem={({ item }: ListRenderItemInfo<PlayerProps>) => (
+          renderItem={({ item }: ListRenderItemInfo<IPlayer>) => (
             <ScrollView>
               <Player
-                moveProfile={() => handleProfileScreen(item.id)}
+                moveProfile={() => handleProfileScreen(item)}
                 playerId={item.id}
                 detail={item.username}
                 amount={item.saldo}
@@ -142,7 +120,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
         onClose={() => setIsOpen(false)}
         handleInputUsername={readTag}
       />
-      <DataEmpty buttonScan={() => setIsOpen(true)} dataPlayer={players} />
+      <DataEmpty buttonScan={() => setIsOpen(true)} dataPlayer={activePlayer} />
     </Box>
   );
 };

@@ -2,10 +2,12 @@ import { Box, Text, Button, ButtonText, Image } from '@gluestack-ui/themed';
 import { Header } from '../../../components/Header';
 import { FC, useState } from 'react';
 import { ModalSuccess } from '../../../components/ModalSuccess';
+import { useGlobalStore } from '../../../stores';
+import getRealm, { Player } from '../../../components/schema/SchemaRealm';
+import { HistoryPlayer } from '../../../stores/type';
 
 interface ConfirmationTaxProps {
   handleBack: () => void;
-  handleNextScreen: () => void;
   moveToHome: () => void;
   data: dataConfirmationTaxProps;
 }
@@ -13,25 +15,54 @@ interface ConfirmationTaxProps {
 export interface dataConfirmationTaxProps {
   amount: number;
   methode: string;
-  playerName?: string;
+  playerName: string;
 }
 
-export const ConfirmationTax: FC<ConfirmationTaxProps> = ({
-  handleBack,
-  handleNextScreen,
-  moveToHome,
-  data,
-}) => {
+export enum MethodeType {
+  NfC = 'nfc',
+  NoCard = 'noCard',
+}
+
+export const ConfirmationTax: FC<ConfirmationTaxProps> = ({ handleBack, moveToHome, data }) => {
+  const { getSelectedProfile, onChangeTax, taxAmount, setDataHistory } = useGlobalStore();
   const { amount, methode, playerName } = data;
-  const textMethode = methode === 'nfc' ? 'NFC Card Methode ?' : `and transfer to ${playerName}`;
-  const display = methode === 'nfc' ? 'using the' : '';
+  const playerInfo = getSelectedProfile(playerName);
   const [openModal, setOpenModal] = useState<boolean>(false);
+  const [err, setErr] = useState<string>('');
 
   const buttonContinue = () => {
-    if (methode === 'nfc') {
-      handleNextScreen();
-    } else {
-      setOpenModal(true);
+    const realm = getRealm();
+    if (!realm.isInTransaction) {
+      try {
+        realm.write(() => {
+          const player = realm.objectForPrimaryKey<Player>('PlayerGame', playerName);
+          console.log(player);
+          if (player) {
+            player.saldo = amount + player.saldo;
+            onChangeTax(taxAmount - amount);
+          } else {
+            throw new Error('Recipient data not found');
+          }
+
+          if (playerInfo) {
+            const dataToSend: HistoryPlayer = {
+              id: playerName,
+              playerName: 'Tax Earning',
+              playerImage: parseInt(playerInfo.image),
+              transaction: 'Tax Transfer',
+              amount,
+            };
+
+            setDataHistory(dataToSend);
+            setOpenModal(true);
+          } else {
+            throw new Error('Recipient data not found');
+          }
+        });
+      } catch (error: any) {
+        console.log(error);
+        setErr(error.message);
+      }
     }
   };
   return (
@@ -42,11 +73,13 @@ export const ConfirmationTax: FC<ConfirmationTaxProps> = ({
         <Text textAlign="center" paddingHorizontal={20} size="sm" color="$coolGray500">
           Are you sure that you want to transfer tax money with an amount of{' '}
           <Text size="sm" bold>
-            {amount.toLocaleString()}
+            {`${amount.toLocaleString()}  to ${playerInfo?.playerName}`}
           </Text>{' '}
-          <Text>{display} </Text>
+          <Text>{methode === MethodeType.NfC ? 'using the' : ''} </Text>
           <Text size="sm" bold>
-            {textMethode}
+            {methode === MethodeType.NfC
+              ? 'NFC Card Methode ?'
+              : `and transfer to ${playerInfo?.playerName}`}
           </Text>
         </Text>
       </Box>

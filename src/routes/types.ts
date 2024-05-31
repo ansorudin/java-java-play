@@ -2,21 +2,24 @@ import {
   NativeStackNavigationOptions,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-import { dataConfirmationProps } from '../components/Confirmation';
+import { DataConfirmationProps } from '../components/Confirmation';
 import { dataConfirmationTaxProps } from '../features/Tax/components/ConfirmationTax';
-import { dataProfileProps } from '../features/profile';
+import { IPlayer } from '../stores/type';
+import { DataTopUpProps } from '../features/topup';
+import { DataTransferProps } from '../features/transfer';
 import { DataInputTransferProps } from '../features/transfer/components/InputDataTransfer';
+import { ActionType } from '../features/scanNfc';
 
 export type MainStackParamList = {
   Home_Tabs: undefined;
   Login: undefined;
   Home: undefined;
-  Profile: dataProfileProps;
-  History: undefined;
-  TopUp: undefined;
-  Confirmation: dataConfirmationProps;
-  Transfer: dataProfileProps;
-  ScanNfc: undefined;
+  Profile: IPlayer;
+  History: { playerId: string };
+  TopUp: DataTopUpProps;
+  Confirmation: DataConfirmationProps;
+  Transfer: DataTransferProps;
+  ScanNfc: { action: ActionType; amount?: number };
   ExitGame: undefined;
   Tax: undefined;
   ConfirmationTax: dataConfirmationTaxProps;

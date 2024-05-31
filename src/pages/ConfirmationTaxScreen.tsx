@@ -16,7 +16,6 @@ export const ConfirmationTaxScreen = () => {
       <ConfirmationTax
         data={{ playerName, amount, methode }}
         handleBack={() => navigate.pop(1)}
-        handleNextScreen={() => navigate.push('ScanNfc')}
         moveToHome={() => navigate.popToTop()}
       />
     </Container>
