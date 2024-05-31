@@ -16,6 +16,8 @@ export const CardHistory: FC<CardHistoryProps> = ({
   transaction,
   amount,
 }) => {
+  console.log('iniiiiiiiiiitransaction');
+
   return (
     <Box
       mb={16}
@@ -46,11 +48,15 @@ export const CardHistory: FC<CardHistoryProps> = ({
       <Text
         size="sm"
         color={
-          transaction === TransactionType.TopUp || transaction === TransactionType.Earning
+          transaction === TransactionType.TopUp ||
+          transaction === TransactionType.Earning ||
+          transaction === TransactionType.EarningTax
             ? '$green400'
             : '$red400'
         }>
-        {transaction === TransactionType.TopUp || transaction === TransactionType.Earning
+        {transaction === TransactionType.TopUp ||
+        transaction === TransactionType.Earning ||
+        transaction === TransactionType.EarningTax
           ? '+'
           : '-'}
         Rp {amount.toLocaleString()}

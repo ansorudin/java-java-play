@@ -31,6 +31,7 @@ export enum TransactionType {
   Bank = 'Transfer to bank',
   Tax = 'Transfer to tax',
   Earning = 'Earning from other player',
+  EarningTax = 'Tax Transfer',
 }
 
 export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigateToHome }) => {

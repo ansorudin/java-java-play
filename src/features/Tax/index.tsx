@@ -6,6 +6,10 @@ import {
   CheckboxIcon,
   CheckboxLabel,
   Image,
+  Alert,
+  AlertIcon,
+  AlertText,
+  InfoIcon,
   HStack,
 } from '@gluestack-ui/themed';
 import { FC, useState } from 'react';
@@ -15,31 +19,34 @@ import { Checkbox } from '@gluestack-ui/themed';
 import { CheckboxIndicator } from '@gluestack-ui/themed';
 import { CheckIcon } from '@gluestack-ui/themed';
 import { ModalInputAmount } from './components/ModalInputAmount';
-import { dataConfirmationTaxProps } from './components/ConfirmationTax';
+import { useGlobalStore } from '../../stores';
+import { MethodeType } from './components/ConfirmationTax';
+import { ActionType } from '../scanNfc';
 
 interface TaxBalanceProps {
-  moveConfirmation: (data: dataConfirmationTaxProps) => void;
+  moveNfcReaderTag: (amount: number, action: ActionType) => void;
   moveInputRecipients: (amount: number) => void;
 }
-export const TaxBalance: FC<TaxBalanceProps> = ({ moveConfirmation, moveInputRecipients }) => {
-  const [isNfc, setIsNfc] = useState<string>('nfc');
+export const TaxBalance: FC<TaxBalanceProps> = ({ moveInputRecipients, moveNfcReaderTag }) => {
+  const [isNfc, setIsNfc] = useState<string>(MethodeType.NfC);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>('');
+  const { taxAmount } = useGlobalStore();
 
   const handleTransferTax = () => {
     const nominal = Number(amount);
-    if (isNfc === 'nfc') {
-      moveConfirmation({ amount: nominal, methode: isNfc });
+    if (isNfc === MethodeType.NfC) {
+      moveNfcReaderTag(nominal, ActionType.history);
     } else {
       moveInputRecipients(nominal);
     }
     setAmount('');
   };
   const handleCheckbox = (value: string) => {
-    if (isNfc === 'nfc') {
+    if (isNfc === MethodeType.NfC) {
       setIsNfc(value);
     } else {
-      setIsNfc('nfc');
+      setIsNfc(MethodeType.NfC);
     }
   };
 
@@ -52,7 +59,7 @@ export const TaxBalance: FC<TaxBalanceProps> = ({ moveConfirmation, moveInputRec
     setOpenModal(false);
   };
 
-  // const widht = Dimensions.get('window').width;
+  const widht = Dimensions.get('window').width;
 
   return (
     <Box flex={1}>
@@ -67,7 +74,7 @@ export const TaxBalance: FC<TaxBalanceProps> = ({ moveConfirmation, moveInputRec
             Current Saldo
           </Text>
           <Text size="sm" color="white" bold>
-            Rp 80,000
+            {taxAmount.toLocaleString()}
           </Text>
         </Box>
         <Box alignItems="center" paddingTop={10} gap={2} borderColor="$secondary200">
@@ -85,11 +92,8 @@ export const TaxBalance: FC<TaxBalanceProps> = ({ moveConfirmation, moveInputRec
 
       <Box flex={3} gap={5} justifyContent="flex-start" pt={30}>
         <Box>
-          <Text size="sm" mb={20}>
-            Select amount
-          </Text>
           <HStack justifyContent="center" gap={50}>
-            <TouchableOpacity onPress={() => setAmount('80000')}>
+            <TouchableOpacity onPress={() => setAmount(taxAmount.toLocaleString())}>
               <Box alignItems="center" gap={5}>
                 <Box bgColor="$blueGray700" padding={8} rounded={5}>
                   <Image
@@ -123,7 +127,7 @@ export const TaxBalance: FC<TaxBalanceProps> = ({ moveConfirmation, moveInputRec
           size="sm"
           value={isNfc}
           aria-label="label"
-          onChange={() => handleCheckbox('noCard')}>
+          onChange={() => handleCheckbox(MethodeType.NoCard)}>
           <CheckboxIndicator mr="$2">
             <CheckboxIcon as={CheckIcon} />
           </CheckboxIndicator>
@@ -134,21 +138,22 @@ export const TaxBalance: FC<TaxBalanceProps> = ({ moveConfirmation, moveInputRec
           marginTop={5}
           size="sm"
           variant="outline"
+          $active-borderColor="$amber100"
           borderColor="$blueGray700"
-          isDisabled={!amount}
+          isDisabled={!amount || Number(amount) <= 0}
           onPress={handleTransferTax}
           isFocusVisible={false}>
           <ButtonText color="$blueGray700">Transfer Tax</ButtonText>
         </Button>
       </Box>
-
-      {/* <Box
+      {/*
+      <Box
         flex={2}
         gap={10}
         bgColor="$blueGray700"
-        // style={{ width: widht }}
+        style={{ width: widht }}
         marginLeft={-20}
-        marginBottom={-20}
+        marginBottom={-30}
         paddingHorizontal={20}
         borderTopStartRadius={20}
         borderTopEndRadius={20}>

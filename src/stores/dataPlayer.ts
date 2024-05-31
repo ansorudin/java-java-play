@@ -6,12 +6,15 @@ export interface ProfileSlice {
   profiles: IdataProfile[];
   selectedProfile: IdataProfile | null;
   setProfiles: (profile: IdataProfile[]) => void;
-  setSelectedProfile: (profile: IdataProfile) => void;
+  getSelectedProfile: (playerId: string) => IdataProfile | null;
 }
 
 export const createProfileSlice: StateCreator<ProfileSlice> = set => ({
   profiles: dataProfile,
   selectedProfile: null,
   setProfiles: profiles => set({ profiles }),
-  setSelectedProfile: profile => set({ selectedProfile: profile }),
+  getSelectedProfile: (playerId: string) => {
+    const selectedData = dataProfile.find(profile => profile.playerId === playerId) || null;
+    return selectedData;
+  },
 });

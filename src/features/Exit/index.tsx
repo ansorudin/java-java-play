@@ -18,7 +18,7 @@ interface ExitGameProps {
   buttonBack: () => void;
 }
 export const ExitGame: FC<ExitGameProps> = ({ buttonBack }) => {
-  const { getDataPlayer } = useGlobalStore();
+  const { getDataPlayer, onChangeTax } = useGlobalStore();
   const [errMessage, setErrorMessage] = useState<string>('');
 
   const cleanRealm = () => {
@@ -33,6 +33,7 @@ export const ExitGame: FC<ExitGameProps> = ({ buttonBack }) => {
               const allHistories = realm.objects('TransactionHistory');
               realm.delete(allHistories);
               realm.delete(allPlayers);
+              onChangeTax(0);
               getDataPlayer();
               buttonBack();
             } catch (error: any) {

@@ -8,6 +8,7 @@ import { IPlayer } from '../stores/type';
 import { DataTopUpProps } from '../features/topup';
 import { DataTransferProps } from '../features/transfer';
 import { DataInputTransferProps } from '../features/transfer/components/InputDataTransfer';
+import { ActionType } from '../features/scanNfc';
 
 export type MainStackParamList = {
   Home_Tabs: undefined;
@@ -18,7 +19,7 @@ export type MainStackParamList = {
   TopUp: DataTopUpProps;
   Confirmation: DataConfirmationProps;
   Transfer: DataTransferProps;
-  ScanNfc: undefined;
+  ScanNfc: { action: ActionType; amount?: number };
   ExitGame: undefined;
   Tax: undefined;
   ConfirmationTax: dataConfirmationTaxProps;

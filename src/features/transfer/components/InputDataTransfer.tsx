@@ -35,15 +35,15 @@ export const InputDataTransfer: FC<TransferProps> = ({
     setAmount(e);
   };
 
-  useEffect(() => {
-    try {
-      const realm = getRealm();
-      const dataPlayers = realm.objects<Player>('PlayerGame').filter(item => item.id !== playerId);
-      setPlayers(Array.from(dataPlayers));
-    } catch (error) {
-      console.log(error);
-    }
-  }, [playerId]);
+  // useEffect(() => {
+  //   try {
+  //     const realm = getRealm();
+  //     const dataPlayers = realm.objects<Player>('PlayerGame').filter(item => item.id !== playerId);
+  //     setPlayers(Array.from(dataPlayers));
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }, [playerId]);
 
   const buttonNext = () => {
     const datas: DataConfirmationProps = {

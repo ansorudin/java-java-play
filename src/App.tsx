@@ -23,16 +23,6 @@ const Tab = createBottomTabNavigator();
 const MainApp = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
 
-  // useEffect(() => {
-  //   if (initialRoute && hydrated) {
-  //     RNSplashScreen.hide();
-  //   }
-  // }, [initialRoute, hydrated]);
-
-  // if (!initialRoute) {
-  //   return <LoadingScreen />;
-  // }
-
   useEffect(() => {
     const checkIsSupported = async () => {
       const deviceIsSupported = await NfcManager.isSupported();

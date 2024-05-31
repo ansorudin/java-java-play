@@ -17,7 +17,8 @@ interface HomeProps {
 
 export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
   const realm = getRealm();
-  const { activePlayer, leaderBoard, getDataPlayer, getDecryptData } = useGlobalStore();
+  const { activePlayer, leaderBoard, getDataPlayer, getDecryptData, taxAmount, playerId } =
+    useGlobalStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -38,6 +39,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
           );
           const decrypt = parseData.map((data: string) => getDecryptData(data));
           const textData = JSON.parse(decrypt.join('\n'));
+          console.log(textData);
           const isId = registeredId.find(id => id === tag.id);
           const isAdding = activePlayer.find((data: IPlayer) => data.id === textData.playerId);
 
@@ -69,7 +71,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
           <Text size="xs" bold>
             Tax Amount
           </Text>
-          <Text size="xs">2000,000</Text>
+          <Text size="xs">{taxAmount}</Text>
         </Box>
 
         <Box w="$full" flex={1} justifyContent="flex-end" alignItems="center">

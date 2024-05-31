@@ -3,6 +3,9 @@ import { FC, useState } from 'react';
 import { Header } from '../../../components/Header';
 import { InputSelect } from '../../transfer/components/InputSelect';
 import { dataConfirmationTaxProps } from './ConfirmationTax';
+import { useGlobalStore } from '../../../stores';
+import { FlatList, ListRenderItemInfo } from 'react-native';
+import { IPlayer } from '../../../stores/type';
 
 interface InputRecipientsProps {
   buttonBack: () => void;
@@ -15,11 +18,20 @@ export const InputRecipients: FC<InputRecipientsProps> = ({
   moveToConfirmation,
   amount,
 }) => {
+  const { activePlayer, getSelectedProfile } = useGlobalStore();
   const [player, setPlayer] = useState<string>('');
+
+  const renderRecipients = (listRenderItem: ListRenderItemInfo<IPlayer>) => {
+    const idRecipient = listRenderItem?.item?.id;
+    const username = listRenderItem?.item?.username;
+    const recipientData = getSelectedProfile(idRecipient);
+
+    return <SelectItem label={`${recipientData?.playerName} - ${username}`} value={idRecipient} />;
+  };
+
   return (
     <Box flex={1}>
       <Header title="Transfer Tax" buttonHeader={buttonBack} />
-
       <Box flex={1} justifyContent="center">
         <Box alignItems="center">
           <Image w={230} h={230} source={require('../../../../asset/search.png')} alt="icon" />
@@ -54,12 +66,11 @@ export const InputRecipients: FC<InputRecipientsProps> = ({
             title="Recipients"
             handleChangeValue={e => setPlayer(e)}
             placeHolder="Please select player">
-            <SelectItem label="Traveller - Happy Go Round" value="Traveller" />
-            <SelectItem label="Corruptor - Bribery" value="Corruptor" />
-            <SelectItem label="Businessman - Tax Evasion" value="Businessman" />
-            <SelectItem label="Office Worker - Overtime Payment" value="Office Worker" />
-            <SelectItem label="Contractor - Building Master" value="Contractor" />
-            <SelectItem label="Celebrity - Endorsement" value="Celebrity" />
+            <FlatList
+              data={activePlayer}
+              renderItem={renderRecipients}
+              keyExtractor={item => item.id.toLocaleString()}
+            />
           </InputSelect>
         </Box>
       </Box>
