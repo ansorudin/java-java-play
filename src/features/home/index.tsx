@@ -81,7 +81,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
             <Text size="xs" bold>
               Tax Amount
             </Text>
-            <Text size="xs">{taxAmount}</Text>
+            <Text size="xs">{taxAmount.toLocaleString()}</Text>
           </Box>
 
           <Box w="$full" flex={1} justifyContent="flex-end" alignItems="center">

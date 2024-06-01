@@ -20,7 +20,7 @@ export const BalanceCard: FC<BalanceCardProps> = ({ currentSaldo, cardHolder }) 
       </Box>
       <Box
         h="$full"
-        marginBottom={20}
+        marginBottom={50}
         paddingVertical={20}
         paddingHorizontal={25}
         justifyContent="space-between"
