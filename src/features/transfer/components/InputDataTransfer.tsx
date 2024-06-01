@@ -29,12 +29,14 @@ export const InputDataTransfer: FC<TransferProps> = ({
   data,
 }) => {
   const { profiles } = useGlobalStore();
+  const scrollViewRef = useRef<ScrollView>(null);
   const { transferDestination, playerName, playerId, saldo, image } = data;
   const [amount, setAmount] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [player, setPlayer] = useState<string>('');
   const [players, setPlayers] = useState<IPlayer[]>([]);
   const [err, setErr] = useState<string>('');
+
   const handleInputNominal = (e: string) => {
     setAmount(e);
     if (Number(e) > saldo) {
@@ -43,7 +45,6 @@ export const InputDataTransfer: FC<TransferProps> = ({
       setErr('');
     }
   };
-  const scrollViewRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     try {
