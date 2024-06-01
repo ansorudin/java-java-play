@@ -3,7 +3,7 @@ import { Player } from './components/Player';
 import { ListRenderItemInfo, ScrollView, FlatList } from 'react-native';
 import { TopPlayer } from './components/TopPlayer';
 import { useEffect, useState } from 'react';
-import NfcManager, { NfcEvents, Ndef, NfcTech } from 'react-native-nfc-manager';
+import NfcManager, { NfcEvents, Ndef } from 'react-native-nfc-manager';
 import { registeredId } from './registeredId';
 import { ModalInputPerson } from './components/ModalInputPerson';
 import { DataEmpty } from './components/DataEmpty';
@@ -29,6 +29,11 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
     setIsLoading(false);
   }, [getDataPlayer]);
 
+  const handleBack = () => {
+    setLoading(false);
+    setErr('');
+  };
+
   const readTag = async (e: string) => {
     setIsOpen(false);
     try {
@@ -44,10 +49,12 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
           const textData = JSON.parse(decrypt.join('\n'));
           console.log(textData);
           const isId = registeredId.find(id => id === tag.id);
+          console.log(tag.id);
           const isAdding = activePlayer.find((data: IPlayer) => data.id === textData.playerId);
 
           if (!isId) {
             setErr('Invalid card, always use an authorized card to access this application.');
+            return;
           }
 
           if (!isAdding) {
@@ -132,7 +139,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
         />
         <DataEmpty buttonScan={() => setIsOpen(true)} dataPlayer={activePlayer} />
       </Box>
-      <NfcTag error={err} display={loading} />
+      <NfcTag error={err} display={loading} handleBackToHome={handleBack} />
     </>
   );
 };
