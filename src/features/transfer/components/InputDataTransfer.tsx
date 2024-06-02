@@ -57,6 +57,13 @@ export const InputDataTransfer: FC<TransferProps> = ({
   }, [playerId]);
 
   const buttonNext = () => {
+    const regex = /^[0-9]+$/;
+
+    if (!regex.test(amount)) {
+      setErr('Your input not number, please correct your number');
+      return;
+    }
+
     const datas: DataConfirmationProps = {
       playerId,
       playerName: playerName,
@@ -115,7 +122,7 @@ export const InputDataTransfer: FC<TransferProps> = ({
                 <Text bold>Amount</Text>
                 <Box
                   borderBottomWidth={1}
-                  borderColor="$warmGray300"
+                  borderColor={err ? '$red400' : '$warmGray300'}
                   pl={10}
                   paddingVertical={10}
                   rounded={3}>

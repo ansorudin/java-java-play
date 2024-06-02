@@ -53,19 +53,28 @@ const MainApp = () => {
           options={() => ({
             headerRight: exitGame,
             tabBarLabel: 'Home',
+            headerTitleAlign: 'center',
           })}
         />
         <Tab.Screen
           name="NFC"
           component={ScanNfcScreen}
-          options={() => ({ headerLeft: goBack, tabBarStyle: { display: 'none' } })}
+          options={() => ({
+            headerLeft: goBack,
+            tabBarStyle: { display: 'none' },
+            headerTitleAlign: 'center',
+          })}
         />
         <Tab.Screen
           name="Tax"
           component={TaxBalanceScreen}
-          options={() => ({ headerLeft: goBack })}
+          options={() => ({ headerLeft: goBack, headerTitleAlign: 'center' })}
         />
-        <Tab.Screen name="Dice" component={DiceScreen} options={() => ({ headerLeft: goBack })} />
+        <Tab.Screen
+          name="Dice"
+          component={DiceScreen}
+          options={() => ({ headerLeft: goBack, headerTitleAlign: 'center' })}
+        />
       </Tab.Navigator>
     </>
   );

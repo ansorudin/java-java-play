@@ -47,9 +47,8 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
           );
           const decrypt = parseData.map((data: string) => getDecryptData(data));
           const textData = JSON.parse(decrypt.join('\n'));
-          console.log(textData);
           const isId = registeredId.find(id => id === tag.id);
-          console.log(tag.id);
+
           const isAdding = activePlayer.find((data: IPlayer) => data.id === textData.playerId);
 
           if (!isId) {

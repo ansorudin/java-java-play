@@ -10,6 +10,7 @@ import {
   Button,
   ButtonText,
 } from '@gluestack-ui/themed';
+import NfcManager from 'react-native-nfc-manager';
 
 export enum ActionType {
   profile = 'navigateToProfile',
@@ -22,6 +23,15 @@ interface NfcTagProps {
 }
 
 export const NfcTag: FC<NfcTagProps> = ({ error, display, handleBackToHome }) => {
+  const handleBackHome = async () => {
+    try {
+      await NfcManager.unregisterTagEvent();
+    } catch (err) {
+      console.error('Error unregistering NFC event:', err);
+    } finally {
+      handleBackToHome();
+    }
+  };
   return (
     <Box flex={1} display={display ? 'flex' : 'none'}>
       <Alert action="error" variant="accent" display={error ? 'flex' : 'none'}>
@@ -40,7 +50,7 @@ export const NfcTag: FC<NfcTagProps> = ({ error, display, handleBackToHome }) =>
           size="xs"
           gap="$1"
           marginTop={20}
-          onPress={handleBackToHome}>
+          onPress={handleBackHome}>
           <ButtonText>Back To Home</ButtonText>
         </Button>
       </Box>
