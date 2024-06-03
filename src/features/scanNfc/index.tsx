@@ -184,6 +184,7 @@ export const ScanNfc: FC<ScanNfcProps> = ({
     } finally {
       handleGoBack();
       clearDataNfc();
+      setErr('');
     }
   };
 

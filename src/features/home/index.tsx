@@ -58,7 +58,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
 
           if (!isAdding) {
             realm.write(() => {
-              realm.create('PlayerGame', { id: textData.playerId, username: e, saldo: 0 });
+              realm.create('PlayerGame', { id: textData.playerId, username: e, saldo: 250000 });
             });
             getDataPlayer();
             setErr('');

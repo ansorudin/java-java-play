@@ -58,6 +58,14 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data, handleBack
     };
   }, []);
 
+  const handleGaji = () => {
+    if (playerName === 'OfficeWorker') {
+      setAmount('30000');
+    } else {
+      setAmount('20000');
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -91,13 +99,11 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data, handleBack
 
               <Text bold>Quick Actions</Text>
               <Box flexDirection="row" justifyContent="space-between" marginTop={10}>
+                <ButtonQuickAction buttonText="Gaji Start" handleChangeAmount={handleGaji} />
+
                 <ButtonQuickAction
-                  buttonText="Rp.100.000"
-                  handleChangeAmount={() => setAmount('100000')}
-                />
-                <ButtonQuickAction
-                  buttonText="Rp.200.000"
-                  handleChangeAmount={() => setAmount('200000')}
+                  buttonText="Sogok Koruptor"
+                  handleChangeAmount={() => setAmount('20000')}
                 />
                 <ButtonQuickAction
                   buttonText="Rp.300.000"

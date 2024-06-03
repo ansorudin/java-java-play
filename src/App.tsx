@@ -10,7 +10,7 @@ import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { config } from '@gluestack-ui/config';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ButtonHeader } from './components/ButtonHeader';
-import { HomeScreen, ScanNfcScreen, TaxBalanceScreen, DiceScreen } from './pages';
+import { HomeScreen, TaxBalanceScreen, DiceScreen } from './pages';
 import { useNavigation } from '@react-navigation/native';
 import { MainStackNavigationProps } from './routes/types';
 import { useEffect } from 'react';
@@ -57,6 +57,11 @@ const MainApp = () => {
           })}
         />
         <Tab.Screen
+          name="Dice"
+          component={DiceScreen}
+          options={() => ({ headerLeft: goBack, headerTitleAlign: 'center' })}
+        />
+        {/* <Tab.Screen
           name="NFC"
           component={ScanNfcScreen}
           options={() => ({
@@ -64,15 +69,10 @@ const MainApp = () => {
             tabBarStyle: { display: 'none' },
             headerTitleAlign: 'center',
           })}
-        />
+        /> */}
         <Tab.Screen
           name="Tax"
           component={TaxBalanceScreen}
-          options={() => ({ headerLeft: goBack, headerTitleAlign: 'center' })}
-        />
-        <Tab.Screen
-          name="Dice"
-          component={DiceScreen}
           options={() => ({ headerLeft: goBack, headerTitleAlign: 'center' })}
         />
       </Tab.Navigator>

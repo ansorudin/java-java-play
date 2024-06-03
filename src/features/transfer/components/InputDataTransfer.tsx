@@ -13,6 +13,7 @@ import { IPlayer } from '../../../stores/type';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native';
 import { ScrollView } from 'react-native';
+import { ButtonQuickAction } from '../../topup/components/ButtonQuickAction';
 
 interface TransferProps {
   navigateToConfirmation: (data: DataConfirmationProps) => void;
@@ -137,6 +138,10 @@ export const InputDataTransfer: FC<TransferProps> = ({
                 <Text size="2xs" color="$red400" italic>
                   {err}
                 </Text>
+                <ButtonQuickAction
+                  buttonText="20.000"
+                  handleChangeAmount={() => setAmount('20000')}
+                />
               </Box>
 
               <Box display={transferDestination === 'bank' ? undefined : 'none'}>
