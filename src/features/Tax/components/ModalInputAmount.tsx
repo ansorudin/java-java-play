@@ -33,15 +33,20 @@ export const ModalInputAmount: FC<ModalInputAmountProps> = ({
 
   const handleInputAmount = (e: string) => {
     setInputAmount(e);
-  };
-  const buttonContinue = () => {
-    if (Number(inputAmount) > taxAmount) {
+    if (Number(e) > taxAmount) {
       setErr('There is not enough tax money to this transaction');
     } else {
-      setInputAmount('');
-      handleInputNominal(inputAmount);
       setErr('');
     }
+  };
+  const buttonContinue = () => {
+    const regex = /^[0-9]+$/;
+    if (!regex.test(inputAmount)) {
+      setErr('Your input not number, please correct your number');
+      return;
+    }
+    setInputAmount('');
+    handleInputNominal(inputAmount);
   };
 
   const buttonClose = () => {
@@ -67,7 +72,7 @@ export const ModalInputAmount: FC<ModalInputAmountProps> = ({
                 paddingVertical={10}
                 rounded={3}>
                 <TextInput
-                  style={{ color: 'black' }}
+                  style={err ? { color: 'red' } : { color: 'black' }}
                   keyboardType="number-pad"
                   value={inputAmount}
                   onChangeText={handleInputAmount}

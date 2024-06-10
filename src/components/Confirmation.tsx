@@ -1,11 +1,12 @@
 import { Box, Text, Button, Image, ButtonText } from '@gluestack-ui/themed';
 import { ModalSuccess } from './ModalSuccess';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { ItemTransaction } from './ItemTransaction';
 import { Header } from './Header';
 import getRealm, { Histories, Player } from './schema/SchemaRealm';
 import { useGlobalStore } from '../stores';
 import { ModalFailed } from './ModalFailed';
+import { IdataProfile } from '../stores/datas/type';
 
 interface ConfirmationProps {
   handleBack: () => void;
@@ -35,18 +36,29 @@ export enum TransactionType {
 }
 
 export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigateToHome }) => {
+  const realm = getRealm();
+  const { getDataPlayer, taxAmount, onChangeTax, getSelectedProfile } = useGlobalStore();
   const { playerId, playerImage, playerName, transaction, amount, recipients, description, saldo } =
     data;
+
   const [openModalSuccess, setOpenModalSuccess] = useState<boolean>(false);
   const [openModalFailed, setModalFailed] = useState<boolean>(false);
+  const [recipientData, setRecipientData] = useState<IdataProfile | null>(null);
   const [err, setErr] = useState<string>('');
-  const { getDataPlayer } = useGlobalStore();
-  const realm = getRealm();
 
   const handleClose = () => {
     setOpenModalSuccess(false);
     navigateToHome();
   };
+
+  useEffect(() => {
+    if (recipients) {
+      const dataRecipient = getSelectedProfile(recipients);
+      setRecipientData(dataRecipient);
+    } else {
+      setRecipientData(null);
+    }
+  }, [getSelectedProfile, recipients]);
 
   const handleButtonContinue = () => {
     try {
@@ -63,6 +75,7 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
             player.saldo = saldo - amount;
           } else if (transaction === TransactionType.Tax) {
             player.saldo = saldo - amount;
+            onChangeTax(taxAmount + amount);
           } else if (transaction === TransactionType.OtherPlayer && recipients) {
             player.saldo = saldo - amount;
             const recipient = realm.objectForPrimaryKey<Player>('PlayerGame', recipients);
@@ -82,11 +95,14 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
               id: playerId,
               playerName:
                 transaction === TransactionType.OtherPlayer
-                  ? recipients
+                  ? recipientData?.playerName
                   : transaction === TransactionType.Tax
                   ? 'Tax'
                   : 'Bank',
-              playerImage: parseInt(playerImage),
+              playerImage:
+                transaction === TransactionType.OtherPlayer
+                  ? Number(recipientData?.image)
+                  : Number(playerImage),
               transaction,
               amount,
             };
@@ -110,8 +126,8 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
               );
               const dataToSend: any = {
                 id: recipients,
-                playerName,
-                playerImage: parseInt(playerImage),
+                playerName: playerName,
+                playerImage: Number(playerImage),
                 transaction: 'Earning from other player',
                 amount,
               };
@@ -174,7 +190,7 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
 
             <ItemTransaction
               title={transaction === TransactionType.TopUp ? 'Funding source' : 'Recipients'}
-              text={transaction === TransactionType.TopUp ? 'Bank' : recipients}
+              text={transaction === TransactionType.TopUp ? 'Bank' : recipientData?.playerName}
               hidden={transaction !== TransactionType.OtherPlayer}
             />
 

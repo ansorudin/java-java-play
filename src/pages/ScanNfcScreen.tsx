@@ -15,6 +15,7 @@ export const ScanNfcScreen = () => {
       <ScanNfc
         action={action}
         amount={amount}
+        handleGoBack={() => navigate.pop(1)}
         handleProfileScreen={(data: IPlayer) => navigate.push('Profile', data)}
         handleMoveConfirmationTax={(data: dataConfirmationTaxProps) =>
           navigate.push('ConfirmationTax', data)

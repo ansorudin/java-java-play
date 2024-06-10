@@ -1,5 +1,6 @@
 import { StateCreator } from 'zustand';
 import CryptoJS from 'react-native-crypto-js';
+import { registeredId } from '../features/home/registeredId';
 
 import NfcManager, { NfcEvents, Ndef } from 'react-native-nfc-manager';
 
@@ -30,14 +31,23 @@ export const createNfcSlice: StateCreator<NfcSlice> = set => ({
           const decrypt = parseData.map((data: string) => getDecryptData(data));
           const textData = JSON.parse(decrypt.join('\n'));
           const id = textData.playerId;
+          const isId = registeredId.find(dataId => dataId === tag.id);
+
+          if (!isId) {
+            set({
+              errorNfcReadTag:
+                'Invalid card, always use an authorized card to access this application.',
+            });
+            return;
+          }
           set({ nfcId: id });
         } else {
           set({ errorNfcReadTag: 'Tag cannot read, try again!!' });
         }
+        NfcManager.unregisterTagEvent();
       });
     } catch (error: any) {
       set({ errorNfcReadTag: error.message });
-      console.log(error);
     }
   },
   clearDataNfc: () => {

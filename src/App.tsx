@@ -10,7 +10,7 @@ import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { config } from '@gluestack-ui/config';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ButtonHeader } from './components/ButtonHeader';
-import { HomeScreen, ScanNfcScreen, TaxBalanceScreen, DiceScreen } from './pages';
+import { HomeScreen, TaxBalanceScreen, DiceScreen } from './pages';
 import { useNavigation } from '@react-navigation/native';
 import { MainStackNavigationProps } from './routes/types';
 import { useEffect } from 'react';
@@ -53,19 +53,28 @@ const MainApp = () => {
           options={() => ({
             headerRight: exitGame,
             tabBarLabel: 'Home',
+            headerTitleAlign: 'center',
           })}
         />
         <Tab.Screen
+          name="Dice"
+          component={DiceScreen}
+          options={() => ({ headerLeft: goBack, headerTitleAlign: 'center' })}
+        />
+        {/* <Tab.Screen
           name="NFC"
           component={ScanNfcScreen}
-          options={() => ({ headerLeft: goBack, tabBarStyle: { display: 'none' } })}
-        />
+          options={() => ({
+            headerLeft: goBack,
+            tabBarStyle: { display: 'none' },
+            headerTitleAlign: 'center',
+          })}
+        /> */}
         <Tab.Screen
           name="Tax"
           component={TaxBalanceScreen}
-          options={() => ({ headerLeft: goBack })}
+          options={() => ({ headerLeft: goBack, headerTitleAlign: 'center' })}
         />
-        <Tab.Screen name="Dice" component={DiceScreen} options={() => ({ headerLeft: goBack })} />
       </Tab.Navigator>
     </>
   );

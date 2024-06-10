@@ -13,12 +13,14 @@ import {
 import { IPlayer } from '../../stores/type';
 import { useGlobalStore } from '../../stores';
 import { dataConfirmationTaxProps, MethodeType } from '../Tax/components/ConfirmationTax';
+import NfcManager from 'react-native-nfc-manager';
 
 export enum ActionType {
   profile = 'navigateToProfile',
   history = 'taxTransferPlayer',
 }
 interface ScanNfcProps {
+  handleGoBack: () => void;
   handleProfileScreen: (data: IPlayer) => void;
   action: ActionType;
   amount?: number;
@@ -26,6 +28,7 @@ interface ScanNfcProps {
 }
 
 export const ScanNfc: FC<ScanNfcProps> = ({
+  handleGoBack,
   handleProfileScreen,
   handleMoveConfirmationTax,
   action,
@@ -39,7 +42,7 @@ export const ScanNfc: FC<ScanNfcProps> = ({
     if (nfcId && action === ActionType.history && amount) {
       const isActive = activePlayer.find(player => player.id === nfcId);
       if (!isActive) {
-        setErr('Player not registered, please add player first');
+        setErr('Player is not registered as an active player');
         return;
       }
       const dataToSend: dataConfirmationTaxProps = {
@@ -173,21 +176,44 @@ export const ScanNfc: FC<ScanNfcProps> = ({
 
   // console.log(errorMessage);
 
+  const handleBackPrevious = async () => {
+    try {
+      await NfcManager.unregisterTagEvent();
+    } catch (error) {
+      console.error('Error unregistering NFC event:', error);
+    } finally {
+      handleGoBack();
+      clearDataNfc();
+      setErr('');
+    }
+  };
+
   return (
     <Box flex={1}>
       <Alert
-        mx="$2.5"
+        variant="accent"
         action="error"
         position="absolute"
         display={errorNfcReadTag || err ? 'flex' : 'none'}>
         <AlertIcon as={InfoIcon} mr="$3" />
-        <AlertText>{errorNfcReadTag || err}</AlertText>
+        <AlertText size="2xs">{errorNfcReadTag || err}</AlertText>
       </Alert>
       <Box flex={1} alignItems="center" justifyContent="center">
         <Heading bold size="2xl">
           NFC
         </Heading>
         <Text size="sm">{errorNfcReadTag || err ? 'Scanning Again...' : 'Scaning...'}</Text>
+
+        <Button
+          onPress={handleBackPrevious}
+          display={errorNfcReadTag || err ? 'flex' : 'none'}
+          variant="outline"
+          action="negative"
+          size="xs"
+          gap="$1"
+          marginTop={20}>
+          <ButtonText>Back To Previous</ButtonText>
+        </Button>
       </Box>
 
       {/* <Button onPress={writeNFC} mb={10} size="md" variant="solid" isFocusVisible={false}>

@@ -16,8 +16,6 @@ export const CardHistory: FC<CardHistoryProps> = ({
   transaction,
   amount,
 }) => {
-  console.log('iniiiiiiiiiitransaction');
-
   return (
     <Box
       mb={16}

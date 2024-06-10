@@ -5,6 +5,7 @@ import { ModalSuccess } from '../../../components/ModalSuccess';
 import { useGlobalStore } from '../../../stores';
 import getRealm, { Player } from '../../../components/schema/SchemaRealm';
 import { HistoryPlayer } from '../../../stores/type';
+import { ModalFailed } from '../../../components/ModalFailed';
 
 interface ConfirmationTaxProps {
   handleBack: () => void;
@@ -36,7 +37,6 @@ export const ConfirmationTax: FC<ConfirmationTaxProps> = ({ handleBack, moveToHo
       try {
         realm.write(() => {
           const player = realm.objectForPrimaryKey<Player>('PlayerGame', playerName);
-          console.log(player);
           if (player) {
             player.saldo = amount + player.saldo;
             onChangeTax(taxAmount - amount);
@@ -56,7 +56,7 @@ export const ConfirmationTax: FC<ConfirmationTaxProps> = ({ handleBack, moveToHo
             setDataHistory(dataToSend);
             setOpenModal(true);
           } else {
-            throw new Error('Recipient data not found');
+            throw new Error(`${playerName} is not registered as an active player`);
           }
         });
       } catch (error: any) {
@@ -73,7 +73,9 @@ export const ConfirmationTax: FC<ConfirmationTaxProps> = ({ handleBack, moveToHo
         <Text textAlign="center" paddingHorizontal={20} size="sm" color="$coolGray500">
           Are you sure that you want to transfer tax money with an amount of{' '}
           <Text size="sm" bold>
-            {`${amount.toLocaleString()}  to ${playerInfo?.playerName}`}
+            {methode === MethodeType.NfC
+              ? `${amount.toLocaleString()} to ${playerInfo?.playerName}`
+              : amount.toLocaleString()}
           </Text>{' '}
           <Text>{methode === MethodeType.NfC ? 'using the' : ''} </Text>
           <Text size="sm" bold>
@@ -92,6 +94,7 @@ export const ConfirmationTax: FC<ConfirmationTaxProps> = ({ handleBack, moveToHo
         </Button>
       </Box>
       <ModalSuccess isOpen={openModal} text="Transfer tax money" navigateNextScreen={moveToHome} />
+      <ModalFailed isOpen={err ? true : false} navigateNextScreen={moveToHome} text={err} />
     </Box>
   );
 };

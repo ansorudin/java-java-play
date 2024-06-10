@@ -34,7 +34,7 @@ export const TaxBalance: FC<TaxBalanceProps> = ({ moveInputRecipients, moveNfcRe
   const { taxAmount } = useGlobalStore();
 
   const handleTransferTax = () => {
-    const nominal = Number(amount);
+    const nominal = parseInt(amount);
     if (isNfc === MethodeType.NfC) {
       moveNfcReaderTag(nominal, ActionType.history);
     } else {
@@ -59,7 +59,7 @@ export const TaxBalance: FC<TaxBalanceProps> = ({ moveInputRecipients, moveNfcRe
     setOpenModal(false);
   };
 
-  const widht = Dimensions.get('window').width;
+  // const widht = Dimensions.get('window').width;
 
   return (
     <Box flex={1}>
@@ -93,7 +93,7 @@ export const TaxBalance: FC<TaxBalanceProps> = ({ moveInputRecipients, moveNfcRe
       <Box flex={3} gap={5} justifyContent="flex-start" pt={30}>
         <Box>
           <HStack justifyContent="center" gap={50}>
-            <TouchableOpacity onPress={() => setAmount(taxAmount.toLocaleString())}>
+            <TouchableOpacity onPress={() => setAmount(String(taxAmount))}>
               <Box alignItems="center" gap={5}>
                 <Box bgColor="$blueGray700" padding={8} rounded={5}>
                   <Image
