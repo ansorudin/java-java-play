@@ -14,9 +14,10 @@ import { NfcTag } from './components/NfcTag';
 
 interface HomeProps {
   handleProfileScreen: (data: IPlayer) => void;
+  handleRegisterPlayer: () => void;
 }
 
-export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
+export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterPlayer }) => {
   const realm = getRealm();
   const { activePlayer, leaderBoard, getDataPlayer, getDecryptData, taxAmount } = useGlobalStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -29,49 +30,49 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
     setIsLoading(false);
   }, [getDataPlayer]);
 
-  const handleBack = () => {
-    setLoading(false);
-    setErr('');
-  };
+  // const handleBack = () => {
+  //   setLoading(false);
+  //   setErr('');
+  // };
 
-  const readTag = async (e: string) => {
-    setIsOpen(false);
-    try {
-      setLoading(true);
-      await NfcManager.registerTagEvent();
-      NfcManager.setEventListener(NfcEvents.DiscoverTag, (tag: any) => {
-        if (tag.ndefMessage) {
-          const ndefRecords = tag.ndefMessage;
-          const parseData = ndefRecords.map((record: any) =>
-            Ndef.text.decodePayload(record.payload),
-          );
-          const decrypt = parseData.map((data: string) => getDecryptData(data));
-          const textData = JSON.parse(decrypt.join('\n'));
-          const isId = registeredId.find(id => id === tag.id);
+  // const readTag = async (e: string) => {
+  //   setIsOpen(false);
+  //   try {
+  //     setLoading(true);
+  //     await NfcManager.registerTagEvent();
+  //     NfcManager.setEventListener(NfcEvents.DiscoverTag, (tag: any) => {
+  //       if (tag.ndefMessage) {
+  //         const ndefRecords = tag.ndefMessage;
+  //         const parseData = ndefRecords.map((record: any) =>
+  //           Ndef.text.decodePayload(record.payload),
+  //         );
+  //         const decrypt = parseData.map((data: string) => getDecryptData(data));
+  //         const textData = JSON.parse(decrypt.join('\n'));
+  //         const isId = registeredId.find(id => id === tag.id);
 
-          const isAdding = activePlayer.find((data: IPlayer) => data.id === textData.playerId);
+  //         const isAdding = activePlayer.find((data: IPlayer) => data.id === textData.playerId);
 
-          if (!isId) {
-            setErr('Invalid card, always use an authorized card to access this application.');
-            return;
-          }
+  //         if (!isId) {
+  //           setErr('Invalid card, always use an authorized card to access this application.');
+  //           return;
+  //         }
 
-          if (!isAdding) {
-            realm.write(() => {
-              realm.create('PlayerGame', { id: textData.playerId, username: e, saldo: 250000 });
-            });
-            getDataPlayer();
-            setErr('');
-            setLoading(false);
-          } else {
-            setErr('This card has been used by another player, use a different card.');
-          }
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //         if (!isAdding) {
+  //           realm.write(() => {
+  //             realm.create('PlayerGame', { id: textData.playerId, username: e, saldo: 250000 });
+  //           });
+  //           getDataPlayer();
+  //           setErr('');
+  //           setLoading(false);
+  //         } else {
+  //           setErr('This card has been used by another player, use a different card.');
+  //         }
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <>
@@ -134,11 +135,11 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
         <ModalInputPerson
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          handleInputUsername={readTag}
+          handleInputUsername={handleRegisterPlayer}
         />
         <DataEmpty buttonScan={() => setIsOpen(true)} dataPlayer={activePlayer} />
       </Box>
-      <NfcTag error={err} display={loading} handleBackToHome={handleBack} />
+      {/* <NfcTag error={err} display={loading} handleBackToHome={handleBack} /> */}
     </>
   );
 };

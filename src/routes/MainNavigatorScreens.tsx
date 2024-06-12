@@ -13,6 +13,7 @@ import {
   InputRecipientsScreen,
   InputDataTransferScreen,
   DiceScreen,
+  RegisterPlayerScreen,
 } from '../pages';
 import { MainStackScreenList } from './types';
 
@@ -73,5 +74,9 @@ export const MainScreens: MainStackScreenList[] = [
   {
     name: 'Dice',
     component: DiceScreen,
+  },
+  {
+    name: 'Register_Player',
+    component: RegisterPlayerScreen,
   },
 ];

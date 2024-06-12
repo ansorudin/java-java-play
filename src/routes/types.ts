@@ -26,6 +26,7 @@ export type MainStackParamList = {
   InputDataTransfer: DataInputTransferProps;
   InputRecipients: { amount: number };
   Dice: undefined;
+  Register_Player: undefined;
 };
 
 export type MainStackScreenList = {

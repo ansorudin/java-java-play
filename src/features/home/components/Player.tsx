@@ -1,4 +1,4 @@
-import { Box, Text, Image } from '@gluestack-ui/themed';
+import { Box, Text, Image, Button, ButtonText } from '@gluestack-ui/themed';
 import { FC } from 'react';
 import { TouchableOpacity } from 'react-native';
 import { useGlobalStore } from '../../../stores';
@@ -11,7 +11,7 @@ interface PlayerProps {
 }
 
 export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile }) => {
-  const { profiles } = useGlobalStore();
+  const { profiles, onTaxPayment, onSalaryIncome } = useGlobalStore();
   const dataPlayer = profiles.find(profile => profile.playerId === playerId);
   return (
     <TouchableOpacity onPress={moveProfile}>
@@ -26,7 +26,7 @@ export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile 
         borderColor="$coolGray300"
         gap={2}
         rounded={6}>
-        <Box>
+        <Box justifyContent="center" alignItems="center" gap={4}>
           <Image
             rounded="$full"
             w={50}
@@ -37,6 +37,9 @@ export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile 
             borderWidth={1}
             borderColor="$coolGray300"
           />
+          <Text size="2xs" color="$coolGray400">
+            {detail}
+          </Text>
         </Box>
         <Box
           flexDirection="row"
@@ -48,17 +51,25 @@ export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile 
             <Text bold size="sm" color="$coolGray700">
               {dataPlayer?.playerName}
             </Text>
-            <Text size="2xs" color="$coolGray400">
-              {detail}
-            </Text>
-          </Box>
-          <Box alignItems="center" gap={8}>
-            <Text size="2xs" bold color="$coolGray400">
-              Amount
-            </Text>
+
             <Text size="xs" color="$emerald900">
+              <Text size="sm" strikeThrough bold color="$emerald900">
+                M
+              </Text>{' '}
               {amount.toLocaleString()}
             </Text>
+          </Box>
+          <Box flexDirection="row" gap={6}>
+            <Button
+              size="xs"
+              variant="outline"
+              action="negative"
+              onPress={() => onTaxPayment(20000, playerId)}>
+              <ButtonText>Tax</ButtonText>
+            </Button>
+            <Button size="xs" action="positive" onPress={() => onSalaryIncome(20000, playerId)}>
+              <ButtonText>Salary</ButtonText>
+            </Button>
           </Box>
         </Box>
       </Box>

@@ -10,7 +10,10 @@ export const HomeScreen = () => {
 
   return (
     <Container>
-      <Home handleProfileScreen={(data: IPlayer) => navigate.push('Profile', data)} />
+      <Home
+        handleProfileScreen={(data: IPlayer) => navigate.push('Profile', data)}
+        handleRegisterPlayer={() => navigate.push('Register_Player')}
+      />
     </Container>
   );
 };
