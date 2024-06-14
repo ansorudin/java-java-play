@@ -12,7 +12,7 @@ export const HomeScreen = () => {
     <Container>
       <Home
         handleProfileScreen={(data: IPlayer) => navigate.push('Profile', data)}
-        handleRegisterPlayer={() => navigate.push('Register_Player')}
+        handleRegisterPlayer={(username: string) => navigate.push('Register_Player', { username })}
       />
     </Container>
   );

@@ -21,12 +21,12 @@ export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile 
         alignItems="center"
         justifyContent="space-between"
         paddingHorizontal={10}
-        paddingVertical={20}
+        paddingVertical={15}
         borderBottomWidth={1}
         borderColor="$coolGray300"
         gap={2}
         rounded={6}>
-        <Box justifyContent="center" alignItems="center" gap={4}>
+        <Box justifyContent="center" alignItems="center">
           <Image
             rounded="$full"
             w={50}
@@ -34,11 +34,10 @@ export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile 
             size="full"
             alt="image"
             source={dataPlayer?.image}
-            borderWidth={1}
-            borderColor="$coolGray300"
+            backgroundColor="$emerald100"
           />
-          <Text size="2xs" color="$coolGray400">
-            {detail}
+          <Text size="2xs" color="$emerald900" bold>
+            {dataPlayer?.playerName}
           </Text>
         </Box>
         <Box
@@ -49,9 +48,8 @@ export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile 
           gap={10}>
           <Box>
             <Text bold size="sm" color="$coolGray700">
-              {dataPlayer?.playerName}
+              {detail}
             </Text>
-
             <Text size="xs" color="$emerald900">
               <Text size="sm" strikeThrough bold color="$emerald900">
                 M
@@ -59,6 +57,7 @@ export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile 
               {amount.toLocaleString()}
             </Text>
           </Box>
+
           <Box flexDirection="row" gap={6}>
             <Button
               size="xs"

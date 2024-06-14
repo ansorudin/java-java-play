@@ -22,7 +22,7 @@ export const STORAGE_KEY = 'app-storage';
 
 export const useGlobalStore = create<
   GlobalStoreProps,
-  [['zustand/persist', Pick<GlobalStoreProps, 'username' | 'taxAmount'>]]
+  [['zustand/persist', Pick<GlobalStoreProps, 'username' | 'taxAmount' | 'activeTags'>]]
 >(
   persist(
     (...a) => ({
@@ -40,6 +40,7 @@ export const useGlobalStore = create<
       partialize: state => ({
         username: state.username,
         taxAmount: state.taxAmount,
+        activeTags: state.activeTags,
       }),
     },
   ),
