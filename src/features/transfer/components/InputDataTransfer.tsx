@@ -138,10 +138,6 @@ export const InputDataTransfer: FC<TransferProps> = ({
                 <Text size="2xs" color="$red400" italic>
                   {err}
                 </Text>
-                <ButtonQuickAction
-                  buttonText="20.000"
-                  handleChangeAmount={() => setAmount('20000')}
-                />
               </Box>
 
               <Box display={transferDestination === 'bank' ? undefined : 'none'}>
@@ -150,7 +146,6 @@ export const InputDataTransfer: FC<TransferProps> = ({
                   title="Description"
                   handleChangeValue={e => setDescription(e)}
                   placeHolder="Select Descriptions">
-                  <SelectItem label="Purchase Asset" value="Purchase Asset" />
                   <SelectItem label="Excess Transfer" value="Excess Transfer" />
                   <SelectItem label="Other" value="Other" />
                 </InputSelect>

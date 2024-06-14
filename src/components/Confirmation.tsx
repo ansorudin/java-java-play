@@ -33,6 +33,7 @@ export enum TransactionType {
   Tax = 'Transfer to tax',
   Earning = 'Earning from other player',
   EarningTax = 'Tax Transfer',
+  Bribe = 'Bribe to Escape',
 }
 
 export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigateToHome }) => {
@@ -71,7 +72,7 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
 
           if (transaction === TransactionType.TopUp) {
             player.saldo = amount + saldo;
-          } else if (transaction === TransactionType.Bank) {
+          } else if (transaction === TransactionType.Bank || TransactionType.Bribe) {
             player.saldo = saldo - amount;
           } else if (transaction === TransactionType.Tax) {
             player.saldo = saldo - amount;
