@@ -13,12 +13,20 @@ import { IPlayer } from '../../../stores/type';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native';
 import { ScrollView } from 'react-native';
-import { ButtonQuickAction } from '../../topup/components/ButtonQuickAction';
+import { PurchaseProperty } from './PurchaseProperty';
 
 interface TransferProps {
   navigateToConfirmation: (data: DataConfirmationProps) => void;
   handleBack: () => void;
   data: DataInputTransferProps;
+}
+
+export enum TransferType {
+  Bank = 'bank',
+  Tax = 'tax',
+  Other_Player = 'other player',
+  Bribe = 'bribe',
+  property = 'Purchase Property',
 }
 export interface DataInputTransferProps extends DataTransferProps {
   transferDestination: string;
@@ -94,6 +102,11 @@ export const InputDataTransfer: FC<TransferProps> = ({
     return <SelectItem label={`${dataPlayer?.playerName}  - ${username}`} value={id} />;
   };
 
+  const onPurchaseProperty = (price: string, property: string) => {
+    setAmount(price);
+    setDescription(property);
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -109,7 +122,7 @@ export const InputDataTransfer: FC<TransferProps> = ({
               marginTop={20}
               display={transferDestination ? 'flex' : 'none'}
               marginHorizontal={3}>
-              <Box display={transferDestination === 'player' ? undefined : 'none'}>
+              <Box display={transferDestination === TransferType.Other_Player ? 'flex' : 'none'}>
                 <InputSelect
                   underline
                   title="Recipient"
@@ -119,7 +132,9 @@ export const InputDataTransfer: FC<TransferProps> = ({
                 </InputSelect>
               </Box>
 
-              <Box gap={10}>
+              <Box
+                gap={10}
+                display={transferDestination === TransferType.property ? 'none' : 'flex'}>
                 <Text bold>Amount</Text>
                 <Box
                   borderBottomWidth={1}
@@ -140,7 +155,7 @@ export const InputDataTransfer: FC<TransferProps> = ({
                 </Text>
               </Box>
 
-              <Box display={transferDestination === 'bank' ? undefined : 'none'}>
+              <Box display={transferDestination === TransferType.Bank ? 'flex' : 'none'}>
                 <InputSelect
                   underline
                   title="Description"
@@ -150,6 +165,10 @@ export const InputDataTransfer: FC<TransferProps> = ({
                   <SelectItem label="Other" value="Other" />
                 </InputSelect>
               </Box>
+              <PurchaseProperty
+                transferDestination={transferDestination}
+                onPurchase={onPurchaseProperty}
+              />
             </Box>
           </ScrollView>
         </Box>

@@ -64,7 +64,11 @@ export const Transfer: FC<TransferProps> = ({
               Transfer Other Player
             </ButtonText>
           </Button>
-          <Button variant="outline" size="sm" onPress={() => buttonNext('bank')} action="primary">
+          <Button
+            variant="outline"
+            size="sm"
+            onPress={() => buttonNext('Purchase Property')}
+            action="primary">
             <ButtonText size="sm" color="$primary300">
               Purchase Property
             </ButtonText>
