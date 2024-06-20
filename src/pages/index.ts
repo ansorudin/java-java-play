@@ -13,3 +13,4 @@ export { InputRecipientsScreen } from './InputRecipientsScreen';
 export { InputDataTransferScreen } from './InputDataTransferScreen';
 export { DiceScreen } from './DiceScreen';
 export { RegisterPlayerScreen } from './RegisterPlayerScreen';
+export { PropertyScreen } from './PropertyScreen';

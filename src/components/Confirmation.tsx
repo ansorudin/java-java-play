@@ -34,6 +34,9 @@ export enum TransactionType {
   Earning = 'Earning from other player',
   EarningTax = 'Tax Transfer',
   Bribe = 'Bribe to Escape',
+  property = 'Buy property',
+  house = 'Buy house',
+  hotel = 'Buy hotel',
 }
 
 export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigateToHome }) => {
@@ -200,11 +203,7 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
               title={transaction === TransactionType.TopUp ? 'Top Up Amount' : 'Transfer Amount'}
               text={`Rp. ${amount.toLocaleString()}`}
             />
-            <ItemTransaction
-              title="Description"
-              text={description}
-              hidden={transaction !== TransactionType.Bank}
-            />
+            <ItemTransaction title="Description" text={description} hidden={!description} />
           </Box>
         </Box>
         <Button

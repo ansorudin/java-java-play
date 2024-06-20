@@ -1,4 +1,13 @@
-import { Box, ButtonText, Button, Text, Icon, EyeOffIcon, EyeIcon } from '@gluestack-ui/themed';
+import {
+  Box,
+  ButtonText,
+  Button,
+  Text,
+  Icon,
+  EyeOffIcon,
+  EyeIcon,
+  LinkIcon,
+} from '@gluestack-ui/themed';
 import Swiper from 'react-native-swiper';
 import { ProfileImage } from './components/ProfileImage';
 import { FC, useEffect } from 'react';
@@ -8,17 +17,18 @@ import { IconTopUp } from '../../../asset/IconTopUp';
 import { IconTransfer } from '../../../asset/IconTransfer';
 import { IconHistory } from '../../../asset/IconHistory';
 import { DataTopUpProps } from '../topup';
-import { DataTransferProps } from '../transfer';
 import { useGlobalStore } from '../../stores';
 import { IdataProfile } from '../../stores/datas/type';
 import { IPlayer } from '../../stores/type';
 import { initDataProfile } from '../../stores/datas/dataPlayer';
+import { IExpense } from '../type';
 
 interface ProfileProps {
   handleBackHome: () => void;
   handleTopUp: (data: DataTopUpProps) => void;
-  handleMoveTransfer: (data: DataTransferProps) => void;
+  handleMoveTransfer: (data: IExpense) => void;
   handleMoveHistory: (playerId: string) => void;
+  handleProperty: (data: DataTopUpProps) => void;
   data: IPlayer;
 }
 
@@ -27,6 +37,7 @@ export const Profile: FC<ProfileProps> = ({
   handleTopUp,
   handleMoveTransfer,
   handleMoveHistory,
+  handleProperty,
   data,
 }) => {
   const [eyeOff, setEyeOff] = useState<boolean>(false);
@@ -103,6 +114,17 @@ export const Profile: FC<ProfileProps> = ({
             <IconTransfer />
             <ButtonText size="xs" color="$coolGray500">
               Transfer
+            </ButtonText>
+          </Button>
+          <Button
+            variant="link"
+            size="sm"
+            gap={2}
+            flexDirection="column"
+            onPress={() => handleProperty({ ...player, saldo })}>
+            <Icon as={LinkIcon} m="$2" w="$4" h="$4" />
+            <ButtonText size="xs" color="$coolGray500">
+              Property
             </ButtonText>
           </Button>
           <Button

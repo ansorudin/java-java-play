@@ -3,18 +3,14 @@ import { FC } from 'react';
 import { BalanceCard } from '../../components/BalanceCard';
 import { Header } from '../../components/Header';
 import { DataInputTransferProps } from './components/InputDataTransfer';
-import { IdataProfile } from '../../stores/datas/type';
 import { DataConfirmationProps } from '../../components/Confirmation';
+import { IExpense } from '../type';
 
 interface TransferProps {
   moveToInputDataTransfer: (data: DataInputTransferProps) => void;
   moveToConfirmation: (data: DataConfirmationProps) => void;
   handleBack: () => void;
-  data: DataTransferProps;
-}
-
-export interface DataTransferProps extends IdataProfile {
-  saldo: number;
+  data: IExpense;
 }
 
 export const Transfer: FC<TransferProps> = ({
@@ -64,15 +60,7 @@ export const Transfer: FC<TransferProps> = ({
               Transfer Other Player
             </ButtonText>
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onPress={() => buttonNext('Purchase Property')}
-            action="primary">
-            <ButtonText size="sm" color="$primary300">
-              Purchase Property
-            </ButtonText>
-          </Button>
+
           <Button
             variant="outline"
             size="sm"

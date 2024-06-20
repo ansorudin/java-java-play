@@ -5,7 +5,6 @@ import { InputSelect } from './InputSelect';
 import { BalanceCard } from '../../../components/BalanceCard';
 import { Header } from '../../../components/Header';
 import { DataConfirmationProps } from '../../../components/Confirmation';
-import { DataTransferProps } from '..';
 import getRealm, { Player } from '../../../components/schema/SchemaRealm';
 import { FlatList, ListRenderItemInfo } from 'react-native';
 import { useGlobalStore } from '../../../stores';
@@ -13,7 +12,7 @@ import { IPlayer } from '../../../stores/type';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native';
 import { ScrollView } from 'react-native';
-import { PurchaseProperty } from './PurchaseProperty';
+import { IExpense } from '../../type';
 
 interface TransferProps {
   navigateToConfirmation: (data: DataConfirmationProps) => void;
@@ -26,9 +25,8 @@ export enum TransferType {
   Tax = 'tax',
   Other_Player = 'other player',
   Bribe = 'bribe',
-  property = 'Purchase Property',
 }
-export interface DataInputTransferProps extends DataTransferProps {
+export interface DataInputTransferProps extends IExpense {
   transferDestination: string;
 }
 
@@ -102,11 +100,6 @@ export const InputDataTransfer: FC<TransferProps> = ({
     return <SelectItem label={`${dataPlayer?.playerName}  - ${username}`} value={id} />;
   };
 
-  const onPurchaseProperty = (price: string, property: string) => {
-    setAmount(price);
-    setDescription(property);
-  };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -132,9 +125,7 @@ export const InputDataTransfer: FC<TransferProps> = ({
                 </InputSelect>
               </Box>
 
-              <Box
-                gap={10}
-                display={transferDestination === TransferType.property ? 'none' : 'flex'}>
+              <Box gap={10}>
                 <Text bold>Amount</Text>
                 <Box
                   borderBottomWidth={1}
@@ -165,10 +156,6 @@ export const InputDataTransfer: FC<TransferProps> = ({
                   <SelectItem label="Other" value="Other" />
                 </InputSelect>
               </Box>
-              <PurchaseProperty
-                transferDestination={transferDestination}
-                onPurchase={onPurchaseProperty}
-              />
             </Box>
           </ScrollView>
         </Box>
