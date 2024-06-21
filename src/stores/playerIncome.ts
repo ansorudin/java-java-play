@@ -7,6 +7,7 @@ export interface PlayerIncomeSlice {
   errPlayerIncome: string | null;
   successPlayerIncome: string | null;
   onAddHistory: (playerId: string, dataToSend: any) => void;
+  onChallengeIncome: (playerId: string) => void;
 }
 
 export const createPlayerIncomeSlice: StateCreator<PlayerIncomeSlice> = (set, get) => ({
@@ -48,6 +49,34 @@ export const createPlayerIncomeSlice: StateCreator<PlayerIncomeSlice> = (set, ge
             playerImage: imageBank,
             transaction: 'Salary start',
             amount,
+          };
+          const onAddHistory = get().onAddHistory;
+          onAddHistory(playerId, dataToSend);
+        });
+        set({ successPlayerIncome: 'Success your action' });
+      }
+    } catch (error: any) {
+      set({ errPlayerIncome: error.message });
+    }
+  },
+  onChallengeIncome: playerId => {
+    const realm = getRealm();
+    try {
+      if (!realm.isInTransaction) {
+        realm.write(() => {
+          const player = realm.objectForPrimaryKey<Player>('PlayerGame', playerId);
+          if (!player) {
+            set({ errPlayerIncome: 'Player not found' });
+            return;
+          }
+          player.saldo = player.saldo + 40000;
+
+          const dataToSend: any = {
+            id: playerId,
+            playerName: 'Bank',
+            playerImage: imageBank,
+            transaction: 'Challenge Win!!',
+            amount: 40000,
           };
           const onAddHistory = get().onAddHistory;
           onAddHistory(playerId, dataToSend);

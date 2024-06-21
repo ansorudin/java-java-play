@@ -11,8 +11,24 @@ interface PlayerProps {
 }
 
 export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile }) => {
-  const { profiles, onTaxPayment, onSalaryIncome } = useGlobalStore();
+  const { profiles, onTaxPayment, onSalaryIncome, onChallengeIncome } = useGlobalStore();
   const dataPlayer = profiles.find(profile => profile.playerId === playerId);
+
+  const onSalary = () => {
+    if (dataPlayer?.playerId === '600da590') {
+      onSalaryIncome(40000, playerId);
+      return;
+    }
+    onSalaryIncome(20000, playerId);
+  };
+
+  const onChallengeWinIncome = () => {
+    if (dataPlayer?.playerId) {
+      onChallengeIncome(dataPlayer?.playerId);
+      return;
+    }
+  };
+
   return (
     <TouchableOpacity onPress={moveProfile}>
       <Box
@@ -60,14 +76,22 @@ export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile 
 
           <Box flexDirection="row" gap={6}>
             <Button
+              isDisabled={dataPlayer?.playerId === '9d71fb69' ? true : false}
               size="xs"
               variant="outline"
               action="negative"
               onPress={() => onTaxPayment(20000, playerId)}>
-              <ButtonText>Tax</ButtonText>
+              <ButtonText size="2xs">Tax</ButtonText>
             </Button>
-            <Button size="xs" action="positive" onPress={() => onSalaryIncome(20000, playerId)}>
-              <ButtonText>Salary</ButtonText>
+            <Button size="xs" action="positive" onPress={onSalary}>
+              <ButtonText size="2xs">Fee</ButtonText>
+            </Button>
+            <Button
+              display={dataPlayer?.playerId === 'ddd0861a' ? 'flex' : 'none'}
+              size="xs"
+              bg="$warning400"
+              onPress={onChallengeWinIncome}>
+              <ButtonText size="2xs">Dare</ButtonText>
             </Button>
           </Box>
         </Box>

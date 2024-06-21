@@ -16,7 +16,8 @@ interface HomeProps {
 }
 
 export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterPlayer }) => {
-  const { activePlayer, leaderBoard, getDataPlayer, getDecryptData, taxAmount } = useGlobalStore();
+  const { activePlayer, leaderBoard, getDataPlayer, getDecryptData, taxAmount, onChallengeIncome } =
+    useGlobalStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [err, setErr] = useState<string>('');
