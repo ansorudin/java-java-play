@@ -25,7 +25,6 @@ export const Transfer: FC<TransferProps> = ({
   };
 
   const { saldo, playerName, playerId, image } = data;
-  console.log(data);
 
   const onPaymentBribe = () => {
     const datas: DataConfirmationProps = {

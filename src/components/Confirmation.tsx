@@ -24,6 +24,7 @@ interface DataConfirmationProps {
   recipients?: string;
   description?: string;
   recipientsImage?: string;
+  discount?: boolean;
 }
 
 export enum TransactionType {
@@ -42,8 +43,17 @@ export enum TransactionType {
 export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigateToHome }) => {
   const realm = getRealm();
   const { getDataPlayer, taxAmount, onChangeTax, getSelectedProfile } = useGlobalStore();
-  const { playerId, playerImage, playerName, transaction, amount, recipients, description, saldo } =
-    data;
+  const {
+    playerId,
+    playerImage,
+    playerName,
+    transaction,
+    amount,
+    recipients,
+    description,
+    saldo,
+    discount,
+  } = data;
 
   const [openModalSuccess, setOpenModalSuccess] = useState<boolean>(false);
   const [openModalFailed, setModalFailed] = useState<boolean>(false);
@@ -205,7 +215,19 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
             />
             <ItemTransaction title="Description" text={description} hidden={!description} />
           </Box>
+          <Image
+            display={discount ? 'flex' : 'none'}
+            opacity={0.3}
+            position="absolute"
+            bottom={0}
+            right={10}
+            w={120}
+            h={120}
+            source={require('../../asset/discount-tag.png')}
+            alt="card"
+          />
         </Box>
+
         <Button
           variant="solid"
           p="$0"
@@ -216,6 +238,7 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
           <ButtonText size="md">Continue</ButtonText>
         </Button>
       </Box>
+
       <ModalSuccess
         isOpen={openModalSuccess}
         text={transaction === TransactionType.TopUp ? 'Top up money from bank' : 'Transfer money'}

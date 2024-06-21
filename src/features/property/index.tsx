@@ -36,6 +36,7 @@ export const Property: FC<PropertyProps> = ({ data, handleBack, handleMoveConfir
       transaction: active !== ActiveType.property ? `${active} block ${block}` : active,
       description: active === ActiveType.property ? `Property ${description}` : description,
       saldo,
+      discount: playerId === 'cbcb7269',
     };
     handleMoveConfirmation(dataToSend);
   };
@@ -58,16 +59,25 @@ export const Property: FC<PropertyProps> = ({ data, handleBack, handleMoveConfir
       <Box flex={1}>
         <BalanceCard currentSaldo={saldo} cardHolder={playerName} />
         <NavigationBar onChangeNavigation={onChangeNavigation} activeComponent={active} />
-        <PurchaseProperty active={active} onPurchase={onPurchase} />
+        <PurchaseProperty
+          active={active}
+          onPurchase={onPurchase}
+          discount={playerId === 'cbcb7269'}
+          saldo={saldo}
+        />
         <PurchaseAdditional
           active={active === ActiveType.house}
           onPurchase={onPurchase}
           activeType={active}
+          discount={playerId === 'cbcb7269'}
+          saldo={saldo}
         />
         <PurchaseAdditional
           active={active === ActiveType.hotel}
           onPurchase={onPurchase}
           activeType={active}
+          discount={playerId === 'cbcb7269'}
+          saldo={saldo}
         />
       </Box>
 

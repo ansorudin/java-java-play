@@ -11,16 +11,23 @@ import { useEffect } from 'react';
 interface PurchasePropertyProps {
   onPurchase: (price: number, description: string, unit: string | null) => void;
   active: string;
+  discount: boolean;
+  saldo: number;
 }
 
-export const PurchaseProperty: FC<PurchasePropertyProps> = ({ onPurchase, active }) => {
+export const PurchaseProperty: FC<PurchasePropertyProps> = ({
+  onPurchase,
+  active,
+  discount,
+  saldo,
+}) => {
   const [block, setBlock] = useState<Property[]>([]);
-  const [activeQuickButton, setActiveQuickButton] = useState<number>(0);
+  const [activeQuickButton, setActiveQuickButton] = useState<number>(4);
 
   useEffect(() => {
     if (active !== ActiveType.property) {
       setBlock([]);
-      setActiveQuickButton(0);
+      setActiveQuickButton(4);
     }
   }, [active]);
 
@@ -41,15 +48,18 @@ export const PurchaseProperty: FC<PurchasePropertyProps> = ({ onPurchase, active
 
   const renderProperties = (listRenderItemInfo: ListRenderItemInfo<Property>) => {
     const list = listRenderItemInfo.item;
+    const price = discount ? list.price / 2 : list.price;
 
     return (
       <QuickButtonProperty
         title={list.id}
-        price={list.price}
+        price={price}
         id={null}
+        discount={discount}
         active={activeQuickButton === listRenderItemInfo.index}
         type={listRenderItemInfo.index}
         onChangeAmount={onChangePrice}
+        saldo={saldo}
       />
     );
   };

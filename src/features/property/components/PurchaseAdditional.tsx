@@ -11,23 +11,25 @@ interface PurchaseAdditionalProps {
   onPurchase: (price: number, description: string, unit: string | null) => void;
   active?: boolean;
   activeType: string;
+  discount: boolean;
+  saldo: number;
 }
 
 export const PurchaseAdditional: FC<PurchaseAdditionalProps> = ({
   onPurchase,
   active,
   activeType,
+  discount,
+  saldo,
 }) => {
   const [block, setBlock] = useState<Property[]>([]);
   const [properyId, setPropertyId] = useState<string>('');
-  const [activeQuickButton, setActiveQuickButton] = useState<number>(1);
+  const [activeQuickButton, setActiveQuickButton] = useState<number>(0);
   const [price, setPrice] = useState<number>(0);
-
-  console.log(activeType);
 
   useEffect(() => {
     setBlock([]);
-    setActiveQuickButton(1);
+    setActiveQuickButton(0);
   }, [activeType]);
 
   const renderBlock = (listRenderItemInfo: ListRenderItemInfo<PropertySet>) => {
@@ -68,6 +70,7 @@ export const PurchaseAdditional: FC<PurchaseAdditionalProps> = ({
     onPurchase(amount, description, unit);
   };
 
+  const priceAdditional = discount ? price / 2 : price;
   return (
     <Box mx={10}>
       <Box display={active ? 'flex' : 'none'} gap={10}>
@@ -89,28 +92,34 @@ export const PurchaseAdditional: FC<PurchaseAdditionalProps> = ({
 
           <HStack gap={5} mt={5} display={price === 0 ? 'none' : 'flex'}>
             <QuickButtonProperty
+              discount={discount}
               title={activeType === ActiveType.house ? '1 house' : '1 hotel'}
-              price={price}
+              price={priceAdditional}
               active={activeQuickButton === 1}
               type={1}
               id={properyId}
               onChangeAmount={onChangePrice}
+              saldo={saldo}
             />
             <QuickButtonProperty
+              discount={discount}
               title={activeType === ActiveType.house ? '2 houses' : '2 hotels'}
-              price={2 * price}
+              price={2 * priceAdditional}
               active={activeQuickButton === 2}
               type={2}
               id={properyId}
               onChangeAmount={onChangePrice}
+              saldo={saldo}
             />
             <QuickButtonProperty
+              discount={discount}
               title={activeType === ActiveType.house ? '3 houses' : '3 hotels'}
-              price={3 * price}
+              price={3 * priceAdditional}
               active={activeQuickButton === 3}
               type={3}
               id={properyId}
               onChangeAmount={onChangePrice}
+              saldo={saldo}
             />
           </HStack>
         </Box>
