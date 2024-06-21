@@ -25,6 +25,7 @@ export const Property: FC<PropertyProps> = ({ data, handleBack, handleMoveConfir
   const [active, setActive] = useState<string>(ActiveType.property);
   const [amount, setAmount] = useState<number>(0);
   const [description, setDescription] = useState<string>('');
+  const [block, setBlock] = useState<string | null>(null);
 
   const onNext = () => {
     const dataToSend: DataConfirmationProps = {
@@ -32,19 +33,22 @@ export const Property: FC<PropertyProps> = ({ data, handleBack, handleMoveConfir
       playerName: playerName,
       playerImage: image,
       amount,
-      transaction: active,
+      transaction: active !== ActiveType.property ? `${active} block ${block}` : active,
       description: active === ActiveType.property ? `Property ${description}` : description,
       saldo,
     };
     handleMoveConfirmation(dataToSend);
   };
 
-  const onPurchase = (price: number, id: string) => {
+  const onPurchase = (price: number, inputDescription: string, unit: string | null) => {
     setAmount(price);
-    setDescription(id);
+    setDescription(inputDescription);
+    setBlock(unit);
   };
 
   const onChangeNavigation = (component: string) => {
+    setAmount(0);
+    setDescription('');
     setActive(component);
   };
 
@@ -67,17 +71,7 @@ export const Property: FC<PropertyProps> = ({ data, handleBack, handleMoveConfir
         />
       </Box>
 
-      <Button
-        // isDisabled={
-        //   !amount ||
-        //   Number(amount) === 0 ||
-        //   Number(amount) > saldo ||
-        //   (transferDestination === 'bank' && !description) ||
-        //   (transferDestination === 'player' && !player)
-        // }
-        variant="solid"
-        size="md"
-        onPress={onNext}>
+      <Button isDisabled={!amount} variant="solid" size="md" onPress={onNext}>
         <ButtonText size="sm" color="white">
           Next
         </ButtonText>

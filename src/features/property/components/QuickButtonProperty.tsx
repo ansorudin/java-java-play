@@ -7,7 +7,8 @@ interface QuickButtonPropertyProps {
   title: string;
   price: number;
   type: number;
-  onChangeAmount: (event: number, price: number, id: string) => void;
+  id: string | null;
+  onChangeAmount: (event: number, price: number, description: string, unit: string | null) => void;
 }
 
 export const QuickButtonProperty: FC<QuickButtonPropertyProps> = ({
@@ -16,9 +17,10 @@ export const QuickButtonProperty: FC<QuickButtonPropertyProps> = ({
   price,
   onChangeAmount,
   type,
+  id,
 }) => {
   return (
-    <TouchableOpacity onPress={() => onChangeAmount(type, price, title)}>
+    <TouchableOpacity onPress={() => onChangeAmount(type, price, title, id)}>
       <VStack
         width={100}
         alignItems="center"

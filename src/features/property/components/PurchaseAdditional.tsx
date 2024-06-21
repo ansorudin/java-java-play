@@ -3,12 +3,12 @@ import { InputSelect } from '../../transfer/components/InputSelect';
 import { ListRenderItemInfo, FlatList } from 'react-native';
 import properties from '../static';
 import { PropertySet, Property } from '../static/type';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { QuickButtonProperty } from './QuickButtonProperty';
 import { ActiveType } from '..';
 
 interface PurchaseAdditionalProps {
-  onPurchase: (price: number, description: string) => void;
+  onPurchase: (price: number, description: string, unit: string | null) => void;
   active?: boolean;
   activeType: string;
 }
@@ -19,8 +19,16 @@ export const PurchaseAdditional: FC<PurchaseAdditionalProps> = ({
   activeType,
 }) => {
   const [block, setBlock] = useState<Property[]>([]);
+  const [properyId, setPropertyId] = useState<string>('');
   const [activeQuickButton, setActiveQuickButton] = useState<number>(1);
   const [price, setPrice] = useState<number>(0);
+
+  console.log(activeType);
+
+  useEffect(() => {
+    setBlock([]);
+    setActiveQuickButton(1);
+  }, [activeType]);
 
   const renderBlock = (listRenderItemInfo: ListRenderItemInfo<PropertySet>) => {
     const listBlock = listRenderItemInfo.item;
@@ -42,6 +50,7 @@ export const PurchaseAdditional: FC<PurchaseAdditionalProps> = ({
 
   const onChangeProperty = (e: string) => {
     const propertySelected = JSON.parse(e);
+    setPropertyId(propertySelected.id);
     if (activeType === ActiveType.house) {
       setPrice(propertySelected.housePrice);
       return;
@@ -49,9 +58,14 @@ export const PurchaseAdditional: FC<PurchaseAdditionalProps> = ({
     setPrice(propertySelected.hotelPrice);
   };
 
-  const onChangePrice = (event: number, amount: number, id: string) => {
+  const onChangePrice = (
+    event: number,
+    amount: number,
+    description: string,
+    unit: string | null,
+  ) => {
     setActiveQuickButton(event);
-    onPurchase(amount, id);
+    onPurchase(amount, description, unit);
   };
 
   return (
@@ -79,6 +93,7 @@ export const PurchaseAdditional: FC<PurchaseAdditionalProps> = ({
               price={price}
               active={activeQuickButton === 1}
               type={1}
+              id={properyId}
               onChangeAmount={onChangePrice}
             />
             <QuickButtonProperty
@@ -86,6 +101,7 @@ export const PurchaseAdditional: FC<PurchaseAdditionalProps> = ({
               price={2 * price}
               active={activeQuickButton === 2}
               type={2}
+              id={properyId}
               onChangeAmount={onChangePrice}
             />
             <QuickButtonProperty
@@ -93,6 +109,7 @@ export const PurchaseAdditional: FC<PurchaseAdditionalProps> = ({
               price={3 * price}
               active={activeQuickButton === 3}
               type={3}
+              id={properyId}
               onChangeAmount={onChangePrice}
             />
           </HStack>

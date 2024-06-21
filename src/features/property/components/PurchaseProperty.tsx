@@ -6,24 +6,37 @@ import { PropertySet, Property } from '../static/type';
 import { FC, useState } from 'react';
 import { QuickButtonProperty } from './QuickButtonProperty';
 import { ActiveType } from '..';
+import { useEffect } from 'react';
 
 interface PurchasePropertyProps {
-  onPurchase: (price: number, description: string) => void;
+  onPurchase: (price: number, description: string, unit: string | null) => void;
   active: string;
 }
 
 export const PurchaseProperty: FC<PurchasePropertyProps> = ({ onPurchase, active }) => {
   const [block, setBlock] = useState<Property[]>([]);
-  const [activeQuickButton, setActiveQuickButton] = useState<number>(1);
+  const [activeQuickButton, setActiveQuickButton] = useState<number>(0);
+
+  useEffect(() => {
+    if (active !== ActiveType.property) {
+      setBlock([]);
+      setActiveQuickButton(0);
+    }
+  }, [active]);
 
   const renderBlock = (listRenderItemInfo: ListRenderItemInfo<PropertySet>) => {
     const listBlock = listRenderItemInfo.item;
     return <SelectItem label={`Block ${listBlock.id}`} value={listBlock.id} />;
   };
 
-  const onChangePrice = (event: number, amount: number, id: string) => {
+  const onChangePrice = (
+    event: number,
+    amount: number,
+    description: string,
+    unit: string | null,
+  ) => {
     setActiveQuickButton(event);
-    onPurchase(amount, id);
+    onPurchase(amount, description, unit);
   };
 
   const renderProperties = (listRenderItemInfo: ListRenderItemInfo<Property>) => {
@@ -33,6 +46,7 @@ export const PurchaseProperty: FC<PurchasePropertyProps> = ({ onPurchase, active
       <QuickButtonProperty
         title={list.id}
         price={list.price}
+        id={null}
         active={activeQuickButton === listRenderItemInfo.index}
         type={listRenderItemInfo.index}
         onChangeAmount={onChangePrice}
