@@ -1,12 +1,14 @@
-import { Text, Box, Button, ButtonText } from '@gluestack-ui/themed';
-import { Keyboard, Platform, ScrollView, TextInput } from 'react-native';
+import { Box, Button, ButtonText } from '@gluestack-ui/themed';
+import { Keyboard, Platform, ScrollView } from 'react-native';
 import { FC, useEffect, useRef, useState } from 'react';
-import { ButtonQuickAction } from './components/ButtonQuickAction';
 import { Header } from '../../components/Header';
 import { BalanceCard } from '../../components/BalanceCard';
 import { DataConfirmationProps } from '../../components/Confirmation';
 import { IdataProfile } from '../../stores/datas/type';
 import { KeyboardAvoidingView } from 'react-native';
+import { NavigationBar } from './components/NavigationBar';
+import { TopupBank } from './components/TopupBank';
+import { RentalIncome } from './components/RentalIncome';
 
 export interface DataTopUpProps extends IdataProfile {
   saldo: number;
@@ -17,10 +19,20 @@ interface TopupProps {
   handleBack: () => void;
 }
 
+export enum ActiveTopUpType {
+  TopUp = 'Income from Topup Bank',
+  RentForHouse = 'Rent for House income',
+  RentForHotel = 'Rent for Hotel income',
+  RentForland = 'Rent for Land income',
+}
+
 export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data, handleBack }) => {
   const scrollViewRef = useRef<ScrollView>(null);
+  const [activeNav, setActiveNav] = useState<string>(ActiveTopUpType.TopUp);
   const [amount, setAmount] = useState<string>('');
   const [err, setErr] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [block, setBlock] = useState<string | null>(null);
 
   const handleInputNominal = (e: string) => {
     setAmount(e);
@@ -30,7 +42,6 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data, handleBack
 
   const handleButtonNext = () => {
     const regex = /^[0-9]+$/;
-
     if (!regex.test(amount)) {
       setErr('Your input not number, please correct your number');
       return;
@@ -43,6 +54,10 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data, handleBack
       playerImage: image,
       amount: parseInt(amount),
       transaction: 'Top Up',
+      description:
+        activeNav === ActiveTopUpType.RentForland
+          ? `Rent for Land block ${block}`
+          : `Rent for ${description} block ${block}`,
     };
     setAmount('');
     setErr('');
@@ -58,12 +73,21 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data, handleBack
     };
   }, []);
 
-  const handleGaji = () => {
-    if (playerName === 'OfficeWorker') {
-      setAmount('30000');
-    } else {
-      setAmount('20000');
-    }
+  const onChangeNavigation = (component: string) => {
+    setAmount('');
+    setDescription('');
+    setActiveNav(component);
+  };
+
+  const onChangeAmount = (e: string) => {
+    setAmount(e);
+  };
+
+  const onTopup = (price: number, desc: string, unit: string | null) => {
+    const strAmount = price.toString();
+    setDescription(desc);
+    setBlock(unit);
+    setAmount(strAmount);
   };
 
   return (
@@ -75,53 +99,36 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data, handleBack
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} ref={scrollViewRef}>
           <Box flex={1}>
             <BalanceCard currentSaldo={saldo} cardHolder={playerName} />
-            <Box marginHorizontal={4} flex={1} mt={40}>
-              <Text bold>Enter Amount</Text>
-              <Box marginTop={10} marginBottom={20}>
-                <Box
-                  borderWidth={1}
-                  borderColor={err ? '$red400' : '$warmGray300'}
-                  pl={5}
-                  paddingVertical={10}
-                  rounded={3}>
-                  <TextInput
-                    style={err ? { color: 'red' } : { color: 'black' }}
-                    keyboardType="number-pad"
-                    value={amount}
-                    onChangeText={handleInputNominal}
-                    placeholder="Please enter amount"
-                  />
-                </Box>
-                <Text paddingLeft={5} size="2xs" color={err ? '$red400' : '$blueGray400'} italic>
-                  {err ? err : 'Exp. 200.000'}
-                </Text>
-              </Box>
-
-              <Text bold>Quick Actions</Text>
-              <Box flexDirection="row" justifyContent="space-between" marginTop={10}>
-                <ButtonQuickAction buttonText="Gaji Start" handleChangeAmount={handleGaji} />
-
-                <ButtonQuickAction
-                  buttonText="Sogok Koruptor"
-                  handleChangeAmount={() => setAmount('20000')}
-                />
-                <ButtonQuickAction
-                  buttonText="Rp.300.000"
-                  handleChangeAmount={() => setAmount('300000')}
-                />
-              </Box>
-            </Box>
-            <Button
-              isDisabled={!amount}
-              variant="solid"
-              size="md"
-              mb={20}
-              onPress={handleButtonNext}>
-              <ButtonText size="sm" color="white">
-                Next
-              </ButtonText>
-            </Button>
+            <NavigationBar onChangeNavigation={onChangeNavigation} activeComponent={activeNav} />
+            <TopupBank
+              handleChangeAmount={onChangeAmount}
+              active={activeNav}
+              err={err}
+              amount={amount}
+              handleInputNominal={handleInputNominal}
+            />
+            <RentalIncome
+              active={activeNav === ActiveTopUpType.RentForland}
+              activeType={activeNav}
+              onTopup={onTopup}
+            />
+            <RentalIncome
+              active={activeNav === ActiveTopUpType.RentForHouse}
+              activeType={activeNav}
+              onTopup={onTopup}
+            />
+            <RentalIncome
+              active={activeNav === ActiveTopUpType.RentForHotel}
+              activeType={activeNav}
+              onTopup={onTopup}
+            />
           </Box>
+
+          <Button isDisabled={!amount} variant="solid" size="md" mb={20} onPress={handleButtonNext}>
+            <ButtonText size="sm" color="white">
+              Next
+            </ButtonText>
+          </Button>
         </ScrollView>
       </Box>
     </KeyboardAvoidingView>
