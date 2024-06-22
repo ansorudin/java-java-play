@@ -9,6 +9,7 @@ import { IExpense } from '../type';
 interface TransferProps {
   moveToInputDataTransfer: (data: DataInputTransferProps) => void;
   moveToConfirmation: (data: DataConfirmationProps) => void;
+
   handleBack: () => void;
   data: IExpense;
 }

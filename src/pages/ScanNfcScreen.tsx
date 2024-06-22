@@ -3,23 +3,26 @@ import { Container } from '../components/cores/Container';
 import { ScanNfc } from '../features/scanNfc';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { MainStackNavigationProps, MainStackParamList } from '../routes/types';
-import { IPlayer } from '../stores/type';
 import { dataConfirmationTaxProps } from '../features/Tax/components/ConfirmationTax';
+import { DataConfirmationProps } from '../components/Confirmation';
 
 export const ScanNfcScreen = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
   const route: RouteProp<MainStackParamList, 'ScanNfc'> = useRoute();
-  const { action, amount } = route.params;
+  const { action, amount, dataTransferOtherPlayer } = route.params;
   return (
     <Container>
       <ScanNfc
+        dataTransferOtherPlayer={dataTransferOtherPlayer}
         action={action}
         amount={amount}
         handleGoBack={() => navigate.pop(1)}
-        handleProfileScreen={(data: IPlayer) => navigate.push('Profile', data)}
         handleMoveConfirmationTax={(data: dataConfirmationTaxProps) =>
           navigate.push('ConfirmationTax', data)
         }
+        handleMoveConfirmation={(data: DataConfirmationProps) => {
+          navigate.push('Confirmation', data);
+        }}
       />
     </Container>
   );

@@ -92,6 +92,7 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
             onChangeTax(taxAmount + amount);
           } else if (transaction === TransactionType.OtherPlayer && recipients) {
             player.saldo = saldo - amount;
+
             const recipient = realm.objectForPrimaryKey<Player>('PlayerGame', recipients);
             if (recipient) {
               const oldSaldo = recipient.saldo;

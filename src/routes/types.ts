@@ -19,7 +19,7 @@ export type MainStackParamList = {
   TopUp: DataTopUpProps;
   Confirmation: DataConfirmationProps;
   Transfer: IExpense;
-  ScanNfc: { action: ActionType; amount?: number };
+  ScanNfc: { action: ActionType; amount?: number; dataTransferOtherPlayer?: DataConfirmationProps };
   ExitGame: undefined;
   Tax: undefined;
   ConfirmationTax: dataConfirmationTaxProps;

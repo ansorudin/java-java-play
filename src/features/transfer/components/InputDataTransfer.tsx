@@ -14,11 +14,13 @@ import { Platform } from 'react-native';
 import { ScrollView } from 'react-native';
 import { IExpense } from '../../type';
 import { TransferType } from '..';
+import { ActionType } from '../../scanNfc';
 
 interface TransferProps {
   navigateToConfirmation: (data: DataConfirmationProps) => void;
   handleBack: () => void;
   data: DataInputTransferProps;
+  onTransferNfc: (amount: number, action: ActionType, datas: DataConfirmationProps) => void;
 }
 
 export interface DataInputTransferProps extends IExpense {
@@ -29,6 +31,7 @@ export const InputDataTransfer: FC<TransferProps> = ({
   navigateToConfirmation,
   handleBack,
   data,
+  onTransferNfc,
 }) => {
   const { profiles } = useGlobalStore();
   const scrollViewRef = useRef<ScrollView>(null);
@@ -70,13 +73,21 @@ export const InputDataTransfer: FC<TransferProps> = ({
       playerId,
       playerName: playerName,
       playerImage: image,
-      recipients: player,
       description,
       amount: parseInt(amount),
-      transaction: 'Transfer to ' + transferDestination,
+      transaction:
+        transferDestination === TransferType.Other_Player_NFC
+          ? 'Transfer to ' + TransferType.Other_Player
+          : 'Transfer to ' + transferDestination,
       saldo,
     };
-    navigateToConfirmation(datas);
+
+    if (transferDestination === TransferType.Other_Player_NFC) {
+      onTransferNfc(parseInt(amount), ActionType.other_Player, datas);
+      return;
+    }
+
+    navigateToConfirmation({ ...datas, recipients: player });
   };
 
   useEffect(() => {
