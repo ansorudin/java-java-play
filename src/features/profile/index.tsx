@@ -46,8 +46,6 @@ export const Profile: FC<ProfileProps> = ({
   const { playerName, gender, description, skin, image } = player;
   const { profiles } = useGlobalStore();
 
-  console.log(id);
-
   useEffect(() => {
     const dataPlayer = profiles.filter((profile: IdataProfile) => id === profile.playerId);
     setPlayer(dataPlayer[0]);

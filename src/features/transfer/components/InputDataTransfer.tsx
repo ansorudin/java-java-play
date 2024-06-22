@@ -13,6 +13,7 @@ import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native';
 import { ScrollView } from 'react-native';
 import { IExpense } from '../../type';
+import { TransferType } from '..';
 
 interface TransferProps {
   navigateToConfirmation: (data: DataConfirmationProps) => void;
@@ -20,12 +21,6 @@ interface TransferProps {
   data: DataInputTransferProps;
 }
 
-export enum TransferType {
-  Bank = 'bank',
-  Tax = 'tax',
-  Other_Player = 'other player',
-  Bribe = 'bribe',
-}
 export interface DataInputTransferProps extends IExpense {
   transferDestination: string;
 }
@@ -164,8 +159,8 @@ export const InputDataTransfer: FC<TransferProps> = ({
             !amount ||
             Number(amount) === 0 ||
             Number(amount) > saldo ||
-            (transferDestination === 'bank' && !description) ||
-            (transferDestination === 'player' && !player)
+            (transferDestination === TransferType.Bank && !description) ||
+            (transferDestination === TransferType.Other_Player && !player)
           }
           variant="solid"
           size="md"

@@ -29,7 +29,7 @@ interface DataConfirmationProps {
 
 export enum TransactionType {
   TopUp = 'Top Up',
-  OtherPlayer = 'Transfer to player',
+  OtherPlayer = 'Transfer to other player',
   Bank = 'Transfer to bank',
   Tax = 'Transfer to tax',
   Earning = 'Earning from other player',
@@ -85,7 +85,7 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
 
           if (transaction === TransactionType.TopUp) {
             player.saldo = amount + saldo;
-          } else if (transaction === TransactionType.Bank || TransactionType.Bribe) {
+          } else if (transaction === TransactionType.Bank) {
             player.saldo = saldo - amount;
           } else if (transaction === TransactionType.Tax) {
             player.saldo = saldo - amount;
