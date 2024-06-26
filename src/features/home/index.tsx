@@ -9,7 +9,6 @@ import { ModalInputPerson } from './components/ModalInputPerson';
 import { DataEmpty } from './components/DataEmpty';
 import { useGlobalStore } from '../../stores';
 import { IPlayer } from '../../stores/type';
-import { Header } from '../../components/Header';
 
 interface HomeProps {
   handleProfileScreen: (data: IPlayer) => void;
@@ -17,8 +16,7 @@ interface HomeProps {
 }
 
 export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterPlayer }) => {
-  const { activePlayer, leaderBoard, getDataPlayer, getDecryptData, taxAmount, onChallengeIncome } =
-    useGlobalStore();
+  const { activePlayer, leaderBoard, getDataPlayer, getDecryptData, taxAmount } = useGlobalStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [err, setErr] = useState<string>('');

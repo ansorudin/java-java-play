@@ -22,8 +22,8 @@ export const QuickButtonTopup: FC<QuickButtonTopupProps> = ({
     <TouchableOpacity onPress={() => onChangeAmount(type)}>
       <VStack
         display={display ? 'flex' : 'none'}
-        width={100}
-        height={80}
+        width={80}
+        height={70}
         justifyContent="center"
         alignItems="center"
         bgColor={active ? '$primary400' : '$warmGray200'}

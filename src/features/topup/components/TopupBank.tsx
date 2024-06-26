@@ -24,12 +24,15 @@ export const TopupBank: FC<TopupBankProps> = ({
   const onChangeAmount = (event: number) => {
     if (event === 1) {
       setActiveButton(1);
-      handleChangeAmount('20000');
+      handleChangeAmount('10000');
     } else if (event === 2) {
       setActiveButton(2);
+      handleChangeAmount('20000');
+    } else if (event === 3) {
+      setActiveButton(3);
       handleChangeAmount((price / 2).toString());
     } else {
-      setActiveButton(3);
+      setActiveButton(4);
       handleChangeAmount((price * 2).toString());
     }
   };
@@ -60,23 +63,30 @@ export const TopupBank: FC<TopupBankProps> = ({
       <Box flexDirection="row" justifyContent="space-between" marginTop={10}>
         <QuickButtonTopup
           display={true}
-          title="20.000"
+          title="10.000"
           type={1}
           active={activeButton === 1}
           onChangeAmount={onChangeAmount}
         />
         <QuickButtonTopup
-          display={price > 0}
-          title="50%"
+          display={true}
+          title="20.000"
           type={2}
           active={activeButton === 2}
           onChangeAmount={onChangeAmount}
         />
         <QuickButtonTopup
           display={price > 0}
-          title="2X"
+          title="50%"
           type={3}
           active={activeButton === 3}
+          onChangeAmount={onChangeAmount}
+        />
+        <QuickButtonTopup
+          display={price > 0}
+          title="2X"
+          type={4}
+          active={activeButton === 4}
           onChangeAmount={onChangeAmount}
         />
       </Box>
