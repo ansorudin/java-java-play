@@ -11,7 +11,15 @@ export const RegisterPlayerScreen = () => {
   const { username } = route.params;
   return (
     <Container>
-      <RegisterPlayer username={username} handleMoveHome={() => navigate.push('Home')} />
+      <RegisterPlayer
+        username={username}
+        handleMoveHome={() =>
+          navigate.reset({
+            index: 0,
+            routes: [{ name: 'Home' }],
+          })
+        }
+      />
     </Container>
   );
 };

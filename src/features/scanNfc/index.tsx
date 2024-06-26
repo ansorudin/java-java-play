@@ -67,7 +67,7 @@ export const ScanNfc: FC<ScanNfcProps> = ({
       }
       setErr('');
       clearDataNfc();
-      handleMoveConfirmation({ ...dataTransferOtherPlayer, recipients: 'c87dd1a6' });
+      handleMoveConfirmation({ ...dataTransferOtherPlayer, recipients: nfcId });
       return;
     }
   }, [

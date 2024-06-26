@@ -33,7 +33,7 @@ export const Property: FC<PropertyProps> = ({ data, handleBack, handleMoveConfir
       playerName: playerName,
       playerImage: image,
       amount,
-      transaction: active !== ActiveType.property ? `${active} block ${block}` : active,
+      transaction: active,
       description: active === ActiveType.property ? `Property ${description}` : description,
       saldo,
       discount: playerId === 'cbcb7269',

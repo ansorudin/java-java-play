@@ -1,12 +1,10 @@
 import { Text } from '@gluestack-ui/themed';
 import { Box } from '@gluestack-ui/themed';
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { TextInput } from 'react-native';
-import { ActiveTopUpType } from '..';
-import { ButtonQuickAction } from './ButtonQuickAction';
+import { QuickButtonTopup } from './QuickButtonTopup';
 
 interface TopupBankProps {
-  active: string;
   err: string;
   amount: string;
   handleInputNominal: (e: string) => void;
@@ -17,16 +15,26 @@ export const TopupBank: FC<TopupBankProps> = ({
   err,
   amount,
   handleInputNominal,
-  active,
   handleChangeAmount,
 }) => {
   const price = Number(amount);
+
+  const [activeButton, setActiveButton] = useState<number>(0);
+
+  const onChangeAmount = (event: number) => {
+    if (event === 1) {
+      setActiveButton(1);
+      handleChangeAmount('20000');
+    } else if (event === 2) {
+      setActiveButton(2);
+      handleChangeAmount((price / 2).toString());
+    } else {
+      setActiveButton(3);
+      handleChangeAmount((price * 2).toString());
+    }
+  };
   return (
-    <Box
-      marginHorizontal={4}
-      flex={1}
-      mb={10}
-      display={active === ActiveTopUpType.TopUp ? 'flex' : 'none'}>
+    <Box marginHorizontal={4} marginTop={10} flex={1} mb={10}>
       <Text bold>Enter Amount</Text>
       <Box marginTop={10} marginBottom={10}>
         <Box
@@ -50,23 +58,26 @@ export const TopupBank: FC<TopupBankProps> = ({
 
       <Text bold>Quick Actions</Text>
       <Box flexDirection="row" justifyContent="space-between" marginTop={10}>
-        <ButtonQuickAction
+        <QuickButtonTopup
           display={true}
-          buttonText="250.000"
-          handleChangeAmount={handleChangeAmount}
-          price="250000"
+          title="20.000"
+          type={1}
+          active={activeButton === 1}
+          onChangeAmount={onChangeAmount}
         />
-        <ButtonQuickAction
-          display={price > 0 ? true : false}
-          buttonText="50% from amount"
-          handleChangeAmount={handleChangeAmount}
-          price={(price / 2).toString()}
+        <QuickButtonTopup
+          display={price > 0}
+          title="50%"
+          type={2}
+          active={activeButton === 2}
+          onChangeAmount={onChangeAmount}
         />
-        <ButtonQuickAction
-          display={price > 0 ? true : false}
-          buttonText="2 X  from amount"
-          handleChangeAmount={handleChangeAmount}
-          price={(price * 2).toString()}
+        <QuickButtonTopup
+          display={price > 0}
+          title="2X"
+          type={3}
+          active={activeButton === 3}
+          onChangeAmount={onChangeAmount}
         />
       </Box>
     </Box>

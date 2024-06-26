@@ -54,6 +54,7 @@ const MainApp = () => {
             headerRight: exitGame,
             tabBarLabel: 'Home',
             headerTitleAlign: 'center',
+            tabBarVisible: true,
           })}
         />
         <Tab.Screen

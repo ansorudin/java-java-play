@@ -55,6 +55,8 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
     discount,
   } = data;
 
+  console.log(transaction);
+
   const [openModalSuccess, setOpenModalSuccess] = useState<boolean>(false);
   const [openModalFailed, setModalFailed] = useState<boolean>(false);
   const [recipientData, setRecipientData] = useState<IdataProfile | null>(null);
@@ -83,6 +85,8 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
             throw new Error('Recipient Data not found');
           }
 
+          console.log(transaction);
+
           if (transaction === TransactionType.TopUp) {
             player.saldo = amount + saldo;
           } else if (transaction === TransactionType.Bank) {
@@ -91,15 +95,24 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
             player.saldo = saldo - amount;
             onChangeTax(taxAmount + amount);
           } else if (transaction === TransactionType.OtherPlayer && recipients) {
-            player.saldo = saldo - amount;
+            console.log(recipients);
 
+            player.saldo = saldo - amount;
             const recipient = realm.objectForPrimaryKey<Player>('PlayerGame', recipients);
+            console.log(recipient);
+
             if (recipient) {
               const oldSaldo = recipient.saldo;
               recipient.saldo = amount + oldSaldo;
             } else {
               throw new Error('Recipient Data not found');
             }
+          } else if (transaction === TransactionType.property) {
+            player.saldo = saldo - amount;
+          } else if (transaction === TransactionType.house) {
+            player.saldo = saldo - amount;
+          } else if (transaction === TransactionType.hotel) {
+            player.saldo = saldo - amount;
           } else {
             throw new Error('Invalid Transaction Type or Missing Recipients');
           }

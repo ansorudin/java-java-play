@@ -9,6 +9,7 @@ import { ModalInputPerson } from './components/ModalInputPerson';
 import { DataEmpty } from './components/DataEmpty';
 import { useGlobalStore } from '../../stores';
 import { IPlayer } from '../../stores/type';
+import { Header } from '../../components/Header';
 
 interface HomeProps {
   handleProfileScreen: (data: IPlayer) => void;
@@ -68,6 +69,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
   return (
     <>
       <Box flex={1} display={isLoading ? 'none' : 'flex'}>
+        {/* <Header title="Home" /> */}
         <Box h="$1/2" display={leaderBoard.length > 0 ? 'flex' : 'none'}>
           <Box
             flexDirection="row"
