@@ -17,6 +17,7 @@ export const TransferScreen = () => {
           navigate.push('InputDataTransfer', data)
         }
         handleBack={() => navigate.pop(1)}
+        moveToConfirmation={data => navigate.push('Confirmation', data)}
       />
     </Container>
   );

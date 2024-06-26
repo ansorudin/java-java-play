@@ -6,7 +6,7 @@ import { DataConfirmationProps } from '../components/Confirmation';
 import { dataConfirmationTaxProps } from '../features/Tax/components/ConfirmationTax';
 import { IPlayer } from '../stores/type';
 import { DataTopUpProps } from '../features/topup';
-import { DataTransferProps } from '../features/transfer';
+import { IExpense } from '../features/type';
 import { DataInputTransferProps } from '../features/transfer/components/InputDataTransfer';
 import { ActionType } from '../features/scanNfc';
 
@@ -18,14 +18,16 @@ export type MainStackParamList = {
   History: { playerId: string };
   TopUp: DataTopUpProps;
   Confirmation: DataConfirmationProps;
-  Transfer: DataTransferProps;
-  ScanNfc: { action: ActionType; amount?: number };
+  Transfer: IExpense;
+  ScanNfc: { action: ActionType; amount?: number; dataTransferOtherPlayer?: DataConfirmationProps };
   ExitGame: undefined;
   Tax: undefined;
   ConfirmationTax: dataConfirmationTaxProps;
   InputDataTransfer: DataInputTransferProps;
   InputRecipients: { amount: number };
   Dice: undefined;
+  Register_Player: { username: string };
+  Property: IExpense;
 };
 
 export type MainStackScreenList = {

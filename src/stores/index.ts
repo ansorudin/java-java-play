@@ -6,6 +6,7 @@ import { NfcSlice, createNfcSlice } from './nfc';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { TaxSlice, createTaxSlice } from './taxAmount';
 import { HistorySlice, createHistorySlice } from './history';
+import { PlayerIncomeSlice, createPlayerIncomeSlice } from './playerIncome';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -14,13 +15,14 @@ export type GlobalStoreProps = AuthSlice &
   PlayerSlice &
   NfcSlice &
   TaxSlice &
-  HistorySlice;
+  HistorySlice &
+  PlayerIncomeSlice;
 
 export const STORAGE_KEY = 'app-storage';
 
 export const useGlobalStore = create<
   GlobalStoreProps,
-  [['zustand/persist', Pick<GlobalStoreProps, 'username' | 'taxAmount'>]]
+  [['zustand/persist', Pick<GlobalStoreProps, 'username' | 'taxAmount' | 'activeTags'>]]
 >(
   persist(
     (...a) => ({
@@ -30,6 +32,7 @@ export const useGlobalStore = create<
       ...createNfcSlice(...a),
       ...createTaxSlice(...a),
       ...createHistorySlice(...a),
+      ...createPlayerIncomeSlice(...a),
     }),
     {
       name: STORAGE_KEY,
@@ -37,6 +40,7 @@ export const useGlobalStore = create<
       partialize: state => ({
         username: state.username,
         taxAmount: state.taxAmount,
+        activeTags: state.activeTags,
       }),
     },
   ),

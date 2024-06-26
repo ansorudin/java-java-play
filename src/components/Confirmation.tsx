@@ -24,22 +24,38 @@ interface DataConfirmationProps {
   recipients?: string;
   description?: string;
   recipientsImage?: string;
+  discount?: boolean;
 }
 
 export enum TransactionType {
   TopUp = 'Top Up',
-  OtherPlayer = 'Transfer to player',
+  OtherPlayer = 'Transfer to other player',
   Bank = 'Transfer to bank',
   Tax = 'Transfer to tax',
   Earning = 'Earning from other player',
   EarningTax = 'Tax Transfer',
+  Bribe = 'Bribe to Escape',
+  property = 'Buy property',
+  house = 'Buy house',
+  hotel = 'Buy hotel',
 }
 
 export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigateToHome }) => {
   const realm = getRealm();
   const { getDataPlayer, taxAmount, onChangeTax, getSelectedProfile } = useGlobalStore();
-  const { playerId, playerImage, playerName, transaction, amount, recipients, description, saldo } =
-    data;
+  const {
+    playerId,
+    playerImage,
+    playerName,
+    transaction,
+    amount,
+    recipients,
+    description,
+    saldo,
+    discount,
+  } = data;
+
+  console.log(transaction);
 
   const [openModalSuccess, setOpenModalSuccess] = useState<boolean>(false);
   const [openModalFailed, setModalFailed] = useState<boolean>(false);
@@ -69,6 +85,8 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
             throw new Error('Recipient Data not found');
           }
 
+          console.log(transaction);
+
           if (transaction === TransactionType.TopUp) {
             player.saldo = amount + saldo;
           } else if (transaction === TransactionType.Bank) {
@@ -77,14 +95,24 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
             player.saldo = saldo - amount;
             onChangeTax(taxAmount + amount);
           } else if (transaction === TransactionType.OtherPlayer && recipients) {
+            console.log(recipients);
+
             player.saldo = saldo - amount;
             const recipient = realm.objectForPrimaryKey<Player>('PlayerGame', recipients);
+            console.log(recipient);
+
             if (recipient) {
               const oldSaldo = recipient.saldo;
               recipient.saldo = amount + oldSaldo;
             } else {
               throw new Error('Recipient Data not found');
             }
+          } else if (transaction === TransactionType.property) {
+            player.saldo = saldo - amount;
+          } else if (transaction === TransactionType.house) {
+            player.saldo = saldo - amount;
+          } else if (transaction === TransactionType.hotel) {
+            player.saldo = saldo - amount;
           } else {
             throw new Error('Invalid Transaction Type or Missing Recipients');
           }
@@ -199,13 +227,21 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
               title={transaction === TransactionType.TopUp ? 'Top Up Amount' : 'Transfer Amount'}
               text={`Rp. ${amount.toLocaleString()}`}
             />
-            <ItemTransaction
-              title="Description"
-              text={description}
-              hidden={transaction !== TransactionType.Bank}
-            />
+            <ItemTransaction title="Description" text={description} hidden={!description} />
           </Box>
+          <Image
+            display={discount ? 'flex' : 'none'}
+            opacity={0.3}
+            position="absolute"
+            bottom={0}
+            right={10}
+            w={120}
+            h={120}
+            source={require('../../asset/discount-tag.png')}
+            alt="card"
+          />
         </Box>
+
         <Button
           variant="solid"
           p="$0"
@@ -216,6 +252,7 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
           <ButtonText size="md">Continue</ButtonText>
         </Button>
       </Box>
+
       <ModalSuccess
         isOpen={openModalSuccess}
         text={transaction === TransactionType.TopUp ? 'Top up money from bank' : 'Transfer money'}

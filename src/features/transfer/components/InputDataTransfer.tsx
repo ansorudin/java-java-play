@@ -5,7 +5,6 @@ import { InputSelect } from './InputSelect';
 import { BalanceCard } from '../../../components/BalanceCard';
 import { Header } from '../../../components/Header';
 import { DataConfirmationProps } from '../../../components/Confirmation';
-import { DataTransferProps } from '..';
 import getRealm, { Player } from '../../../components/schema/SchemaRealm';
 import { FlatList, ListRenderItemInfo } from 'react-native';
 import { useGlobalStore } from '../../../stores';
@@ -13,14 +12,18 @@ import { IPlayer } from '../../../stores/type';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native';
 import { ScrollView } from 'react-native';
-import { ButtonQuickAction } from '../../topup/components/ButtonQuickAction';
+import { IExpense } from '../../type';
+import { TransferType } from '..';
+import { ActionType } from '../../scanNfc';
 
 interface TransferProps {
   navigateToConfirmation: (data: DataConfirmationProps) => void;
   handleBack: () => void;
   data: DataInputTransferProps;
+  onTransferNfc: (amount: number, action: ActionType, datas: DataConfirmationProps) => void;
 }
-export interface DataInputTransferProps extends DataTransferProps {
+
+export interface DataInputTransferProps extends IExpense {
   transferDestination: string;
 }
 
@@ -28,6 +31,7 @@ export const InputDataTransfer: FC<TransferProps> = ({
   navigateToConfirmation,
   handleBack,
   data,
+  onTransferNfc,
 }) => {
   const { profiles } = useGlobalStore();
   const scrollViewRef = useRef<ScrollView>(null);
@@ -69,13 +73,21 @@ export const InputDataTransfer: FC<TransferProps> = ({
       playerId,
       playerName: playerName,
       playerImage: image,
-      recipients: player,
       description,
       amount: parseInt(amount),
-      transaction: 'Transfer to ' + transferDestination,
+      transaction:
+        transferDestination === TransferType.Other_Player_NFC
+          ? 'Transfer to ' + TransferType.Other_Player
+          : 'Transfer to ' + transferDestination,
       saldo,
     };
-    navigateToConfirmation(datas);
+
+    if (transferDestination === TransferType.Other_Player_NFC) {
+      onTransferNfc(parseInt(amount), ActionType.other_Player, datas);
+      return;
+    }
+
+    navigateToConfirmation({ ...datas, recipients: player });
   };
 
   useEffect(() => {
@@ -109,7 +121,7 @@ export const InputDataTransfer: FC<TransferProps> = ({
               marginTop={20}
               display={transferDestination ? 'flex' : 'none'}
               marginHorizontal={3}>
-              <Box display={transferDestination === 'player' ? undefined : 'none'}>
+              <Box display={transferDestination === TransferType.Other_Player ? 'flex' : 'none'}>
                 <InputSelect
                   underline
                   title="Recipient"
@@ -138,19 +150,14 @@ export const InputDataTransfer: FC<TransferProps> = ({
                 <Text size="2xs" color="$red400" italic>
                   {err}
                 </Text>
-                <ButtonQuickAction
-                  buttonText="20.000"
-                  handleChangeAmount={() => setAmount('20000')}
-                />
               </Box>
 
-              <Box display={transferDestination === 'bank' ? undefined : 'none'}>
+              <Box display={transferDestination === TransferType.Bank ? 'flex' : 'none'}>
                 <InputSelect
                   underline
                   title="Description"
                   handleChangeValue={e => setDescription(e)}
                   placeHolder="Select Descriptions">
-                  <SelectItem label="Purchase Asset" value="Purchase Asset" />
                   <SelectItem label="Excess Transfer" value="Excess Transfer" />
                   <SelectItem label="Other" value="Other" />
                 </InputSelect>
@@ -163,8 +170,8 @@ export const InputDataTransfer: FC<TransferProps> = ({
             !amount ||
             Number(amount) === 0 ||
             Number(amount) > saldo ||
-            (transferDestination === 'bank' && !description) ||
-            (transferDestination === 'player' && !player)
+            (transferDestination === TransferType.Bank && !description) ||
+            (transferDestination === TransferType.Other_Player && !player)
           }
           variant="solid"
           size="md"

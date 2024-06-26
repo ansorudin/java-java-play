@@ -1,12 +1,14 @@
 import { Box, Image, Text } from '@gluestack-ui/themed';
 import { IProfile } from '../types';
+import { FC } from 'react';
 
-interface Props {
+interface ProfileImageProps {
   data: IProfile;
 }
 
-export const ProfileImage = (props: Props) => {
-  const { image, title, description } = props.data;
+export const ProfileImage: FC<ProfileImageProps> = ({ data }) => {
+  const { image, title, description } = data;
+
   return (
     <Box width="$full" flex={1} rounded={20}>
       <Image

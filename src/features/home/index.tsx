@@ -7,75 +7,69 @@ import NfcManager, { NfcEvents, Ndef } from 'react-native-nfc-manager';
 import { registeredId } from './registeredId';
 import { ModalInputPerson } from './components/ModalInputPerson';
 import { DataEmpty } from './components/DataEmpty';
-import getRealm from '../../components/schema/SchemaRealm';
 import { useGlobalStore } from '../../stores';
 import { IPlayer } from '../../stores/type';
-import { NfcTag } from './components/NfcTag';
+import { Header } from '../../components/Header';
 
 interface HomeProps {
   handleProfileScreen: (data: IPlayer) => void;
+  handleRegisterPlayer: (username: string) => void;
 }
 
-export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
-  const realm = getRealm();
-  const { activePlayer, leaderBoard, getDataPlayer, getDecryptData, taxAmount } = useGlobalStore();
+export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterPlayer }) => {
+  const { activePlayer, leaderBoard, getDataPlayer, getDecryptData, taxAmount, onChallengeIncome } =
+    useGlobalStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [err, setErr] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     getDataPlayer();
     setIsLoading(false);
   }, [getDataPlayer]);
 
-  const handleBack = () => {
-    setLoading(false);
-    setErr('');
-  };
-
-  const readTag = async (e: string) => {
-    setIsOpen(false);
-    try {
-      setLoading(true);
-      await NfcManager.registerTagEvent();
-      NfcManager.setEventListener(NfcEvents.DiscoverTag, (tag: any) => {
-        if (tag.ndefMessage) {
-          const ndefRecords = tag.ndefMessage;
-          const parseData = ndefRecords.map((record: any) =>
-            Ndef.text.decodePayload(record.payload),
-          );
-          const decrypt = parseData.map((data: string) => getDecryptData(data));
-          const textData = JSON.parse(decrypt.join('\n'));
-          const isId = registeredId.find(id => id === tag.id);
-
-          const isAdding = activePlayer.find((data: IPlayer) => data.id === textData.playerId);
-
-          if (!isId) {
-            setErr('Invalid card, always use an authorized card to access this application.');
-            return;
-          }
-
-          if (!isAdding) {
-            realm.write(() => {
-              realm.create('PlayerGame', { id: textData.playerId, username: e, saldo: 250000 });
-            });
-            getDataPlayer();
-            setErr('');
-            setLoading(false);
+  useEffect(() => {
+    const onReadTagNfc = async () => {
+      try {
+        await NfcManager.registerTagEvent();
+        NfcManager.setEventListener(NfcEvents.DiscoverTag, (tag: any) => {
+          if (tag.ndefMessage) {
+            const ndefRecords = tag.ndefMessage;
+            const parseData = ndefRecords.map((record: any) =>
+              Ndef.text.decodePayload(record.payload),
+            );
+            const decrypt = parseData.map((data: string) => getDecryptData(data));
+            const textData = JSON.parse(decrypt.join('\n'));
+            const id = textData.playerId;
+            const isId = registeredId.find(dataId => dataId === tag.id);
+            if (!isId) {
+              setErr('Invalid card, always use an authorized card to access this application.');
+              return;
+            }
+            const player = activePlayer.find(item => item.id === id);
+            if (player) {
+              handleProfileScreen(player);
+            }
           } else {
-            setErr('This card has been used by another player, use a different card.');
+            setErr('Tag cannot read, try again!!');
           }
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+        });
+      } catch (error: any) {
+        setErr(error.message);
+      }
+    };
+    onReadTagNfc();
+
+    return () => {
+      NfcManager.unregisterTagEvent();
+      NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
+    };
+  }, [activePlayer, getDecryptData, handleProfileScreen]);
 
   return (
     <>
-      <Box flex={1} display={isLoading || loading ? 'none' : 'flex'}>
+      <Box flex={1} display={isLoading ? 'none' : 'flex'}>
+        {/* <Header title="Home" /> */}
         <Box h="$1/2" display={leaderBoard.length > 0 ? 'flex' : 'none'}>
           <Box
             flexDirection="row"
@@ -134,11 +128,10 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen }) => {
         <ModalInputPerson
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
-          handleInputUsername={readTag}
+          handleInputUsername={handleRegisterPlayer}
         />
         <DataEmpty buttonScan={() => setIsOpen(true)} dataPlayer={activePlayer} />
       </Box>
-      <NfcTag error={err} display={loading} handleBackToHome={handleBack} />
     </>
   );
 };

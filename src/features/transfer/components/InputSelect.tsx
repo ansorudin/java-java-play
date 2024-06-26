@@ -18,19 +18,25 @@ import { ReactNode } from 'react';
 interface PropsInputSelect {
   title: string;
   handleChangeValue: (e: string) => void;
-  placeHolder: string;
+  placeHolder?: string;
   underline?: boolean;
+  isDisabled?: boolean;
   children: ReactNode;
+  selectedValue?: string;
 }
 
 export const InputSelect = (props: PropsInputSelect) => {
-  const { title, handleChangeValue, placeHolder, children, underline } = props;
+  const { title, handleChangeValue, placeHolder, children, underline, isDisabled, selectedValue } =
+    props;
   const border = underline ? 'underlined' : 'outline';
 
   return (
     <Box gap={10}>
       <Text bold>{title}</Text>
-      <Select onValueChange={handleChangeValue}>
+      <Select
+        onValueChange={handleChangeValue}
+        isDisabled={isDisabled}
+        selectedValue={selectedValue}>
         <SelectTrigger variant={border} size="sm">
           <SelectInput
             placeholder={placeHolder}
