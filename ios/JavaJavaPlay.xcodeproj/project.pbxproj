@@ -466,9 +466,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JAWMVK66S8;
+				DEVELOPMENT_TEAM = UY2BGD6WKF;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = JavaJavaPlay/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = JavaJavaPlay;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -494,8 +495,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = JAWMVK66S8;
+				DEVELOPMENT_TEAM = UY2BGD6WKF;
 				INFOPLIST_FILE = JavaJavaPlay/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = JavaJavaPlay;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
