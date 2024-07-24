@@ -6,7 +6,12 @@ export interface IPlayer {
 
 export interface HistoryPlayer {
   id: string;
-  playerName: string;
+  history: History[];
+}
+
+export interface History {
+  id: string;
+  playerName?: string;
   playerImage: number;
   transaction: string;
   amount: number;

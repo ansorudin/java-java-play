@@ -16,15 +16,17 @@ interface HomeProps {
 }
 
 export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterPlayer }) => {
-  const { activePlayer, leaderBoard, getDataPlayer, getDecryptData, taxAmount } = useGlobalStore();
+  const { activePlayers, leaderBoard, getDataPlayer, getDecryptData, taxAmount } = useGlobalStore();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [err, setErr] = useState<string>('');
 
-  useEffect(() => {
-    getDataPlayer();
-    setIsLoading(false);
-  }, [getDataPlayer]);
+  // useEffect(() => {
+  //   // getDataPlayer();
+  //   // setIsLoading(false);
+  // }, []);
+
+  console.log(activePlayers);
 
   useEffect(() => {
     const onReadTagNfc = async () => {
@@ -44,7 +46,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
               setErr('Invalid card, always use an authorized card to access this application.');
               return;
             }
-            const player = activePlayer.find(item => item.id === id);
+            const player = activePlayers.find(item => item.id === id);
             if (player) {
               handleProfileScreen(player);
             }
@@ -62,13 +64,13 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
       NfcManager.unregisterTagEvent();
       NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
     };
-  }, [activePlayer, getDecryptData, handleProfileScreen]);
+  }, [activePlayers, getDecryptData, handleProfileScreen]);
 
   return (
     <>
-      <Box flex={1} display={isLoading ? 'none' : 'flex'}>
+      <Box flex={1}>
         {/* <Header title="Home" /> */}
-        <Box h="$1/2" display={leaderBoard.length > 0 ? 'flex' : 'none'}>
+        <Box h="$1/2">
           <Box
             flexDirection="row"
             justifyContent="space-between"
@@ -91,7 +93,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
           </Box>
         </Box>
 
-        <Box flex={1} display={leaderBoard.length > 0 ? 'flex' : 'none'}>
+        <Box flex={1}>
           <Box
             justifyContent="flex-end"
             alignItems="flex-end"
@@ -109,7 +111,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
             </Button>
           </Box>
           <FlatList
-            data={activePlayer}
+            data={activePlayers}
             keyExtractor={item => item.id}
             renderItem={({ item }: ListRenderItemInfo<IPlayer>) => (
               <ScrollView>
@@ -128,7 +130,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
           onClose={() => setIsOpen(false)}
           handleInputUsername={handleRegisterPlayer}
         />
-        <DataEmpty buttonScan={() => setIsOpen(true)} dataPlayer={activePlayer} />
+        <DataEmpty buttonScan={() => setIsOpen(true)} dataPlayer={activePlayers} />
       </Box>
     </>
   );

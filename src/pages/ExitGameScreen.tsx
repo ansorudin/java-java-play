@@ -6,9 +6,5 @@ import { MainStackNavigationProps } from '../routes/types';
 
 export const ExitGameScreen = () => {
   const navigate = useNavigation<MainStackNavigationProps>();
-  return (
-    <Container>
-      <ExitGame buttonBack={() => navigate.pop(1)} />
-    </Container>
-  );
+  return <Container>{/* <ExitGame buttonBack={() => navigate.pop(1)} /> */}</Container>;
 };

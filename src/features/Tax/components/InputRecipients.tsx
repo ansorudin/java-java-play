@@ -18,7 +18,7 @@ export const InputRecipients: FC<InputRecipientsProps> = ({
   moveToConfirmation,
   amount,
 }) => {
-  const { activePlayer, getSelectedProfile } = useGlobalStore();
+  const { activePlayers, getSelectedProfile } = useGlobalStore();
   const [player, setPlayer] = useState<string>('');
 
   const renderRecipients = (listRenderItem: ListRenderItemInfo<IPlayer>) => {
@@ -67,7 +67,7 @@ export const InputRecipients: FC<InputRecipientsProps> = ({
             handleChangeValue={e => setPlayer(e)}
             placeHolder="Please select player">
             <FlatList
-              data={activePlayer}
+              data={activePlayers}
               renderItem={renderRecipients}
               keyExtractor={item => item.id.toLocaleString()}
             />

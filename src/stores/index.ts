@@ -22,7 +22,12 @@ export const STORAGE_KEY = 'app-storage';
 
 export const useGlobalStore = create<
   GlobalStoreProps,
-  [['zustand/persist', Pick<GlobalStoreProps, 'username' | 'taxAmount' | 'activeTags'>]]
+  [
+    [
+      'zustand/persist',
+      Pick<GlobalStoreProps, 'taxAmount' | 'activeTags' | 'activePlayers' | 'histories'>,
+    ],
+  ]
 >(
   persist(
     (...a) => ({
@@ -38,9 +43,10 @@ export const useGlobalStore = create<
       name: STORAGE_KEY,
       storage: createJSONStorage(() => AsyncStorage),
       partialize: state => ({
-        username: state.username,
         taxAmount: state.taxAmount,
         activeTags: state.activeTags,
+        activePlayers: state.activePlayers,
+        histories: state.histories,
       }),
     },
   ),

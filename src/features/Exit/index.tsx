@@ -11,7 +11,7 @@ import {
 } from '@gluestack-ui/themed';
 import { Header } from '../../components/Header';
 import { FC, useState } from 'react';
-import getRealm from '../../components/schema/SchemaRealm';
+// import getRealm from '../../components/schema/SchemaRealm';
 import { useGlobalStore } from '../../stores';
 
 interface ExitGameProps {
@@ -21,35 +21,35 @@ export const ExitGame: FC<ExitGameProps> = ({ buttonBack }) => {
   const { getDataPlayer, onChangeTax } = useGlobalStore();
   const [errMessage, setErrorMessage] = useState<string>('');
 
-  const cleanRealm = () => {
-    const realm = getRealm();
+  // const cleanRealm = () => {
+  //   const realm = getRealm();
 
-    if (!realm.isInTransaction) {
-      try {
-        realm.write(() => {
-          const allPlayers = realm.objects('PlayerGame');
-          if (allPlayers.length > 0) {
-            try {
-              const allHistories = realm.objects('TransactionHistory');
-              realm.delete(allHistories);
-              realm.delete(allPlayers);
-              onChangeTax(0);
-              getDataPlayer();
-              buttonBack();
-            } catch (error: any) {
-              throw new Error(error.message);
-            }
-          } else {
-            throw new Error('No player active in game !');
-          }
-        });
-        realm.close();
-      } catch (error: any) {
-        console.log(error);
-        setErrorMessage(error.message);
-      }
-    }
-  };
+  //   if (!realm.isInTransaction) {
+  //     try {
+  //       realm.write(() => {
+  //         const allPlayers = realm.objects('PlayerGame');
+  //         if (allPlayers.length > 0) {
+  //           try {
+  //             const allHistories = realm.objects('TransactionHistory');
+  //             realm.delete(allHistories);
+  //             realm.delete(allPlayers);
+  //             onChangeTax(0);
+  //             getDataPlayer();
+  //             buttonBack();
+  //           } catch (error: any) {
+  //             throw new Error(error.message);
+  //           }
+  //         } else {
+  //           throw new Error('No player active in game !');
+  //         }
+  //       });
+  //       realm.close();
+  //     } catch (error: any) {
+  //       console.log(error);
+  //       setErrorMessage(error.message);
+  //     }
+  //   }
+  // };
 
   return (
     <Box flex={1}>
@@ -77,7 +77,7 @@ export const ExitGame: FC<ExitGameProps> = ({ buttonBack }) => {
       </Box>
 
       <Button
-        onPress={cleanRealm}
+        // onPress={cleanRealm}
         mb={20}
         size="md"
         variant="solid"

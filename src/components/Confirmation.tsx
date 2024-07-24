@@ -3,10 +3,10 @@ import { ModalSuccess } from './ModalSuccess';
 import { FC, useEffect, useState } from 'react';
 import { ItemTransaction } from './ItemTransaction';
 import { Header } from './Header';
-import getRealm, { Histories, Player } from './schema/SchemaRealm';
 import { useGlobalStore } from '../stores';
 import { ModalFailed } from './ModalFailed';
 import { IdataProfile } from '../stores/datas/type';
+import { History } from '../stores/type';
 
 interface ConfirmationProps {
   handleBack: () => void;
@@ -41,8 +41,14 @@ export enum TransactionType {
 }
 
 export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigateToHome }) => {
-  const realm = getRealm();
-  const { getDataPlayer, taxAmount, onChangeTax, getSelectedProfile } = useGlobalStore();
+  const {
+    getDataPlayer,
+    taxAmount,
+    onChangeTax,
+    getSelectedProfile,
+    activePlayers,
+    setDataHistory,
+  } = useGlobalStore();
   const {
     playerId,
     playerImage,
@@ -78,104 +84,74 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
 
   const handleButtonContinue = () => {
     try {
-      if (!realm.isInTransaction) {
-        realm.write(() => {
-          const player = realm.objectForPrimaryKey<Player>('PlayerGame', playerId);
-          if (!player) {
-            throw new Error('Recipient Data not found');
-          }
-
-          console.log(transaction);
-
-          if (transaction === TransactionType.TopUp) {
-            player.saldo = amount + saldo;
-          } else if (transaction === TransactionType.Bank) {
-            player.saldo = saldo - amount;
-          } else if (transaction === TransactionType.Tax) {
-            player.saldo = saldo - amount;
-            onChangeTax(taxAmount + amount);
-          } else if (transaction === TransactionType.OtherPlayer && recipients) {
-            console.log(recipients);
-
-            player.saldo = saldo - amount;
-            const recipient = realm.objectForPrimaryKey<Player>('PlayerGame', recipients);
-            console.log(recipient);
-
-            if (recipient) {
-              const oldSaldo = recipient.saldo;
-              recipient.saldo = amount + oldSaldo;
-            } else {
-              throw new Error('Recipient Data not found');
-            }
-          } else if (transaction === TransactionType.property) {
-            player.saldo = saldo - amount;
-          } else if (transaction === TransactionType.house) {
-            player.saldo = saldo - amount;
-          } else if (transaction === TransactionType.hotel) {
-            player.saldo = saldo - amount;
-          } else {
-            throw new Error('Invalid Transaction Type or Missing Recipients');
-          }
-
-          try {
-            const histories = realm.objectForPrimaryKey<Histories>('TransactionHistory', playerId);
-            const dataToSend: any = {
-              id: playerId,
-              playerName:
-                transaction === TransactionType.OtherPlayer
-                  ? recipientData?.playerName
-                  : transaction === TransactionType.Tax
-                  ? 'Tax'
-                  : 'Bank',
-              playerImage:
-                transaction === TransactionType.OtherPlayer
-                  ? Number(recipientData?.image)
-                  : Number(playerImage),
-              transaction,
-              amount,
-            };
-
-            if (histories) {
-              histories.histories.push(dataToSend);
-            } else {
-              realm.create('TransactionHistory', {
-                id: playerId,
-                histories: [dataToSend],
-              });
-            }
-          } catch (error) {
-            throw new Error('Invalid Transaction Type or Missing Recipients');
-          }
-          if (recipients) {
-            try {
-              const histories = realm.objectForPrimaryKey<Histories>(
-                'TransactionHistory',
-                recipients,
-              );
-              const dataToSend: any = {
-                id: recipients,
-                playerName: playerName,
-                playerImage: Number(playerImage),
-                transaction: 'Earning from other player',
-                amount,
-              };
-
-              if (histories) {
-                histories.histories.push(dataToSend);
-              } else {
-                realm.create('TransactionHistory', {
-                  id: recipients,
-                  histories: [dataToSend],
-                });
-              }
-            } catch (error) {
-              throw new Error('Invalid Transaction');
-            }
-          }
-        });
-        setOpenModalSuccess(true);
-        getDataPlayer();
+      const activePlayer = activePlayers.find(player => player.id === playerId);
+      if (!activePlayer) {
+        throw new Error('Recipient Data not found');
       }
+      if (transaction === TransactionType.TopUp) {
+        activePlayer.saldo = amount + saldo;
+      } else if (transaction === TransactionType.Bank) {
+        activePlayer.saldo = saldo - amount;
+      } else if (transaction === TransactionType.Tax) {
+        activePlayer.saldo = saldo - amount;
+        onChangeTax(taxAmount + amount);
+      } else if (transaction === TransactionType.OtherPlayer && recipients) {
+        activePlayer.saldo = saldo - amount;
+        const recipient = activePlayers.find(player => player.id === recipients);
+
+        if (recipient) {
+          const oldSaldo = recipient.saldo;
+          recipient.saldo = amount + oldSaldo;
+        } else {
+          throw new Error('Recipient Data not found');
+        }
+      } else if (transaction === TransactionType.property) {
+        activePlayer.saldo = saldo - amount;
+      } else if (transaction === TransactionType.house) {
+        activePlayer.saldo = saldo - amount;
+      } else if (transaction === TransactionType.hotel) {
+        activePlayer.saldo = saldo - amount;
+      } else {
+        throw new Error('Invalid Transaction Type or Missing Recipients');
+      }
+
+      try {
+        const dataToSend: History = {
+          id: playerId,
+          playerName:
+            transaction === TransactionType.OtherPlayer
+              ? recipientData?.playerName
+              : transaction === TransactionType.Tax
+              ? 'Tax'
+              : 'Bank',
+          playerImage:
+            transaction === TransactionType.OtherPlayer
+              ? Number(recipientData?.image)
+              : Number(playerImage),
+          transaction,
+          amount,
+        };
+        setDataHistory(dataToSend, playerId);
+      } catch (error) {
+        throw new Error('Invalid Transaction Type or Missing Recipients');
+      }
+      if (recipients) {
+        try {
+          const dataToSend: History = {
+            id: recipients,
+            playerName: playerName,
+            playerImage: Number(playerImage),
+            transaction: 'Earning from other player',
+            amount,
+          };
+          setDataHistory(dataToSend, recipients);
+        } catch (error) {
+          throw new Error('Invalid Transaction');
+        }
+      }
+
+      setOpenModalSuccess(true);
+      getDataPlayer();
     } catch (error: any) {
       setModalFailed(true);
       setErr(error.message);

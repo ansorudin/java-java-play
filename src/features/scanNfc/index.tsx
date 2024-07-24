@@ -38,13 +38,13 @@ export const ScanNfc: FC<ScanNfcProps> = ({
   dataTransferOtherPlayer,
   handleMoveConfirmation,
 }) => {
-  const { onReadTagNfc, nfcId, errorNfcReadTag, activePlayer, clearDataNfc } = useGlobalStore();
+  const { onReadTagNfc, nfcId, errorNfcReadTag, activePlayers, clearDataNfc } = useGlobalStore();
   const [err, setErr] = useState<string>('');
 
   useEffect(() => {
     onReadTagNfc();
     if (nfcId && action === ActionType.history && amount) {
-      const isActive = activePlayer.find(player => player.id === nfcId);
+      const isActive = activePlayers.find(player => player.id === nfcId);
       if (!isActive) {
         setErr('Player is not registered as an active player');
         return;
@@ -60,7 +60,7 @@ export const ScanNfc: FC<ScanNfcProps> = ({
       return;
     }
     if (nfcId && action === ActionType.other_Player && dataTransferOtherPlayer) {
-      const isActive = activePlayer.find(player => player.id === nfcId);
+      const isActive = activePlayers.find(player => player.id === nfcId);
       if (!isActive) {
         setErr('Player is not registered as an active player');
         return;
@@ -72,7 +72,7 @@ export const ScanNfc: FC<ScanNfcProps> = ({
     }
   }, [
     action,
-    activePlayer,
+    activePlayers,
     amount,
     handleMoveConfirmationTax,
     onReadTagNfc,

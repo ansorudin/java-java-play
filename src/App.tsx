@@ -110,8 +110,8 @@ const MainApp2 = () => {
 };
 
 function RootStack() {
-  const { activePlayer } = useGlobalStore();
-  const renderTab = activePlayer.length > 0 ? MainApp : MainApp2;
+  const { activePlayers } = useGlobalStore();
+  const renderTab = activePlayers.length > 0 ? MainApp : MainApp2;
 
   return (
     <Navigator initialRouteName="Home_Tabs" screenOptions={{ headerShown: false }}>

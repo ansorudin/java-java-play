@@ -5,7 +5,6 @@ import { InputSelect } from './InputSelect';
 import { BalanceCard } from '../../../components/BalanceCard';
 import { Header } from '../../../components/Header';
 import { DataConfirmationProps } from '../../../components/Confirmation';
-import getRealm, { Player } from '../../../components/schema/SchemaRealm';
 import { FlatList, ListRenderItemInfo } from 'react-native';
 import { useGlobalStore } from '../../../stores';
 import { IPlayer } from '../../../stores/type';
@@ -33,7 +32,7 @@ export const InputDataTransfer: FC<TransferProps> = ({
   data,
   onTransferNfc,
 }) => {
-  const { profiles } = useGlobalStore();
+  const { profiles, activePlayers } = useGlobalStore();
   const scrollViewRef = useRef<ScrollView>(null);
   const { transferDestination, playerName, playerId, saldo, image } = data;
   const [amount, setAmount] = useState<string>('');
@@ -53,13 +52,12 @@ export const InputDataTransfer: FC<TransferProps> = ({
 
   useEffect(() => {
     try {
-      const realm = getRealm();
-      const dataPlayers = realm.objects<Player>('PlayerGame').filter(item => item.id !== playerId);
+      const dataPlayers = activePlayers.filter(item => item.id !== playerId);
       setPlayers(Array.from(dataPlayers));
     } catch (error) {
       console.log(error);
     }
-  }, [playerId]);
+  }, [activePlayers, playerId]);
 
   const buttonNext = () => {
     const regex = /^[0-9]+$/;

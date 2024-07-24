@@ -3,8 +3,7 @@ import { Header } from '../../../components/Header';
 import { FC, useState } from 'react';
 import { ModalSuccess } from '../../../components/ModalSuccess';
 import { useGlobalStore } from '../../../stores';
-import getRealm, { Player } from '../../../components/schema/SchemaRealm';
-import { HistoryPlayer } from '../../../stores/type';
+import { History, IPlayer } from '../../../stores/type';
 import { ModalFailed } from '../../../components/ModalFailed';
 
 interface ConfirmationTaxProps {
@@ -25,44 +24,40 @@ export enum MethodeType {
 }
 
 export const ConfirmationTax: FC<ConfirmationTaxProps> = ({ handleBack, moveToHome, data }) => {
-  const { getSelectedProfile, onChangeTax, taxAmount, setDataHistory } = useGlobalStore();
+  const { getSelectedProfile, onChangeTax, taxAmount, setDataHistory, activePlayers } =
+    useGlobalStore();
   const { amount, methode, playerName } = data;
   const playerInfo = getSelectedProfile(playerName);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const [err, setErr] = useState<string>('');
 
   const buttonContinue = () => {
-    const realm = getRealm();
-    if (!realm.isInTransaction) {
-      try {
-        realm.write(() => {
-          const player = realm.objectForPrimaryKey<Player>('PlayerGame', playerName);
-          if (player) {
-            player.saldo = amount + player.saldo;
-            onChangeTax(taxAmount - amount);
-          } else {
-            throw new Error('Recipient data not found');
-          }
-
-          if (playerInfo) {
-            const dataToSend: HistoryPlayer = {
-              id: playerName,
-              playerName: 'Tax Earning',
-              playerImage: parseInt(playerInfo.image),
-              transaction: 'Tax Transfer',
-              amount,
-            };
-
-            setDataHistory(dataToSend);
-            setOpenModal(true);
-          } else {
-            throw new Error(`${playerName} is not registered as an active player`);
-          }
-        });
-      } catch (error: any) {
-        console.log(error);
-        setErr(error.message);
+    try {
+      const activePlayer = activePlayers.find((player: IPlayer) => player.id === playerName);
+      if (activePlayer) {
+        activePlayer.saldo = amount + activePlayer.saldo;
+        onChangeTax(taxAmount - amount);
+      } else {
+        throw new Error('Recipient data not found');
       }
+
+      if (playerInfo) {
+        const dataToSend: History = {
+          id: playerName,
+          playerName: 'Tax Earning',
+          playerImage: parseInt(playerInfo.image),
+          transaction: 'Tax Transfer',
+          amount,
+        };
+
+        setDataHistory(dataToSend, playerName);
+        setOpenModal(true);
+      } else {
+        throw new Error(`${playerName} is not registered as an active player`);
+      }
+    } catch (error: any) {
+      console.log(error);
+      setErr(error.message);
     }
   };
   return (

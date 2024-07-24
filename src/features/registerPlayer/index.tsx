@@ -13,7 +13,7 @@ import NfcManager, { NfcEvents, Ndef } from 'react-native-nfc-manager';
 import { registeredId } from '../home/registeredId';
 import { FC, useEffect, useState, useCallback } from 'react';
 import { useGlobalStore } from '../../stores';
-import getRealm from '../../components/schema/SchemaRealm';
+// import getRealm from '../../components/schema/SchemaRealm';
 import { IPlayer } from '../../stores/type';
 
 interface RegisterPlayerProps {
@@ -22,7 +22,7 @@ interface RegisterPlayerProps {
 }
 
 export const RegisterPlayer: FC<RegisterPlayerProps> = ({ username, handleMoveHome }) => {
-  const { getDecryptData, setActiveTag, activePlayer } = useGlobalStore();
+  const { getDecryptData, setActiveTag, activePlayers, setPlayers } = useGlobalStore();
   const [err, setErr] = useState('');
   const [dataPlayer, setDataPlayer] = useState<{ id: string; tag: string } | null>(null);
 
@@ -68,20 +68,24 @@ export const RegisterPlayer: FC<RegisterPlayerProps> = ({ username, handleMoveHo
   }, [getDecryptData]);
 
   useEffect(() => {
-    const realm = getRealm();
+    // const realm = getRealm();
     if (dataPlayer !== null) {
-      const isAdding = activePlayer.find((data: IPlayer) => data.id === dataPlayer.id);
+      const isAdding = activePlayers.find((data: IPlayer) => data.id === dataPlayer.id);
       if (!isAdding) {
-        realm.write(() => {
-          realm.create('PlayerGame', { id: dataPlayer.id, username, saldo: 250000 });
-        });
+        const newDataPlayer = { id: dataPlayer.id, username, saldo: 250000 };
+        console.log([...activePlayers, newDataPlayer]);
+
+        setPlayers([...activePlayers, newDataPlayer]);
+        // realm.write(() => {
+        //   realm.create('PlayerGame', { id: dataPlayer.id, username, saldo: 250000 });
+        // });
         setActiveTag(dataPlayer.tag);
         handleBackHome();
       } else {
         setErr('This card has been used by another player, use a different card.');
       }
     }
-  }, [activePlayer, dataPlayer, handleBackHome, setActiveTag, username]);
+  }, [activePlayers, dataPlayer, handleBackHome, setActiveTag, setPlayers, username]);
 
   return (
     <Box flex={1}>

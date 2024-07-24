@@ -22,7 +22,7 @@ import { IdataProfile } from '../../stores/datas/type';
 import { IPlayer } from '../../stores/type';
 import { initDataProfile } from '../../stores/datas/dataPlayer';
 import { IExpense } from '../type';
-import getRealm, { Player } from '../../components/schema/SchemaRealm';
+// import getRealm, { Player } from '../../components/schema/SchemaRealm';
 import { ModalInputPerson } from '../home/components/ModalInputPerson';
 import { ModalSuccess } from '../../components/ModalSuccess';
 
@@ -43,7 +43,7 @@ export const Profile: FC<ProfileProps> = ({
   handleProperty,
   data,
 }) => {
-  const realm = getRealm();
+  // const realm = getRealm();
   const [eyeOff, setEyeOff] = useState<boolean>(false);
   const [player, setPlayer] = useState<IdataProfile>(initDataProfile);
   const [openEdit, setOpenEdit] = useState<boolean>(false);
@@ -65,40 +65,38 @@ export const Profile: FC<ProfileProps> = ({
     }
   };
 
-  console.log(openSucess);
+  // const handleEditName = (e: string) => {
+  //   realm.write(() => {
+  //     try {
+  //       const playerToEdit = realm.objectForPrimaryKey<Player>('PlayerGame', playerId);
 
-  const handleEditName = (e: string) => {
-    realm.write(() => {
-      try {
-        const playerToEdit = realm.objectForPrimaryKey<Player>('PlayerGame', playerId);
+  //       if (playerToEdit) {
+  //         playerToEdit.username = e;
+  //         setOpenSucess(true);
+  //         return;
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   });
+  // };
 
-        if (playerToEdit) {
-          playerToEdit.username = e;
-          setOpenSucess(true);
-          return;
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    });
-  };
+  // const handleRemovePlayer = () => {
+  //   realm.write(() => {
+  //     try {
+  //       const playerToDelete = realm.objectForPrimaryKey('PlayerGame', playerId);
+  //       if (playerToDelete) {
+  //         realm.delete(playerToDelete);
 
-  const handleRemovePlayer = () => {
-    realm.write(() => {
-      try {
-        const playerToDelete = realm.objectForPrimaryKey('PlayerGame', playerId);
-        if (playerToDelete) {
-          realm.delete(playerToDelete);
-
-          console.log(`Player with id ${playerId} deleted successfully`);
-        } else {
-          console.log(`Player with id ${playerId} not found`);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    });
-  };
+  //         console.log(`Player with id ${playerId} deleted successfully`);
+  //       } else {
+  //         console.log(`Player with id ${playerId} not found`);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   });
+  // };
 
   return (
     <Box flex={1}>
@@ -181,14 +179,14 @@ export const Profile: FC<ProfileProps> = ({
           </Button>
         </Box>
       </Box>
-
+      {/*
       <Button onPress={() => setOpenEdit(true)}>
         <ButtonText>Edit Name </ButtonText>
       </Button>
 
       <Button onPress={handleRemovePlayer}>
         <ButtonText>Remove Player </ButtonText>
-      </Button>
+      </Button> */}
 
       <Box flex={3} mt={20}>
         <Swiper
@@ -217,11 +215,11 @@ export const Profile: FC<ProfileProps> = ({
           />
         </Swiper>
       </Box>
-      <ModalInputPerson
+      {/* <ModalInputPerson
         isOpen={openEdit}
         onClose={() => setOpenEdit(false)}
         handleInputUsername={handleEditName}
-      />
+      /> */}
       <ModalSuccess isOpen={openSucess} text="Edit username" navigateNextScreen={handleBackHome} />
     </Box>
   );

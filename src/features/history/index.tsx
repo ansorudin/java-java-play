@@ -1,9 +1,11 @@
 import { Box } from '@gluestack-ui/themed';
 import { Header } from '../../components/Header';
 import { FC, useEffect, useState } from 'react';
-import getRealm, { Histories, History as HistoryGames } from '../../components/schema/SchemaRealm';
+
 import { CardHistory } from './components/CardHistory';
 import { FlatList, ListRenderItemInfo, ScrollView } from 'react-native';
+import { useGlobalStore } from '../../stores';
+import { History as HistoryGames, HistoryPlayer } from '../../stores/type';
 
 interface HistoryProps {
   buttonBack: () => void;
@@ -11,26 +13,28 @@ interface HistoryProps {
 }
 
 export const History: FC<HistoryProps> = ({ buttonBack, playerId }) => {
-  const [histories, setHistories] = useState<HistoryGames[]>([]);
+  const { histories } = useGlobalStore();
+  const [historyPlayer, setHistoryPlayer] = useState<HistoryGames[]>([]);
   useEffect(() => {
-    const realm = getRealm();
-    let dataHistories = realm.objectForPrimaryKey<Histories>('TransactionHistory', playerId);
-    const data = dataHistories?.histories;
-    if (data) {
-      setHistories(Array.from(data));
+    const dataHistories = histories.find((history: HistoryPlayer) => history.id === playerId);
+
+    if (dataHistories) {
+      setHistoryPlayer(dataHistories.history);
+    } else {
+      setHistoryPlayer([]);
     }
-  }, [playerId]);
+  }, [histories, playerId]);
 
   return (
     <Box flex={1}>
       <Header title="History" buttonHeader={buttonBack} />
       <FlatList
-        data={histories}
+        data={historyPlayer}
         keyExtractor={(item, index) => index.toLocaleString()}
         renderItem={({ item }: ListRenderItemInfo<HistoryGames>) => (
           <ScrollView>
             <CardHistory
-              playerName={item.playerName}
+              playerName={item.playerName || '-'}
               playerImage={item.playerImage}
               transaction={item.transaction}
               amount={item.amount}
