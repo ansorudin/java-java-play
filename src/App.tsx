@@ -40,7 +40,7 @@ const MainApp = () => {
     return <ButtonHeader isLeft buttonHeader={() => navigate.goBack()} />;
   };
 
-  const exitGame = () => {
+  const exitGames = () => {
     return <ButtonHeader buttonHeader={() => navigate.push('ExitGame')} />;
   };
 
@@ -51,7 +51,7 @@ const MainApp = () => {
           name="Home"
           component={HomeScreen}
           options={() => ({
-            headerRight: exitGame,
+            headerRight: exitGames,
             tabBarLabel: 'Home',
             headerTitleAlign: 'center',
             tabBarVisible: true,
@@ -62,15 +62,6 @@ const MainApp = () => {
           component={DiceScreen}
           options={() => ({ headerLeft: goBack, headerTitleAlign: 'center' })}
         />
-        {/* <Tab.Screen
-          name="NFC"
-          component={ScanNfcScreen}
-          options={() => ({
-            headerLeft: goBack,
-            tabBarStyle: { display: 'none' },
-            headerTitleAlign: 'center',
-          })}
-        /> */}
         <Tab.Screen
           name="Tax"
           component={TaxBalanceScreen}

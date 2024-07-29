@@ -9,6 +9,7 @@ import { ModalInputPerson } from './components/ModalInputPerson';
 import { DataEmpty } from './components/DataEmpty';
 import { useGlobalStore } from '../../stores';
 import { IPlayer } from '../../stores/type';
+import { Swipeable } from '../../components/Sweapable';
 
 interface HomeProps {
   handleProfileScreen: (data: IPlayer) => void;
@@ -16,17 +17,45 @@ interface HomeProps {
 }
 
 export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterPlayer }) => {
-  const { activePlayers, leaderBoard, getDataPlayer, getDecryptData, taxAmount } = useGlobalStore();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const {
+    activePlayers,
+    leaderBoard,
+    setLeaderBoard,
+    getDecryptData,
+    taxAmount,
+    isLoading,
+    removePlayerById,
+    removeHistoryById,
+    editPlayer,
+    onChangeTax,
+    histories,
+  } = useGlobalStore();
+  // const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenEdit, setOpenEdit] = useState<boolean>(false);
+  const [editId, setEditId] = useState<string>('');
   const [err, setErr] = useState<string>('');
 
-  // useEffect(() => {
-  //   // getDataPlayer();
-  //   // setIsLoading(false);
-  // }, []);
+  useEffect(() => {
+    setLeaderBoard();
+    if (activePlayers.length === 0) {
+      onChangeTax(0);
+    }
+  }, [setLeaderBoard, activePlayers, onChangeTax]);
 
-  console.log(activePlayers);
+  const onDeletePlayer = (id: string) => {
+    removePlayerById(id);
+    removeHistoryById(id);
+  };
+
+  const onEditPlayer = (id: string) => {
+    setOpenEdit(true);
+    setEditId(id);
+  };
+
+  const handleEdit = (username: string) => {
+    editPlayer(editId, username);
+  };
 
   useEffect(() => {
     const onReadTagNfc = async () => {
@@ -68,9 +97,9 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
 
   return (
     <>
-      <Box flex={1}>
+      <Box flex={1} display={isLoading ? 'none' : 'flex'}>
         {/* <Header title="Home" /> */}
-        <Box h="$1/2">
+        <Box h="$1/2" display={activePlayers.length === 0 ? 'none' : 'flex'}>
           <Box
             flexDirection="row"
             justifyContent="space-between"
@@ -84,7 +113,12 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
             <Text size="xs">{taxAmount.toLocaleString()}</Text>
           </Box>
 
-          <Box w="$full" flex={1} justifyContent="flex-end" alignItems="center">
+          <Box
+            w="$full"
+            flex={1}
+            justifyContent="flex-end"
+            alignItems="center"
+            display={histories.length > 0 ? 'flex' : 'none'}>
             <Box flexDirection="row" justifyContent="space-around" alignItems="center" gap="$4">
               <TopPlayer index={2} player={leaderBoard[1]} />
               <TopPlayer index={1} player={leaderBoard[0]} />
@@ -93,7 +127,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
           </Box>
         </Box>
 
-        <Box flex={1}>
+        <Box flex={1} display={activePlayers.length === 0 ? 'none' : 'flex'}>
           <Box
             justifyContent="flex-end"
             alignItems="flex-end"
@@ -110,7 +144,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
               <ButtonIcon color="$tertiary800" as={AddIcon} />
             </Button>
           </Box>
-          <FlatList
+          {/* <FlatList
             data={activePlayers}
             keyExtractor={item => item.id}
             renderItem={({ item }: ListRenderItemInfo<IPlayer>) => (
@@ -123,12 +157,39 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
                 />
               </ScrollView>
             )}
+          /> */}
+
+          <FlatList
+            data={activePlayers}
+            keyExtractor={item => item.id}
+            renderItem={({ item }: ListRenderItemInfo<IPlayer>) => (
+              <ScrollView>
+                <Swipeable
+                  component={
+                    <Player
+                      moveProfile={() => handleProfileScreen(item)}
+                      playerId={item.id}
+                      detail={item.username}
+                      amount={item.saldo}
+                    />
+                  }
+                  onDelete={() => onDeletePlayer(item.id)}
+                  onEdit={() => onEditPlayer(item.id)}
+                />
+              </ScrollView>
+            )}
           />
         </Box>
+
         <ModalInputPerson
           isOpen={isOpen}
           onClose={() => setIsOpen(false)}
           handleInputUsername={handleRegisterPlayer}
+        />
+        <ModalInputPerson
+          isOpen={isOpenEdit}
+          onClose={() => setOpenEdit(false)}
+          handleInputUsername={handleEdit}
         />
         <DataEmpty buttonScan={() => setIsOpen(true)} dataPlayer={activePlayers} />
       </Box>

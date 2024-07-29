@@ -7,7 +7,6 @@ import {
   ConfirmationScreen,
   TransferScreen,
   ScanNfcScreen,
-  ExitGameScreen,
   TaxBalanceScreen,
   ConfirmationTaxScreen,
   InputRecipientsScreen,
@@ -15,6 +14,7 @@ import {
   DiceScreen,
   RegisterPlayerScreen,
   PropertyScreen,
+  ExitGameScreen,
 } from '../pages';
 import { MainStackScreenList } from './types';
 

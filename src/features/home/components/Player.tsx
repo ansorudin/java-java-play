@@ -33,8 +33,10 @@ export const Player: FC<PlayerProps> = ({ playerId, amount, detail, moveProfile 
     <TouchableOpacity onPress={moveProfile}>
       <Box
         flexDirection="row"
+        zIndex={10}
         w="$full"
         alignItems="center"
+        position="relative"
         justifyContent="space-between"
         paddingHorizontal={10}
         paddingVertical={15}

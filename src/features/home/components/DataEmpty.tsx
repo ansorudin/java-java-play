@@ -1,6 +1,7 @@
-import { Button, Image, ButtonText, Text, Box } from '@gluestack-ui/themed';
+import { Image, Text, Box } from '@gluestack-ui/themed';
 import { FC } from 'react';
 import { IPlayer } from '../../../stores/type';
+import Button from '../../../components/Button';
 
 interface DataEmptyProps {
   dataPlayer: IPlayer[];
@@ -15,17 +16,22 @@ export const DataEmpty: FC<DataEmptyProps> = ({ buttonScan, dataPlayer }) => {
       justifyContent="space-around"
       display={dataPlayer.length > 0 ? 'none' : 'flex'}>
       <Box alignItems="center">
-        <Text size="4xl" bold color="$primary300">
+        <Text size="4xl" bold color="$black">
           Welcome To
         </Text>
-        <Text size="2xl" bold color="$primary200">
+        <Text size="2xl" bold color="$black">
           JavaJava Play
         </Text>
       </Box>
-      <Image w={280} h={280} source={require('../../../../asset/search.png')} alt="icon" />
-      <Button onPress={buttonScan} variant="solid" gap="$1">
-        <ButtonText>Scan To New Player</ButtonText>
-      </Button>
+      <Image
+        w="$full"
+        h={150}
+        source={require('../../../../asset/homeScreen/all-player-image.png')}
+        alt="icon"
+      />
+      <Box w={280}>
+        <Button full onPress={buttonScan} title="Scan To New Player" />
+      </Box>
     </Box>
   );
 };

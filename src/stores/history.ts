@@ -5,6 +5,8 @@ export interface HistorySlice {
   histories: HistoryPlayer[] | [];
   errorMessageHistory: string | null;
   setDataHistory: (data: History, id: string) => void;
+  removeHistory: () => void;
+  removeHistoryById: (id: string) => void;
 }
 
 export const createHistorySlice: StateCreator<HistorySlice> = (set, get) => ({
@@ -31,5 +33,13 @@ export const createHistorySlice: StateCreator<HistorySlice> = (set, get) => ({
     } catch (error: any) {
       set({ errorMessageHistory: error.message });
     }
+  },
+  removeHistory: () => {
+    set({ histories: [] });
+  },
+  removeHistoryById(id: string) {
+    const { histories } = get();
+    const historiesNew = histories.filter(history => history.id !== id);
+    set({ histories: historiesNew });
   },
 });
