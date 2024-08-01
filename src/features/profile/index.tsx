@@ -16,22 +16,19 @@ import { useState } from 'react';
 import { IconTopUp } from '../../../asset/IconTopUp';
 import { IconTransfer } from '../../../asset/IconTransfer';
 import { IconHistory } from '../../../asset/IconHistory';
-import { DataTopUpProps } from '../topup';
 import { useGlobalStore } from '../../stores';
 import { IdataProfile } from '../../stores/datas/type';
 import { IPlayer } from '../../stores/type';
 import { initDataProfile } from '../../stores/datas/dataPlayer';
 import { IExpense } from '../type';
-// import getRealm, { Player } from '../../components/schema/SchemaRealm';
-import { ModalInputPerson } from '../home/components/ModalInputPerson';
-import { ModalSuccess } from '../../components/ModalSuccess';
+import { IdataTopUp } from '../topup';
 
 interface ProfileProps {
   handleBackHome: () => void;
-  handleTopUp: (data: DataTopUpProps) => void;
+  handleTopUp: (data: IdataTopUp) => void;
   handleMoveTransfer: (data: IExpense) => void;
   handleMoveHistory: (playerId: string) => void;
-  handleProperty: (data: DataTopUpProps) => void;
+  handleProperty: (data: IdataProfile, saldo: number) => void;
   data: IPlayer;
 }
 
@@ -43,13 +40,10 @@ export const Profile: FC<ProfileProps> = ({
   handleProperty,
   data,
 }) => {
-  // const realm = getRealm();
   const [eyeOff, setEyeOff] = useState<boolean>(false);
   const [player, setPlayer] = useState<IdataProfile>(initDataProfile);
-  const [openEdit, setOpenEdit] = useState<boolean>(false);
-  const [openSucess, setOpenSucess] = useState<boolean>(false);
   const { id, saldo } = data;
-  const { playerName, gender, description, skin, image, playerId } = player;
+  const { playerName, gender, skill, skin, profileImages, color } = player;
   const { profiles } = useGlobalStore();
 
   useEffect(() => {
@@ -64,39 +58,6 @@ export const Profile: FC<ProfileProps> = ({
       setEyeOff(true);
     }
   };
-
-  // const handleEditName = (e: string) => {
-  //   realm.write(() => {
-  //     try {
-  //       const playerToEdit = realm.objectForPrimaryKey<Player>('PlayerGame', playerId);
-
-  //       if (playerToEdit) {
-  //         playerToEdit.username = e;
-  //         setOpenSucess(true);
-  //         return;
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   });
-  // };
-
-  // const handleRemovePlayer = () => {
-  //   realm.write(() => {
-  //     try {
-  //       const playerToDelete = realm.objectForPrimaryKey('PlayerGame', playerId);
-  //       if (playerToDelete) {
-  //         realm.delete(playerToDelete);
-
-  //         console.log(`Player with id ${playerId} deleted successfully`);
-  //       } else {
-  //         console.log(`Player with id ${playerId} not found`);
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   });
-  // };
 
   return (
     <Box flex={1}>
@@ -138,7 +99,7 @@ export const Profile: FC<ProfileProps> = ({
             size="sm"
             flexDirection="column"
             gap={2}
-            onPress={() => handleTopUp({ ...player, saldo })}>
+            onPress={() => handleTopUp({ dataPlayer: player, saldo })}>
             <IconTopUp />
             <ButtonText size="xs" color="$coolGray500">
               Top up
@@ -149,7 +110,7 @@ export const Profile: FC<ProfileProps> = ({
             size="sm"
             gap={2}
             flexDirection="column"
-            onPress={() => handleMoveTransfer({ ...player, saldo })}>
+            onPress={() => handleMoveTransfer({ playerData: player, saldo })}>
             <IconTransfer />
             <ButtonText size="xs" color="$coolGray500">
               Transfer
@@ -160,7 +121,7 @@ export const Profile: FC<ProfileProps> = ({
             size="sm"
             gap={2}
             flexDirection="column"
-            onPress={() => handleProperty({ ...player, saldo })}>
+            onPress={() => handleProperty(player, saldo)}>
             <Icon as={LinkIcon} m="$2" w="$4" h="$4" />
             <ButtonText size="xs" color="$coolGray500">
               Property
@@ -179,14 +140,6 @@ export const Profile: FC<ProfileProps> = ({
           </Button>
         </Box>
       </Box>
-      {/*
-      <Button onPress={() => setOpenEdit(true)}>
-        <ButtonText>Edit Name </ButtonText>
-      </Button>
-
-      <Button onPress={handleRemovePlayer}>
-        <ButtonText>Remove Player </ButtonText>
-      </Button> */}
 
       <Box flex={3} mt={20}>
         <Swiper
@@ -201,26 +154,30 @@ export const Profile: FC<ProfileProps> = ({
           }}>
           <ProfileImage
             data={{
-              image,
+              image: profileImages[0],
               title: playerName,
               description: gender,
             }}
+            color={color}
           />
           <ProfileImage
             data={{
-              image,
-              title: description,
+              image: profileImages[1],
+              title: '',
+              description: skill,
+            }}
+            color={color}
+          />
+          <ProfileImage
+            data={{
+              image: profileImages[2],
+              title: '',
               description: skin,
             }}
+            color={color}
           />
         </Swiper>
       </Box>
-      {/* <ModalInputPerson
-        isOpen={openEdit}
-        onClose={() => setOpenEdit(false)}
-        handleInputUsername={handleEditName}
-      /> */}
-      <ModalSuccess isOpen={openSucess} text="Edit username" navigateNextScreen={handleBackHome} />
     </Box>
   );
 };

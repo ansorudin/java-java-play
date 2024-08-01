@@ -35,9 +35,11 @@ export const History: FC<HistoryProps> = ({ buttonBack, playerId }) => {
           <ScrollView>
             <CardHistory
               playerName={item.playerName || '-'}
-              playerImage={item.playerImage}
+              playerImage={item.image}
               transaction={item.transaction}
               amount={item.amount}
+              type={item.type}
+              color={item.color}
             />
           </ScrollView>
         )}

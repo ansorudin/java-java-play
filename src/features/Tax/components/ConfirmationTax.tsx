@@ -42,16 +42,15 @@ export const ConfirmationTax: FC<ConfirmationTaxProps> = ({ handleBack, moveToHo
       }
 
       if (playerInfo) {
-        const dataToSend: History = {
-          id: playerName,
-          playerName: 'Tax Earning',
-          playerImage: parseInt(playerInfo.image),
-          transaction: 'Tax Transfer',
-          amount,
-        };
-
-        setDataHistory(dataToSend, playerName);
-        setOpenModal(true);
+        // const dataToSend: History = {
+        //   id: playerName,
+        //   playerName: 'Tax Earning',
+        //   playerImage: parseInt(playerInfo.image),
+        //   transaction: 'Tax Transfer',
+        //   amount,
+        // };
+        // setDataHistory(dataToSend, playerName);
+        // setOpenModal(true);
       } else {
         throw new Error(`${playerName} is not registered as an active player`);
       }

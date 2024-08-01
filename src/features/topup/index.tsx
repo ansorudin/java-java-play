@@ -6,14 +6,15 @@ import { BalanceCard } from '../../components/BalanceCard';
 import { DataConfirmationProps } from '../../components/Confirmation';
 import { IdataProfile } from '../../stores/datas/type';
 import { KeyboardAvoidingView } from 'react-native';
-
+import { TransactionType, HistoryType } from '../../stores/type';
 import { TopupBank } from './components/TopupBank';
 
-export interface DataTopUpProps extends IdataProfile {
+export interface IdataTopUp {
+  dataPlayer: IdataProfile;
   saldo: number;
 }
 interface TopupProps {
-  data: DataTopUpProps;
+  data: IdataTopUp;
   navigateToConfirmation: (data: DataConfirmationProps) => void;
   handleBack: () => void;
 }
@@ -22,12 +23,11 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data, handleBack
   const scrollViewRef = useRef<ScrollView>(null);
   const [amount, setAmount] = useState<string>('');
   const [err, setErr] = useState<string>('');
+  const { dataPlayer, saldo } = data;
 
   const handleInputNominal = (e: string) => {
     setAmount(e);
   };
-
-  const { playerId, saldo, playerName, image } = data;
 
   const handleButtonNext = () => {
     const regex = /^[0-9]+$/;
@@ -37,12 +37,11 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data, handleBack
     }
 
     const dataToSend: DataConfirmationProps = {
-      playerId,
+      playerData: dataPlayer,
       saldo,
-      playerName,
-      playerImage: image,
       amount: parseInt(amount),
-      transaction: 'Top Up',
+      transaction: TransactionType.TopUp,
+      type: HistoryType.Income,
     };
     setAmount('');
     setErr('');
@@ -70,7 +69,7 @@ export const Topup: FC<TopupProps> = ({ navigateToConfirmation, data, handleBack
         <Header title="Money Top Up" buttonHeader={handleBack} />
         <ScrollView contentContainerStyle={{ flexGrow: 1 }} ref={scrollViewRef}>
           <Box flex={1}>
-            <BalanceCard currentSaldo={saldo} cardHolder={playerName} />
+            <BalanceCard currentSaldo={saldo} cardHolder={data.dataPlayer.playerName} />
             <TopupBank
               handleChangeAmount={onChangeAmount}
               err={err}

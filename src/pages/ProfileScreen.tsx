@@ -18,7 +18,7 @@ export const ProfileScreen = () => {
         handleMoveHistory={playerId => navigate.push('History', { playerId: playerId })}
         handleMoveTransfer={data => navigate.push('Transfer', data)}
         handleTopUp={data => navigate.push('TopUp', data)}
-        handleProperty={data => navigate.push('Property', data)}
+        handleProperty={data => navigate.push('Property', data, saldo)}
       />
     </Container>
   );

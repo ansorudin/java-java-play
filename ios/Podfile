@@ -40,8 +40,6 @@ target 'JavaJavaPlay' do
   )
 
     # Pods for YourProjectName
-    pod 'Realm', :modular_headers => true
-    pod 'RealmSwift', :modular_headers => true
 
   target 'JavaJavaPlayTests' do
     inherit! :complete

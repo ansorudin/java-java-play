@@ -1,12 +1,12 @@
 import { Box, Text, Button, Image, ButtonText } from '@gluestack-ui/themed';
 import { ModalSuccess } from './ModalSuccess';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { ItemTransaction } from './ItemTransaction';
 import { Header } from './Header';
 import { useGlobalStore } from '../stores';
 import { ModalFailed } from './ModalFailed';
 import { IdataProfile } from '../stores/datas/type';
-import { History } from '../stores/type';
+import { History, HistoryType, TransactionType } from '../stores/type';
 
 interface ConfirmationProps {
   handleBack: () => void;
@@ -15,57 +15,24 @@ interface ConfirmationProps {
 }
 
 interface DataConfirmationProps {
-  playerId: string;
-  playerImage: string;
-  playerName: string;
-  transaction: string;
+  playerData: IdataProfile;
+  recipientData?: IdataProfile;
   saldo: number;
   amount: number;
-  recipients?: string;
+  transaction: TransactionType;
+  type: HistoryType;
   description?: string;
-  recipientsImage?: string;
   discount?: boolean;
 }
 
-export enum TransactionType {
-  TopUp = 'Top Up',
-  OtherPlayer = 'Transfer to other player',
-  Bank = 'Transfer to bank',
-  Tax = 'Transfer to tax',
-  Earning = 'Earning from other player',
-  EarningTax = 'Tax Transfer',
-  Bribe = 'Bribe to Escape',
-  property = 'Buy property',
-  house = 'Buy house',
-  hotel = 'Buy hotel',
-}
-
 export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigateToHome }) => {
-  const {
-    getDataPlayer,
-    taxAmount,
-    onChangeTax,
-    getSelectedProfile,
-    activePlayers,
-    setDataHistory,
-  } = useGlobalStore();
-  const {
-    playerId,
-    playerImage,
-    playerName,
-    transaction,
-    amount,
-    recipients,
-    description,
-    saldo,
-    discount,
-  } = data;
-
-  console.log(transaction);
+  const { taxAmount, onChangeTax, setSaldoPlayer, activePlayers, setDataHistory, dataOtherPlayer } =
+    useGlobalStore();
+  const { playerData, transaction, amount, recipientData, description, saldo, discount, type } =
+    data;
 
   const [openModalSuccess, setOpenModalSuccess] = useState<boolean>(false);
   const [openModalFailed, setModalFailed] = useState<boolean>(false);
-  const [recipientData, setRecipientData] = useState<IdataProfile | null>(null);
   const [err, setErr] = useState<string>('');
 
   const handleClose = () => {
@@ -73,89 +40,83 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
     navigateToHome();
   };
 
-  useEffect(() => {
-    if (recipients) {
-      const dataRecipient = getSelectedProfile(recipients);
-      setRecipientData(dataRecipient);
-    } else {
-      setRecipientData(null);
-    }
-  }, [getSelectedProfile, recipients]);
-
   const handleButtonContinue = () => {
-    try {
-      const activePlayer = activePlayers.find(player => player.id === playerId);
-      if (!activePlayer) {
-        throw new Error('Recipient Data not found');
-      }
-      if (transaction === TransactionType.TopUp) {
-        activePlayer.saldo = amount + saldo;
-      } else if (transaction === TransactionType.Bank) {
-        activePlayer.saldo = saldo - amount;
-      } else if (transaction === TransactionType.Tax) {
-        activePlayer.saldo = saldo - amount;
-        onChangeTax(taxAmount + amount);
-      } else if (transaction === TransactionType.OtherPlayer && recipients) {
-        activePlayer.saldo = saldo - amount;
-        const recipient = activePlayers.find(player => player.id === recipients);
+    console.log('halo');
+    const activePlayer = activePlayers.find(player => player.id === playerData.playerId);
 
-        if (recipient) {
-          const oldSaldo = recipient.saldo;
-          recipient.saldo = amount + oldSaldo;
-        } else {
-          throw new Error('Recipient Data not found');
-        }
-      } else if (transaction === TransactionType.property) {
-        activePlayer.saldo = saldo - amount;
-      } else if (transaction === TransactionType.house) {
-        activePlayer.saldo = saldo - amount;
-      } else if (transaction === TransactionType.hotel) {
-        activePlayer.saldo = saldo - amount;
-      } else {
-        throw new Error('Invalid Transaction Type or Missing Recipients');
-      }
-
-      try {
-        const dataToSend: History = {
-          id: playerId,
-          playerName:
-            transaction === TransactionType.OtherPlayer
-              ? recipientData?.playerName
-              : transaction === TransactionType.Tax
-              ? 'Tax'
-              : 'Bank',
-          playerImage:
-            transaction === TransactionType.OtherPlayer
-              ? Number(recipientData?.image)
-              : Number(playerImage),
-          transaction,
-          amount,
-        };
-        setDataHistory(dataToSend, playerId);
-      } catch (error) {
-        throw new Error('Invalid Transaction Type or Missing Recipients');
-      }
-      if (recipients) {
-        try {
-          const dataToSend: History = {
-            id: recipients,
-            playerName: playerName,
-            playerImage: Number(playerImage),
-            transaction: 'Earning from other player',
-            amount,
-          };
-          setDataHistory(dataToSend, recipients);
-        } catch (error) {
-          throw new Error('Invalid Transaction');
-        }
-      }
-
-      setOpenModalSuccess(true);
-      getDataPlayer();
-    } catch (error: any) {
+    if (!activePlayer) {
       setModalFailed(true);
-      setErr(error.message);
+      setErr('Recipient Data not found');
+      console.log('Recipient Data not found');
+
+      return;
     }
+
+    let playerSaldo = saldo;
+    if (transaction === TransactionType.TopUp) {
+      playerSaldo = amount + saldo;
+    } else if (transaction === TransactionType.Bank) {
+      playerSaldo = saldo - amount;
+    } else if (transaction === TransactionType.Tax) {
+      playerSaldo = saldo - amount;
+      onChangeTax(taxAmount + amount);
+    } else if (transaction === TransactionType.OtherPlayer && recipientData) {
+      playerSaldo = saldo - amount;
+      const recipient = activePlayers.find(player => player.id === recipientData.playerId);
+      if (recipient) {
+        const oldSaldo = recipient.saldo;
+        const dataToSend: History = {
+          ...playerData,
+          amount,
+          transaction: TransactionType.Earning,
+          type: HistoryType.Income,
+        };
+        setSaldoPlayer(recipient.id, amount + oldSaldo);
+        setDataHistory(dataToSend, recipientData.playerId);
+      } else {
+        setModalFailed(true);
+        setErr('Recipient Data not found');
+      }
+    } else if (transaction === TransactionType.property) {
+      playerSaldo = saldo - amount;
+    } else if (transaction === TransactionType.house) {
+      playerSaldo = saldo - amount;
+    } else if (transaction === TransactionType.hotel) {
+      playerSaldo = saldo - amount;
+    }
+
+    if (!openModalFailed) {
+      const bankImage = dataOtherPlayer.bank.image;
+      const taxImage = dataOtherPlayer.tax.image;
+      const playerName =
+        transaction === TransactionType.Bank || transaction === TransactionType.TopUp
+          ? 'Bank'
+          : 'Tax';
+      const image =
+        transaction === TransactionType.Bank || transaction === TransactionType.TopUp
+          ? bankImage
+          : taxImage;
+      const color =
+        transaction === TransactionType.Bank || transaction === TransactionType.TopUp
+          ? 'white'
+          : 'black';
+
+      const datas: IdataProfile = recipientData
+        ? recipientData
+        : { ...playerData, playerName, image, color };
+
+      const dataToSend: History = {
+        ...datas,
+        amount,
+        transaction,
+        type,
+      };
+
+      setDataHistory(dataToSend, playerData.playerId);
+      setSaldoPlayer(playerData.playerId, playerSaldo);
+    }
+
+    navigateToHome();
   };
 
   return (
@@ -171,7 +132,7 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
 
         <Box alignItems="center" width="$full" mt={20}>
           <Image
-            bgColor="$white"
+            bgColor={playerData.color}
             height={80}
             position="absolute"
             width={80}
@@ -179,7 +140,11 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
             borderColor="$secondary300"
             alt="image"
             zIndex={1}
-            source={playerImage}
+            source={
+              type === HistoryType.Income
+                ? playerData.confirmationImages[0]
+                : playerData.confirmationImages[1]
+            }
           />
           <Box
             backgroundColor="$coolGray200"
@@ -189,7 +154,7 @@ export const Confirmation: FC<ConfirmationProps> = ({ data, handleBack, navigate
             paddingVertical="$10"
             paddingHorizontal={24}>
             <Text size="xl" bold textAlign="center">
-              {playerName}
+              {playerData.playerName}
             </Text>
 
             <ItemTransaction

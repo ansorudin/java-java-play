@@ -1,5 +1,6 @@
 import { IdataProfile } from '../stores/datas/type';
 
-export interface IExpense extends IdataProfile {
+export interface IExpense {
+  playerData: IdataProfile;
   saldo: number;
 }

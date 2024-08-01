@@ -1,13 +1,14 @@
 import { Box, Text, Image } from '@gluestack-ui/themed';
 import { FC } from 'react';
-import { TransactionType } from '../../../components/Confirmation';
+import { HistoryType, TransactionType } from '../../../stores/type';
 
 interface CardHistoryProps {
-  playerImage: number;
+  playerImage: string;
   playerName: string;
   transaction: string;
   amount: number;
-  recipients?: string;
+  type: HistoryType;
+  color: string;
 }
 
 export const CardHistory: FC<CardHistoryProps> = ({
@@ -15,6 +16,8 @@ export const CardHistory: FC<CardHistoryProps> = ({
   playerName,
   transaction,
   amount,
+  type,
+  color,
 }) => {
   return (
     <Box
@@ -29,6 +32,7 @@ export const CardHistory: FC<CardHistoryProps> = ({
       <Box flexDirection="row" gap={10}>
         <Image
           height={35}
+          bgColor={color}
           width={35}
           rounded="$full"
           borderWidth={1}
@@ -43,20 +47,8 @@ export const CardHistory: FC<CardHistoryProps> = ({
           <Text size="xs">{transaction}</Text>
         </Box>
       </Box>
-      <Text
-        size="sm"
-        color={
-          transaction === TransactionType.TopUp ||
-          transaction === TransactionType.Earning ||
-          transaction === TransactionType.EarningTax
-            ? '$green400'
-            : '$red400'
-        }>
-        {transaction === TransactionType.TopUp ||
-        transaction === TransactionType.Earning ||
-        transaction === TransactionType.EarningTax
-          ? '+'
-          : '-'}
+      <Text size="sm" color={type === HistoryType.Income ? '$green400' : '$red400'}>
+        {type === HistoryType.Payment ? '-' : '+'}
         Rp {amount.toLocaleString()}
       </Text>
     </Box>

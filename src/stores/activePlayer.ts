@@ -10,6 +10,7 @@ export interface PlayerSlice {
   removePlayerById: (id: string) => void;
   isLoading: boolean;
   editPlayer: (id: string, newUsername: string) => void;
+  setSaldoPlayer: (id: string, newSaldo: number) => void;
 }
 
 export const createPlayerSlice: StateCreator<PlayerSlice> = (set, get) => ({
@@ -36,6 +37,18 @@ export const createPlayerSlice: StateCreator<PlayerSlice> = (set, get) => ({
     const playerSelected = activePlayers.map(player => {
       if (player.id === id) {
         return { ...player, username: newUsername };
+      }
+      return player;
+    });
+
+    set({ activePlayers: playerSelected });
+  },
+  setSaldoPlayer: (id: string, newSaldo: number) => {
+    const { activePlayers } = get();
+
+    const playerSelected = activePlayers.map(player => {
+      if (player.id === id) {
+        return { ...player, saldo: newSaldo };
       }
       return player;
     });

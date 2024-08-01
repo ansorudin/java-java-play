@@ -5,7 +5,8 @@ import {
 import { DataConfirmationProps } from '../components/Confirmation';
 import { dataConfirmationTaxProps } from '../features/Tax/components/ConfirmationTax';
 import { IPlayer } from '../stores/type';
-import { DataTopUpProps } from '../features/topup';
+import { IdataProfile } from '../stores/datas/type';
+import { IdataTopUp } from '../features/topup';
 import { IExpense } from '../features/type';
 import { DataInputTransferProps } from '../features/transfer/components/InputDataTransfer';
 import { ActionType } from '../features/scanNfc';
@@ -16,7 +17,7 @@ export type MainStackParamList = {
   Home: undefined;
   Profile: IPlayer;
   History: { playerId: string };
-  TopUp: DataTopUpProps;
+  TopUp: IdataTopUp;
   Confirmation: DataConfirmationProps;
   Transfer: IExpense;
   ScanNfc: { action: ActionType; amount?: number; dataTransferOtherPlayer?: DataConfirmationProps };

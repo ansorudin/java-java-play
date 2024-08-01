@@ -5,67 +5,42 @@ import { Header } from '../../components/Header';
 import { DataInputTransferProps } from './components/InputDataTransfer';
 import { DataConfirmationProps } from '../../components/Confirmation';
 import { IExpense } from '../type';
+import { TransactionType } from '../../stores/type';
 
 interface TransferProps {
   moveToInputDataTransfer: (data: DataInputTransferProps) => void;
   moveToConfirmation: (data: DataConfirmationProps) => void;
-
   handleBack: () => void;
   data: IExpense;
 }
 
-export enum TransferType {
-  Bank = 'bank',
-  Tax = 'tax',
-  Other_Player = 'other player',
-  Bribe = 'bribe',
-  Other_Player_NFC = 'other player with NFC',
-}
-
-export const Transfer: FC<TransferProps> = ({
-  moveToInputDataTransfer,
-  handleBack,
-  data,
-  // moveToConfirmation,
-}) => {
-  const buttonNext = (e: string) => {
+export const Transfer: FC<TransferProps> = ({ moveToInputDataTransfer, handleBack, data }) => {
+  const buttonNext = (e: TransactionType) => {
     const datas: DataInputTransferProps = { ...data, transferDestination: e };
     moveToInputDataTransfer(datas);
   };
 
-  const { saldo, playerName } = data;
-
-  // const onPaymentBribe = () => {
-  //   const datas: DataConfirmationProps = {
-  //     playerId,
-  //     playerName: playerName,
-  //     playerImage: image,
-  //     amount: 20000,
-  //     transaction: 'Bribe to Escape',
-  //     saldo,
-  //   };
-  //   moveToConfirmation(datas);
-  // };
+  const { saldo, playerData } = data;
 
   return (
     <Box flex={1}>
       <Header title="Money Transfer" buttonHeader={handleBack} />
       <Box flex={1}>
-        <BalanceCard currentSaldo={saldo} cardHolder={playerName} />
+        <BalanceCard currentSaldo={saldo} cardHolder={playerData.playerName} />
         <Box gap={10} flex={1} mt={30} paddingHorizontal={5}>
           <Button
             variant="outline"
             size="sm"
             action="primary"
-            onPress={() => buttonNext(TransferType.Tax)}>
+            onPress={() => buttonNext(TransactionType.Tax)}>
             <ButtonText size="sm" color="$primary300">
-              Transfer Tax
+              Pay Tax
             </ButtonText>
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onPress={() => buttonNext(TransferType.Bank)}
+            onPress={() => buttonNext(TransactionType.Bank)}
             action="primary">
             <ButtonText size="sm" color="$primary300">
               Transfer Bank
@@ -74,7 +49,7 @@ export const Transfer: FC<TransferProps> = ({
           <Button
             variant="outline"
             size="sm"
-            onPress={() => buttonNext(TransferType.Other_Player)}
+            onPress={() => buttonNext(TransactionType.OtherPlayer)}
             action="primary">
             <ButtonText size="sm" color="$primary300">
               Transfer Other Player
@@ -83,23 +58,12 @@ export const Transfer: FC<TransferProps> = ({
           <Button
             variant="outline"
             size="sm"
-            onPress={() => buttonNext(TransferType.Other_Player_NFC)}
+            onPress={() => buttonNext(TransactionType.OtherPlayerNFC)}
             action="primary">
             <ButtonText size="sm" color="$primary300">
               Transfer Other Player Using NFC
             </ButtonText>
           </Button>
-
-          {/* <Button
-            variant="outline"
-            size="sm"
-            onPress={onPaymentBribe}
-            action="primary"
-            display={playerName === 'Corruptor' ? 'flex' : 'none'}>
-            <ButtonText size="sm" color="$primary300">
-              Pay Bribe
-            </ButtonText>
-          </Button> */}
         </Box>
       </Box>
     </Box>

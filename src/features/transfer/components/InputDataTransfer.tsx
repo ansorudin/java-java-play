@@ -7,13 +7,14 @@ import { Header } from '../../../components/Header';
 import { DataConfirmationProps } from '../../../components/Confirmation';
 import { FlatList, ListRenderItemInfo } from 'react-native';
 import { useGlobalStore } from '../../../stores';
-import { IPlayer } from '../../../stores/type';
+import { IPlayer, TransactionType } from '../../../stores/type';
 import { KeyboardAvoidingView } from 'react-native';
 import { Platform } from 'react-native';
 import { ScrollView } from 'react-native';
 import { IExpense } from '../../type';
-import { TransferType } from '..';
 import { ActionType } from '../../scanNfc';
+import { HistoryType } from '../../../stores/type';
+import { IdataProfile } from '../../../stores/datas/type';
 
 interface TransferProps {
   navigateToConfirmation: (data: DataConfirmationProps) => void;
@@ -23,7 +24,7 @@ interface TransferProps {
 }
 
 export interface DataInputTransferProps extends IExpense {
-  transferDestination: string;
+  transferDestination: TransactionType;
 }
 
 export const InputDataTransfer: FC<TransferProps> = ({
@@ -34,12 +35,14 @@ export const InputDataTransfer: FC<TransferProps> = ({
 }) => {
   const { profiles, activePlayers } = useGlobalStore();
   const scrollViewRef = useRef<ScrollView>(null);
-  const { transferDestination, playerName, playerId, saldo, image } = data;
+  const { transferDestination, playerData, saldo } = data;
   const [amount, setAmount] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [player, setPlayer] = useState<string>('');
+  const [player, setPlayer] = useState<IdataProfile | undefined>(undefined);
   const [players, setPlayers] = useState<IPlayer[]>([]);
   const [err, setErr] = useState<string>('');
+
+  const { playerId, playerName } = playerData;
 
   const handleInputNominal = (e: string) => {
     setAmount(e);
@@ -53,7 +56,7 @@ export const InputDataTransfer: FC<TransferProps> = ({
   useEffect(() => {
     try {
       const dataPlayers = activePlayers.filter(item => item.id !== playerId);
-      setPlayers(Array.from(dataPlayers));
+      setPlayers(dataPlayers);
     } catch (error) {
       console.log(error);
     }
@@ -68,24 +71,19 @@ export const InputDataTransfer: FC<TransferProps> = ({
     }
 
     const datas: DataConfirmationProps = {
-      playerId,
-      playerName: playerName,
-      playerImage: image,
-      description,
-      amount: parseInt(amount),
-      transaction:
-        transferDestination === TransferType.Other_Player_NFC
-          ? 'Transfer to ' + TransferType.Other_Player
-          : 'Transfer to ' + transferDestination,
+      playerData,
       saldo,
+      amount: parseInt(amount),
+      type: HistoryType.Payment,
+      transaction: transferDestination,
     };
 
-    if (transferDestination === TransferType.Other_Player_NFC) {
+    if (transferDestination === TransactionType.OtherPlayerNFC) {
       onTransferNfc(parseInt(amount), ActionType.other_Player, datas);
       return;
     }
 
-    navigateToConfirmation({ ...datas, recipients: player });
+    navigateToConfirmation({ ...datas, recipientData: player });
   };
 
   useEffect(() => {
@@ -101,7 +99,12 @@ export const InputDataTransfer: FC<TransferProps> = ({
     const { id, username } = listRenderItemInfo.item;
     const dataPlayer = profiles.find(profile => profile.playerId === id);
 
-    return <SelectItem label={`${dataPlayer?.playerName}  - ${username}`} value={id} />;
+    return (
+      <SelectItem
+        label={`${dataPlayer?.playerName}  - ${username}`}
+        value={JSON.stringify(dataPlayer)}
+      />
+    );
   };
 
   return (
@@ -109,21 +112,21 @@ export const InputDataTransfer: FC<TransferProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}>
       <Box flex={1}>
-        <Header title={`Transfer to ${transferDestination}`} buttonHeader={handleBack} />
+        <Header title={transferDestination} buttonHeader={handleBack} />
         <Box flex={1}>
           <ScrollView contentContainerStyle={{ flexGrow: 1 }} ref={scrollViewRef}>
-            <BalanceCard currentSaldo={data.saldo} cardHolder={data.playerName} />
+            <BalanceCard currentSaldo={saldo} cardHolder={playerName} />
             <Box
               height={200}
               gap={10}
               marginTop={20}
               display={transferDestination ? 'flex' : 'none'}
               marginHorizontal={3}>
-              <Box display={transferDestination === TransferType.Other_Player ? 'flex' : 'none'}>
+              <Box display={transferDestination === TransactionType.OtherPlayer ? 'flex' : 'none'}>
                 <InputSelect
                   underline
                   title="Recipient"
-                  handleChangeValue={e => setPlayer(e)}
+                  handleChangeValue={(e: string) => setPlayer(JSON.parse(e))}
                   placeHolder="Select Player">
                   <FlatList data={players} renderItem={renderPlayer} />
                 </InputSelect>
@@ -150,7 +153,7 @@ export const InputDataTransfer: FC<TransferProps> = ({
                 </Text>
               </Box>
 
-              <Box display={transferDestination === TransferType.Bank ? 'flex' : 'none'}>
+              <Box display={transferDestination === TransactionType.Bank ? 'flex' : 'none'}>
                 <InputSelect
                   underline
                   title="Description"
@@ -168,8 +171,8 @@ export const InputDataTransfer: FC<TransferProps> = ({
             !amount ||
             Number(amount) === 0 ||
             Number(amount) > saldo ||
-            (transferDestination === TransferType.Bank && !description) ||
-            (transferDestination === TransferType.Other_Player && !player)
+            (transferDestination === TransactionType.Bank && !description) ||
+            (transferDestination === TransactionType.OtherPlayer && !player)
           }
           variant="solid"
           size="md"

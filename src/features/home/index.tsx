@@ -9,7 +9,7 @@ import { ModalInputPerson } from './components/ModalInputPerson';
 import { DataEmpty } from './components/DataEmpty';
 import { useGlobalStore } from '../../stores';
 import { IPlayer } from '../../stores/type';
-import { Swipeable } from '../../components/Sweapable';
+import { JavaSwiper } from '../../components/JavaSwiper';
 
 interface HomeProps {
   handleProfileScreen: (data: IPlayer) => void;
@@ -35,6 +35,7 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
   const [isOpenEdit, setOpenEdit] = useState<boolean>(false);
   const [editId, setEditId] = useState<string>('');
   const [err, setErr] = useState<string>('');
+  const [activeSwipe, setActiveSwipe] = useState<string>('');
 
   useEffect(() => {
     setLeaderBoard();
@@ -144,37 +145,21 @@ export const Home: React.FC<HomeProps> = ({ handleProfileScreen, handleRegisterP
               <ButtonIcon color="$tertiary800" as={AddIcon} />
             </Button>
           </Box>
-          {/* <FlatList
-            data={activePlayers}
-            keyExtractor={item => item.id}
-            renderItem={({ item }: ListRenderItemInfo<IPlayer>) => (
-              <ScrollView>
-                <Player
-                  moveProfile={() => handleProfileScreen(item)}
-                  playerId={item.id}
-                  detail={item.username}
-                  amount={item.saldo}
-                />
-              </ScrollView>
-            )}
-          /> */}
-
           <FlatList
             data={activePlayers}
             keyExtractor={item => item.id}
-            renderItem={({ item }: ListRenderItemInfo<IPlayer>) => (
+            renderItem={({ item }) => (
               <ScrollView>
-                <Swipeable
+                <JavaSwiper
+                  activeSwipe={activeSwipe}
+                  onSwipe={(id: string) => setActiveSwipe(id)}
+                  id={item.id}
                   component={
-                    <Player
-                      moveProfile={() => handleProfileScreen(item)}
-                      playerId={item.id}
-                      detail={item.username}
-                      amount={item.saldo}
-                    />
+                    <Player playerId={item.id} detail={item.username} amount={item.saldo} />
                   }
                   onDelete={() => onDeletePlayer(item.id)}
                   onEdit={() => onEditPlayer(item.id)}
+                  moveProfile={() => handleProfileScreen(item)}
                 />
               </ScrollView>
             )}

@@ -4,14 +4,16 @@ import { FC } from 'react';
 
 interface ProfileImageProps {
   data: IProfile;
+  color: string;
 }
 
-export const ProfileImage: FC<ProfileImageProps> = ({ data }) => {
+export const ProfileImage: FC<ProfileImageProps> = ({ data, color }) => {
   const { image, title, description } = data;
 
   return (
     <Box width="$full" flex={1} rounded={20}>
       <Image
+        backgroundColor={color}
         rounded={10}
         h="$full"
         size="full"

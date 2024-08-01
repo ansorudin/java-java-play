@@ -16,7 +16,6 @@ export const createHistorySlice: StateCreator<HistorySlice> = (set, get) => ({
     try {
       const { histories } = get();
       const existingHistoryPlayerIndex = histories.findIndex(player => player.id === id);
-      console.log(existingHistoryPlayerIndex);
 
       if (existingHistoryPlayerIndex !== -1) {
         // Update the existing history player by adding a new history entry
